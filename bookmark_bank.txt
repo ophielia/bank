@@ -1,0 +1,7 @@
+Bootstrap!
+
+done - create project
+done - add fields to entities
+get into git - local
+get into git - github
+add relationships
