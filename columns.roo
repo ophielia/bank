@@ -1,0 +1,5 @@
+entity jpa --class ~.util.common.dao.ColumnKeyDao --table columnkey --testAutomatically --activeRecord false
+repository jpa --interface ~.util.common.repo.ColumnKeyRepository --entity ~.util.common.dao.ColumnKeyDao 
+
+entity jpa --class ~.util.common.dao.ColumnValueDao --table columnvalue --testAutomatically --activeRecord false
+repository jpa --interface ~.util.common.repo.ColumnValueRepository --entity ~.util.common.dao.ColumnValueDao 
