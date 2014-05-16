@@ -8,8 +8,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import meg.bank.util.StringUtils;
 import meg.bank.util.imp.FieldFormat.Type;
-import meg.util.StringUtils;
 
 public class DelimitedImporter extends AbstractImporter {
 

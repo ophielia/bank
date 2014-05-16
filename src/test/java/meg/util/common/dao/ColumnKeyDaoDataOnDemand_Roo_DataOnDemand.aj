@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Random;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import meg.bank.util.common.db.ColumnKeyDao;
 import meg.bank.util.common.repo.ColumnKeyRepository;
-import meg.util.common.dao.ColumnKeyDao;
 import meg.util.common.dao.ColumnKeyDaoDataOnDemand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,7 +29,16 @@ privileged aspect ColumnKeyDaoDataOnDemand_Roo_DataOnDemand {
     
     public ColumnKeyDao ColumnKeyDaoDataOnDemand.getNewTransientColumnKeyDao(int index) {
         ColumnKeyDao obj = new ColumnKeyDao();
+        setLookup(obj, index);
         return obj;
+    }
+    
+    public void ColumnKeyDaoDataOnDemand.setLookup(ColumnKeyDao obj, int index) {
+        String lookup = "lookup_" + index;
+        if (lookup.length() > 100) {
+            lookup = lookup.substring(0, 100);
+        }
+        obj.setLookup(lookup);
     }
     
     public ColumnKeyDao ColumnKeyDaoDataOnDemand.getSpecificColumnKeyDao(int index) {

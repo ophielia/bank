@@ -4,9 +4,9 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
+import meg.bank.util.common.db.ColumnKeyDao;
+import meg.bank.util.common.db.ColumnValueDao;
 import meg.bank.util.common.repo.ColumnValueManagerDao;
-import meg.util.common.dao.ColumnKeyDao;
-import meg.util.common.dao.ColumnValueDao;
 
 public class ColumnValueManager {
 

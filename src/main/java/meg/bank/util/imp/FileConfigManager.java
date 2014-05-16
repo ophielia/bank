@@ -1,9 +1,11 @@
 package meg.bank.util.imp;
 
-import meg.bank.bus.BanestoCreditFileConfig;
-import meg.bank.bus.BanestoFileConfig;
-import meg.bank.bus.SocGenFileConfig;
-import meg.bank.bus.ImportManager.ImportClient;
+import meg.bank.bus.imp.BanestoCreditFileConfig;
+import meg.bank.bus.imp.BanestoFileConfig;
+import meg.bank.bus.imp.ImportManager.ImportClient;
+import meg.bank.bus.imp.SocGenFileConfig;
+
+
 
 public class FileConfigManager {
 

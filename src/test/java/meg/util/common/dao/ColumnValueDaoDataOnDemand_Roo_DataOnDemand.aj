@@ -10,8 +10,9 @@ import java.util.List;
 import java.util.Random;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import meg.bank.util.common.db.ColumnKeyDaoDataOnDemand;
+import meg.bank.util.common.db.ColumnValueDao;
 import meg.bank.util.common.repo.ColumnValueRepository;
-import meg.util.common.dao.ColumnValueDao;
 import meg.util.common.dao.ColumnValueDaoDataOnDemand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,11 +26,44 @@ privileged aspect ColumnValueDaoDataOnDemand_Roo_DataOnDemand {
     private List<ColumnValueDao> ColumnValueDaoDataOnDemand.data;
     
     @Autowired
+    ColumnKeyDaoDataOnDemand ColumnValueDaoDataOnDemand.columnKeyDaoDataOnDemand;
+    
+    @Autowired
     ColumnValueRepository ColumnValueDaoDataOnDemand.columnValueRepository;
     
     public ColumnValueDao ColumnValueDaoDataOnDemand.getNewTransientColumnValueDao(int index) {
         ColumnValueDao obj = new ColumnValueDao();
+        setActive(obj, index);
+        setDisplay(obj, index);
+        setDisporder(obj, index);
+        setValue(obj, index);
         return obj;
+    }
+    
+    public void ColumnValueDaoDataOnDemand.setActive(ColumnValueDao obj, int index) {
+        Boolean active = Boolean.TRUE;
+        obj.setActive(active);
+    }
+    
+    public void ColumnValueDaoDataOnDemand.setDisplay(ColumnValueDao obj, int index) {
+        String display = "display_" + index;
+        if (display.length() > 100) {
+            display = display.substring(0, 100);
+        }
+        obj.setDisplay(display);
+    }
+    
+    public void ColumnValueDaoDataOnDemand.setDisporder(ColumnValueDao obj, int index) {
+        Long disporder = new Integer(index).longValue();
+        obj.setDisporder(disporder);
+    }
+    
+    public void ColumnValueDaoDataOnDemand.setValue(ColumnValueDao obj, int index) {
+        String value = "value_" + index;
+        if (value.length() > 100) {
+            value = value.substring(0, 100);
+        }
+        obj.setValue(value);
     }
     
     public ColumnValueDao ColumnValueDaoDataOnDemand.getSpecificColumnValueDao(int index) {
