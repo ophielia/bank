@@ -1,7 +1,14 @@
 Bootstrap!
 
+get into git - github
+add relationships - target group and details
+BankTransactionManager - (old TransactionManager) put repo methods into repository
+
+---- begin commit changes ----
+
 done - create project
 done - add fields to entities
-get into git - local
-get into git - github
-add relationships
+done - get into git - local
+
+
+---- end commit changes ----

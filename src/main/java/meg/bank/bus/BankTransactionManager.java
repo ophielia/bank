@@ -7,6 +7,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import meg.bank.bus.dao.BankTADao;
 import meg.bank.bus.dao.CategoryDao;
 import meg.bank.bus.dao.CategoryRuleDao;
@@ -22,6 +24,7 @@ import meg.bank.db.TransactionManagerDao;
  * @author maggie
  * 
  */
+@Service
 public class BankTransactionManager {
 
 	private TransactionManagerDao transmandao;
