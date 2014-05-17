@@ -208,42 +208,48 @@ public class BankTransactionManager {
 	}
 
 	public List getAssignedCategoryList() {
-		// get Category Rules
-		List rules = cms.getCategoryRules();
-		List listofassigned = new ArrayList();
-		Hashtable assigned = new Hashtable();
-		
-		if (rules != null) {
+		// call BankTransactionService.getAssignedCategoryList()
+return null;
+/*
+// get Category Rules
+List rules = cms.getCategoryRules();
+List listofassigned = new ArrayList();
+Hashtable assigned = new Hashtable();
 
-			// loop through Category Rules
-			Hashtable<Long,Long> assignedtransactions = new Hashtable();
-			for (Iterator iter = rules.iterator(); iter.hasNext();) {
-				CategoryRuleDao rule = (CategoryRuleDao) iter.next();
-				// pull category
-				CategoryDao category = cms.getCategory(rule.getCategoryId());
+if (rules != null) {
 
-				// pull transactions for Category Rule
-				List transactions = transmandao
-						.retrieveTransactionsContaining(rule.getContaining());
+	// loop through Category Rules
+	Hashtable<Long,Long> assignedtransactions = new Hashtable();
+	for (Iterator iter = rules.iterator(); iter.hasNext();) {
+		CategoryRuleDao rule = (CategoryRuleDao) iter.next();
+		// pull category
+		CategoryDao category = cms.getCategory(rule.getCategoryId());
 
-				// assemble AssignRuleCategory, and add to list
-				if (transactions!=null && transactions.size()>0 ) {
-					TransToCategory assign = (TransToCategory) assigned.get(category.getId());
-					if (assign==null) {
-						assign=new TransToCategory(category);
-					}
-					assign.addTransactions(transactions, assignedtransactions);
-					assigned.put(category.getId(),assign);
-				}
+		// pull transactions for Category Rule
+		List transactions = transmandao
+				.retrieveTransactionsContaining(rule.getContaining());
+
+		// assemble AssignRuleCategory, and add to list
+		if (transactions!=null && transactions.size()>0 ) {
+			TransToCategory assign = (TransToCategory) assigned.get(category.getId());
+			if (assign==null) {
+				assign=new TransToCategory(category);
 			}
+			assign.addTransactions(transactions, assignedtransactions);
+			assigned.put(category.getId(),assign);
 		}
+	}
+}
 
-		// return list
-		for (Iterator iter = assigned.values().iterator(); iter.hasNext();) {
-			TransToCategory assign = (TransToCategory) iter.next();
-			listofassigned.add(assign);
-		}
-		return listofassigned;
+// return list
+for (Iterator iter = assigned.values().iterator(); iter.hasNext();) {
+	TransToCategory assign = (TransToCategory) iter.next();
+	listofassigned.add(assign);
+}
+return listofassigned;
+*/
+	
+	
 	}
 
 	public void assignFromCategories(List assignedcategories) {

@@ -29,7 +29,25 @@ privileged aspect CategoryRuleDaoDataOnDemand_Roo_DataOnDemand {
     
     public CategoryRuleDao CategoryRuleDaoDataOnDemand.getNewTransientCategoryRuleDao(int index) {
         CategoryRuleDao obj = new CategoryRuleDao();
+        setCategoryId(obj, index);
+        setContaining(obj, index);
+        setLineorder(obj, index);
         return obj;
+    }
+    
+    public void CategoryRuleDaoDataOnDemand.setCategoryId(CategoryRuleDao obj, int index) {
+        Long categoryId = new Integer(index).longValue();
+        obj.setCategoryId(categoryId);
+    }
+    
+    public void CategoryRuleDaoDataOnDemand.setContaining(CategoryRuleDao obj, int index) {
+        String containing = "containing_" + index;
+        obj.setContaining(containing);
+    }
+    
+    public void CategoryRuleDaoDataOnDemand.setLineorder(CategoryRuleDao obj, int index) {
+        Long lineorder = new Integer(index).longValue();
+        obj.setLineorder(lineorder);
     }
     
     public CategoryRuleDao CategoryRuleDaoDataOnDemand.getSpecificCategoryRuleDao(int index) {

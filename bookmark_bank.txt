@@ -3,6 +3,8 @@ Bootstrap!
 get into git - github
 add relationships - target group and details
 BankTransactionManager - (old TransactionManager) put repo methods into repository
+add relationship mapping to CategoryRule
+aggregate puzzle
 
 ---- begin commit changes ----
 

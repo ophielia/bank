@@ -1,4 +1,5 @@
 package meg.bank.bus.repo;
+import java.util.Date;
 import java.util.List;
 
 import meg.bank.bus.dao.BankTADao;
@@ -24,7 +25,7 @@ public interface BankTARepository {
 	@Query("select b from BankTADao b where b.hascat is false and b.deleted is false and upper(b.detail) like upper('%:detail%') order by transdate DESC")
 	List<BankTADao> findTransWithDetailLike(@Param("detail") String detail);
 	
-	@Query("select min(trans.transdate) from BankTADao as trans")
+	@Query("select min(trans.transdate) from BankTADao trans")
 	Date findFirstTransDate();
 	
 }
