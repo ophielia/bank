@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.roo.addon.layers.repository.jpa.RooJpaRepository;
 
-import com.menumoo.moo.recipe.model.Item;
 
 @RooJpaRepository(domainType = BankTADao.class)
 public interface BankTARepository {
@@ -22,7 +21,10 @@ public interface BankTARepository {
 	List<BankTADao> findNoCategoryExpenses();
 	
 
-	@Query("select b from BankTADao b where b.hascat is false and b.deleted is false and upper(b.detail) like ('%:detail%') order by transdate DESC")
+	@Query("select b from BankTADao b where b.hascat is false and b.deleted is false and upper(b.detail) like upper('%:detail%') order by transdate DESC")
 	List<BankTADao> findTransWithDetailLike(@Param("detail") String detail);
+	
+	@Query("select min(trans.transdate) from BankTADao as trans")
+	Date findFirstTransDate();
 	
 }
