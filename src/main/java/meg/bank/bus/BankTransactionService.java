@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import meg.bank.bus.dao.BankTADao;
 import meg.bank.bus.dao.CategoryDao;
 import meg.bank.bus.dao.CategoryRuleDao;
+import meg.bank.bus.dao.CategoryTADao;
 import meg.bank.bus.repo.BankTARepository;
 import meg.bank.bus.repo.CategoryRepository;
 import meg.bank.bus.repo.CategoryRuleRepository;
@@ -99,5 +100,18 @@ public class BankTransactionService {
 		}
 		return listofassigned;
 	}
-
+	
+	public CategoryTADao getNewCategoryExpense(Long transactionId) {
+		CategoryTADao newcat = new CategoryTADao();
+		newcat.setBanktaid(transactionId);
+		return newcat;
+	}
+	
+	public void deleteCategoryExpense(Long deleteid) {
+		CategoryTADao cat = catRep.findOne(deleteid);
+		if (cat!=null) {
+			catRep.delete(cat.getId());	
+		}
+		
+	}
 }
