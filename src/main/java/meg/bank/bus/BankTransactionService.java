@@ -16,6 +16,7 @@ import meg.bank.bus.dao.CategoryTADao;
 import meg.bank.bus.repo.BankTARepository;
 import meg.bank.bus.repo.CategoryRepository;
 import meg.bank.bus.repo.CategoryRuleRepository;
+import meg.bank.bus.repo.CategoryTARepository;
 
 public class BankTransactionService {
 
@@ -25,6 +26,9 @@ public class BankTransactionService {
 
 	@Autowired
 	private CategoryRepository catRep;
+	
+	@Autowired
+	private CategoryTARepository catTransRep;	
 	
 	@Autowired
 	private BankTARepository bankTransRep;
@@ -108,10 +112,9 @@ public class BankTransactionService {
 	}
 	
 	public void deleteCategoryExpense(Long deleteid) {
-		CategoryTADao cat = catRep.findOne(deleteid);
+		CategoryTADao cat = catTransRep.findOne(deleteid);
 		if (cat!=null) {
-			catRep.delete(cat.getId());	
+			catTransRep.delete(cat);	
 		}
-		
 	}
 }

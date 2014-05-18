@@ -184,19 +184,26 @@ return null;
 				"from CategoryTADao as trans where banktaid = ?",
 				new Object[] { transid });
 */
-		return cattas;
+		return null;
 	}
 
 	public CategoryTADao getNewCategoryExpense(Long transactionId) {
+		// calls banktransservice.getNewCategooryExpense(transactionId)
+		return null;
+		
+		/*
 		CategoryTADao newcat = new CategoryTADao();
 		newcat.setBanktaid(transactionId);
-		return newcat;
+		return newcat;*/
 	}
 
 	public void deleteCategoryExpense(Long deleteid) {
+		// calls banktransservice.deleteCategoryExpense(Long deleteid);
+		
+		/*
 		CategoryTADao cat = getCatTA(deleteid);
 		getHibernateTemplate().delete(cat);
-
+*/
 	}
 
 
