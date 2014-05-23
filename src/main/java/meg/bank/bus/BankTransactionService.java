@@ -1,154 +1,69 @@
 package meg.bank.bus;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import meg.bank.bus.dao.BankTADao;
-import meg.bank.bus.dao.CategoryDao;
-import meg.bank.bus.dao.CategoryRuleDao;
 import meg.bank.bus.dao.CategoryTADao;
-import meg.bank.bus.repo.BankTARepository;
-import meg.bank.bus.repo.CategoryRepository;
-import meg.bank.bus.repo.CategoryRuleRepository;
-import meg.bank.bus.repo.CategoryTARepository;
+import meg.bank.bus.dao.ExpenseDao;
+import meg.bank.bus.report.CategorySummaryDisp;
 
-public class BankTransactionService {
+public interface BankTransactionService {
 
-	
-	@Autowired
-	private CategoryRuleRepository catRuleRep;
+	public abstract void deleteBankTA(Long todelete);
 
-	@Autowired
-	private CategoryRepository catRep;
-	
-	@Autowired
-	private CategoryTARepository catTransRep;	
-	
-	@Autowired
-	private BankTARepository bankTransRep;
-	
-	public void deleteBankTA(Long todelete) {
-		BankTADao bankta = bankTransRep.findOne(todelete);
-		bankta.setDeleted(new Boolean(true));
+	public abstract Date getFirstTransDate();
 
-		bankTransRep.save(bankta);
+	public abstract List<TransToCategory> getAssignedCategoryList();
 
-	}
-	
-	public Date getFirstTransDate() {
+	public abstract CategoryTADao getNewCategoryExpense(Long transactionId);
 
-		Date resultdate = bankTransRep.getFirstTransDate();
+	public abstract void deleteCategoryExpense(Long deleteid);
 
-		// check for null
-		if (resultdate == null) {
-			Calendar cal = Calendar.getInstance();
-			cal.set(1970, 10, 1);
-			resultdate = cal.getTime();
-		}
+	public abstract void deleteCategoryExpenseByTransaction(Long transid);
 
-		return resultdate;
-	}
-	
-	
-	public List<TransToCategory> getAssignedCategoryList() {
-		// get Category Rules
-		List<CategoryRuleDao> rules = catRuleRep.findAll();
-		List<TransToCategory> listofassigned = new ArrayList<TransToCategory>();
-		Hashtable<Long,TransToCategory> assigned = new Hashtable<Long,TransToCategory>();
-		
-		if (rules != null) {
-			// loop through Category Rules
-			Hashtable<Long,Long> assignedtransactions = new Hashtable<Long,Long>();
-			for (Iterator<CategoryRuleDao> iter = rules.iterator(); iter.hasNext();) {
-				CategoryRuleDao rule = (CategoryRuleDao) iter.next();
-				// pull category
-				CategoryDao category = catRep.findOne(rule.getCategoryId());
+	public abstract boolean doesDuplicateExist(BankTADao trans);
 
-				if (rule.getContaining()!=null) {
-					// pull transactions for Category Rule
-					List<BankTADao> transactions = bankTransRep.findTransWithDetailLike(rule.getContaining().toUpperCase());
+	public abstract Date getMostRecentTransDate();
 
-					// assemble AssignRuleCategory, and add to list
-					if (transactions!=null && transactions.size()>0 ) {
-						TransToCategory assign = (TransToCategory) assigned.get(category.getId());
-						if (assign==null) {
-							assign=new TransToCategory(category);
-						}
-						assign.addTransactions(transactions, assignedtransactions);
-						assigned.put(category.getId(),assign);
-					}
-					
-				}
-			}
-		}
+	public abstract void addTransaction(BankTADao trans);
 
-		// return list
-		for (Iterator<TransToCategory> iter = assigned.values().iterator(); iter.hasNext();) {
-			TransToCategory assign = (TransToCategory) iter.next();
-			listofassigned.add(assign);
-		}
-		return listofassigned;
-	}
-	
-	public CategoryTADao getNewCategoryExpense(Long transactionId) {
-		CategoryTADao newcat = new CategoryTADao();
-		newcat.setBanktaid(transactionId);
-		return newcat;
-	}
-	
-	public void deleteCategoryExpense(Long deleteid) {
-		CategoryTADao cat = catTransRep.findOne(deleteid);
-		if (cat!=null) {
-			catTransRep.delete(cat);	
-		}
-	}
-	
-	public void  deleteCategoryExpenseByTransaction(Long transid) {
-		BankTADao trans = bankTransRep.findOne(transid);
+	public abstract List<BankTADao> getAllBankTransactions();
 
-		if (trans!=null) {
-			List<CategoryTADao> catexplst = catTransRep.findByBankTrans(trans.getId());
-			
-			for (Iterator<CategoryTADao> iterator=catexplst.iterator();iterator.hasNext();) {
-				CategoryTADao cat = iterator.next();
-				deleteCategoryExpense(cat.getId());
-			}
-			
-		}
-	}
-	
-	public boolean doesDuplicateExist(BankTADao trans) {
-		boolean exists = false;
-		if (trans != null) {
-			List<BankTADao> result = bankTransRep.findTransDuplicates(
-					trans.getAmount(), trans.getTransdate(),
-					trans.getDescription());
+	public abstract void clearCategoryAssignment(Long toclear);
 
-			if (result != null && result.size() > 0) {
-				// this transaction seems to already exist
-				exists = true;
-			}
-		}
-		return exists;
-	}
-	
-	public Date getMostRecentTransDate() {
-		// call banktransservice.getMostRecentTransDate();
-		Date resultdate = bankTransRep.getMostRecentTransDate();
+	public abstract BankTADao getTransaction(Long transid);
 
-		// check for null
-		if (resultdate == null) {
-			Calendar cal = Calendar.getInstance();
-			cal.set(1970, 10, 1);
-			resultdate = cal.getTime();
-		}
+	public abstract void assignCategory(Long transid, Long catid);
 
-		return resultdate;
-	}
+	public abstract List<BankTADao> getNoCategoryExpenses();
+
+	public abstract List<CategoryTADao> getCategoryExpForTrans(Long transid);
+
+	public abstract Double[] distributeAmounts(Double amount, int cnt);
+
+	public abstract void saveTransaction(BankTADao transaction,
+			List<CategoryTADao> categories);
+
+	public abstract void deleteCategoryExpenses(List<Long> deleted);
+
+	public abstract void assignFromCategories(
+			List<TransToCategory> assignedcategories);
+
+	public abstract void assignFromCategories(Long catid,
+			List<BankTADao> transtoadd);
+
+	public abstract List<ExpenseDao> getExpenses(ExpenseCriteria criteria);
+
+	public abstract void assignExpensesFromCategories(Long catid, List selected);
+
+	public abstract List<CategorySummaryDisp> getExpenseTotalByMonth(
+			ExpenseCriteria criteria, String dispname);
+
+	public abstract List<CategorySummaryDisp> getExpenseTotalByYear(
+			ExpenseCriteria criteria, String dispname);
+
+	public abstract List<CategorySummaryDisp> getExpenseTotal(
+			ExpenseCriteria criteria, String dispname);
+
 }

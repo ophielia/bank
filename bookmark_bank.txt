@@ -1,24 +1,34 @@
 Bootstrap!
 
-get into git - github
+
 add relationships - target group and details
-add relationship mapping to CategoryRule
+
 aggregate puzzle
 
 compile ready SearchService - remove hibernate from db hits
 
+service / component annotations for BankTransactionService and implementation
+
+transform CategoryManager
+
 SearchService and BankTransactionService into implementations of interface.
 
-done - shells of TransactionManagerDao moved to services and repositories
-done - compile ready BankTransactionService
-done - BankTransactionManager - (old TransactionManager) put repo methods into repository
 
 note: CategoryTADao created on ids and not Entities.  Keep this way??
 ---- begin commit changes ----
 
+done - shells of TransactionManagerDao moved to services and repositories
+done - compile ready BankTransactionService
+done - BankTransactionManager - (old TransactionManager) put repo methods into repository
+nevermind - add relationship mapping to CategoryRule
+done - get into git - github
+
+---- end commit changes ----
+
+----- begin branch changes ----
 done - create project
 done - add fields to entities
 done - get into git - local
 
 
----- end commit changes ----
+---- end branch changes ----

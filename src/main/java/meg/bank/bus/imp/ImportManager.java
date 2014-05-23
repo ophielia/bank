@@ -6,8 +6,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.transaction.TransactionManager;
-
 import meg.bank.bus.BankTransactionService;
 import meg.bank.bus.dao.BankTADao;
 import meg.bank.util.FileUtils;
@@ -21,6 +19,9 @@ import meg.bank.util.imp.Mapper;
 import meg.bank.util.imp.MapperFactory;
 import meg.bank.util.imp.Placeholder;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 @Component
 public class ImportManager {
 
@@ -29,7 +30,7 @@ public class ImportManager {
 	private FileConfigManager fcman = new FileConfigManager();
 
 	private MapConfigManager mcman = new MapConfigManager();
-	private TransactionManager transman ;
+	//private TransactionManager transman ;
 	
 	@Autowired
 	BankTransactionService bankTrans;
@@ -105,7 +106,7 @@ public class ImportManager {
 
 		// ---- persist non duplicates
 		for (BankTADao trans: nondups) {
-			transman.addTransaction(trans);
+			bankTrans.addTransaction(trans);
 		}
 		// returned List is a list of error / log messages (although
 		// this isn't yet really implemented - currently just returns the list of new objects
@@ -123,12 +124,5 @@ public class ImportManager {
 		this.archivedir = archivedir;
 	}
 
-	public TransactionManager getTransactionManager() {
-		return transman;
-	}
-
-	public void setTransactionManager(TransactionManager transman) {
-		this.transman=transman;
-	}
 
 }

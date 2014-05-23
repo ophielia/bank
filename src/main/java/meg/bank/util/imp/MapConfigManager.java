@@ -1,9 +1,12 @@
 package meg.bank.util.imp;
 
-import meg.bank.bus.BanestoCreditMapConfig;
-import meg.bank.bus.BanestoMapConfig;
-import meg.bank.bus.SocGenMapConfig;
-import meg.bank.bus.ImportManager.ImportClient;
+import meg.bank.bus.imp.ImportManager.ImportClient;
+import meg.bank.bus.imp.SocGenMapConfig;
+import meg.bank.bus.imp.BanestoMapConfig;
+import meg.bank.bus.imp.BanestoCreditMapConfig;
+
+
+
 
 public class MapConfigManager {
 
