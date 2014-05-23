@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.transaction.TransactionManager;
 
+import meg.bank.bus.BankTransactionService;
 import meg.bank.bus.dao.BankTADao;
 import meg.bank.util.FileUtils;
 import meg.bank.util.imp.FileConfig;
@@ -20,6 +21,7 @@ import meg.bank.util.imp.Mapper;
 import meg.bank.util.imp.MapperFactory;
 import meg.bank.util.imp.Placeholder;
 
+@Component
 public class ImportManager {
 
 	public static final String ClientKeyLkup = "clientkey";
@@ -28,6 +30,9 @@ public class ImportManager {
 
 	private MapConfigManager mcman = new MapConfigManager();
 	private TransactionManager transman ;
+	
+	@Autowired
+	BankTransactionService bankTrans;
 
 	private String archivedir;
 
@@ -76,7 +81,7 @@ public class ImportManager {
 		// Begin persisting objects
 		// ---- search for date of most recently entered banktrans for
 		//      comparison
-		Date mostrecent = transman.getMostRecentTransDate();
+		Date mostrecent = bankTrans.getMostRecentTransDate();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(mostrecent);
 		// ---- set calendar to latest possible time in date
@@ -93,7 +98,7 @@ public class ImportManager {
 			} else {
 				// ------ if date is on or before the most recent db banktrans date,
 				// check for duplicate in db (on amount, desc, and date)
-				boolean duplicate = transman.doesDuplicateExist(trans);
+				boolean duplicate = bankTrans.doesDuplicateExist(trans);
 				if (!duplicate) nondups.add(trans);
 			}
 		}

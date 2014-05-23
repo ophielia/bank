@@ -17,4 +17,6 @@ public class CategoryRuleDao {
 	
 	@NotNull
 	private Long categoryId;
+	
+	
 }

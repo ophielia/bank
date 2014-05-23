@@ -42,39 +42,30 @@ public class BankTransactionService {
 	}
 	
 	public Date getFirstTransDate() {
-		List result = null;
-		Date mindate = null;
 
 		Date resultdate = bankTransRep.getFirstTransDate();
 
-		if (result != null && result.size() > 0) {
-			// pull the id off of the result list
-			mindate = (Date) result.get(0);
-
-		}
-
 		// check for null
-		if (mindate == null) {
+		if (resultdate == null) {
 			Calendar cal = Calendar.getInstance();
 			cal.set(1970, 10, 1);
-			mindate = cal.getTime();
+			resultdate = cal.getTime();
 		}
 
-		return mindate;
+		return resultdate;
 	}
 	
 	
-	public List getAssignedCategoryList() {
+	public List<TransToCategory> getAssignedCategoryList() {
 		// get Category Rules
 		List<CategoryRuleDao> rules = catRuleRep.findAll();
-		List listofassigned = new ArrayList();
-		Hashtable assigned = new Hashtable();
+		List<TransToCategory> listofassigned = new ArrayList<TransToCategory>();
+		Hashtable<Long,TransToCategory> assigned = new Hashtable<Long,TransToCategory>();
 		
 		if (rules != null) {
-
 			// loop through Category Rules
-			Hashtable<Long,Long> assignedtransactions = new Hashtable();
-			for (Iterator iter = rules.iterator(); iter.hasNext();) {
+			Hashtable<Long,Long> assignedtransactions = new Hashtable<Long,Long>();
+			for (Iterator<CategoryRuleDao> iter = rules.iterator(); iter.hasNext();) {
 				CategoryRuleDao rule = (CategoryRuleDao) iter.next();
 				// pull category
 				CategoryDao category = catRep.findOne(rule.getCategoryId());
@@ -98,7 +89,7 @@ public class BankTransactionService {
 		}
 
 		// return list
-		for (Iterator iter = assigned.values().iterator(); iter.hasNext();) {
+		for (Iterator<TransToCategory> iter = assigned.values().iterator(); iter.hasNext();) {
 			TransToCategory assign = (TransToCategory) iter.next();
 			listofassigned.add(assign);
 		}
@@ -116,5 +107,48 @@ public class BankTransactionService {
 		if (cat!=null) {
 			catTransRep.delete(cat);	
 		}
+	}
+	
+	public void  deleteCategoryExpenseByTransaction(Long transid) {
+		BankTADao trans = bankTransRep.findOne(transid);
+
+		if (trans!=null) {
+			List<CategoryTADao> catexplst = catTransRep.findByBankTrans(trans.getId());
+			
+			for (Iterator<CategoryTADao> iterator=catexplst.iterator();iterator.hasNext();) {
+				CategoryTADao cat = iterator.next();
+				deleteCategoryExpense(cat.getId());
+			}
+			
+		}
+	}
+	
+	public boolean doesDuplicateExist(BankTADao trans) {
+		boolean exists = false;
+		if (trans != null) {
+			List<BankTADao> result = bankTransRep.findTransDuplicates(
+					trans.getAmount(), trans.getTransdate(),
+					trans.getDescription());
+
+			if (result != null && result.size() > 0) {
+				// this transaction seems to already exist
+				exists = true;
+			}
+		}
+		return exists;
+	}
+	
+	public Date getMostRecentTransDate() {
+		// call banktransservice.getMostRecentTransDate();
+		Date resultdate = bankTransRep.getMostRecentTransDate();
+
+		// check for null
+		if (resultdate == null) {
+			Calendar cal = Calendar.getInstance();
+			cal.set(1970, 10, 1);
+			resultdate = cal.getTime();
+		}
+
+		return resultdate;
 	}
 }

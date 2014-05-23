@@ -28,4 +28,10 @@ public interface BankTARepository {
 	
     @Query(value = "SELECT min(at.transdate) FROM BankTADao at")
     public Date getFirstTransDate();	
+    
+    @Query(value = "SELECT max(at.transdate) FROM BankTADao at")
+    public Date getMostRecentTransDate();	    
+    
+	@Query("select trans from BankTADao as trans where trans.amount = :amount and trans.transdate = :transdate and trans.description = :description ")
+	List<BankTADao> findTransDuplicates(@Param("amount") Double amount,@Param("transdate") Date transdate,@Param("description") String description);    
 }
