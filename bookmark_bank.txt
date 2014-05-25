@@ -7,11 +7,12 @@ aggregate puzzle
 
 compile ready SearchService - remove hibernate from db hits
 
-service / component annotations for BankTransactionService and implementation
+done - service / component annotations for BankTransactionService and implementation
 
-transform CategoryManager
+---> transform CategoryManager - moving through and moving to service - repository....
 
-SearchService and BankTransactionService into implementations of interface.
+done - BankTransactionService into implementations of interface.
+SearchServiceinto implementations of interface.
 
 
 note: CategoryTADao created on ids and not Entities.  Keep this way??

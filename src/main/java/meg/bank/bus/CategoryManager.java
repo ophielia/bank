@@ -13,7 +13,7 @@ import meg.bank.bus.dao.CategoryDao;
 import meg.bank.bus.dao.CategoryRuleDao;
 import meg.bank.bus.dao.TargetDetailDao;
 import meg.bank.bus.dao.TargetGroupDao;
-import meg.bank.db.CategoryManagerDao;
+import meg.bank.bus.db.CategoryManagerDao;
 
 public class CategoryManager {
 
@@ -40,49 +40,31 @@ public class CategoryManager {
 	 */
 
 	public List<CategoryDao> getCategories(boolean showall) {
-		return cmd.getCategories(showall);
+		// replace with same in categoryService
+		
+		return null;
 	}
 
 	public CategoryDao getCategory(Long id) {
-		return cmd.getCategory(id);
+		// return CategoryRepository.findOne(Long id)
+		//return cmd.getCategory(id);
+		return null;
 	}
 
 	public void createOrSaveCategory(CategoryDao category) {
-		CategoryManagerDao catmandao = getCategoryManagerDao();
-		catmandao.createOrSaveCategory(category);
+		// return CategoryRepository.save(CategoryDao category)
 
 	}
 
-	public void addCategory(String name, String description, Boolean nonexpcat) {
-		// default description to name if empty
-		if (description == null)
-			description = name;
-
-		CategoryDao cat = new CategoryDao();
-		cat.setName(name);
-		cat.setDescription(description);
-		cat.setNonexpense(nonexpcat);
-		createOrSaveCategory(cat);
-
-		// add category relationship
-		CatRelationshipDao catrel = new CatRelationshipDao();
-		catrel.setParentId(new Long(0));
-		catrel.setChildId(cat.getId());
-		createOrSaveCategoryRel(catrel);
-	}
 
 	public CategoryDao getCategoryByName(String name) {
+		// // return CategoryRepository.findByName(CategoryDao category)
 		return cmd.getCategoryByName(name);
 	}
 
 	public HashMap<Long, String> getCategoriesAsMap() {
-		HashMap<Long, String> hash = new HashMap<Long, String>();
-		List<CategoryDao> categories = getCategories(false);
-		for (Iterator<CategoryDao> iter = categories.iterator(); iter.hasNext();) {
-			CategoryDao cat = iter.next();
-			hash.put(cat.getId(), cat.getName());
-		}
-		return hash;
+		// return categoryService.getCategoriesAsMap
+		return null;
 	}
 
 	/**
@@ -91,11 +73,11 @@ public class CategoryManager {
 	 */
 
 	public void createOrSaveCategoryRel(CatRelationshipDao rel) {
-		CategoryManagerDao catmandao = getCategoryManagerDao();
-		catmandao.createOrSaveCategoryRel(rel);
+		// return catRelRep.save(CatRelationshipDao)
 	}
 
 	public CatRelationshipDao getCategoryRel(Long parentid, Long childid) {
+		// return service.getCategoryRel(Long parentid, Long childid) 
 		return cmd.getCategoryRel(parentid, childid);
 	}
 
