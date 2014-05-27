@@ -1,5 +1,6 @@
 package meg.bank.bus;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -61,7 +62,63 @@ public class CategoryService {
 		return catRelationRep.findByParentAndChild(parentid, childid);
 	}
 	
-
+	public List<CategoryLevel> getCategoriesUpToLevel(int level) {
+		return getSubcategoriesRecursive(new Long(0), level, 1, false);
+	}
 	
+	private List<CategoryLevel> getSubcategoriesRecursive(Long parentid,
+			int maxlvl, int currentlvl, boolean ignorelvl) {
+		// done
+		
+		List<CategoryLevel> returncats = new ArrayList<CategoryLevel>();
+
+		// get categories belonging to parentid
+		List<CategoryLevel> subcategories = getDirectSubcategoryLvls(parentid,
+				currentlvl);
+		// if max level = current level then stop condition is met
+		// -- return the subcategories for parentid
+		if (!ignorelvl && (maxlvl == currentlvl)) {
+			return subcategories;
+		}
+		// otherwise, cycle through all subcategories, retrieving
+		// their subcategories.
+		if (subcategories != null) {
+			for (Iterator<CategoryLevel> iter = subcategories.iterator(); iter
+					.hasNext();) {
+				CategoryLevel catlvl = iter.next();
+				returncats.add(catlvl);
+				// -- increment level
+				// -- Add all subcategories to a list
+				returncats.addAll(getSubcategoriesRecursive(catlvl
+						.getCategory().getId(), maxlvl, currentlvl + 1,
+						ignorelvl));
+			}
+		}
+		// return collection of subcategories
+		return returncats;
+	}
+
+	private List<CategoryLevel> getDirectSubcategoryLvls(Long parentid,
+			int level) {
+		List<CategoryDao> direct = getDirectSubcategories(parentid);
+		List<CategoryLevel> sublevels = new ArrayList<CategoryLevel>();
+		if (direct != null) {
+			for (Iterator<CategoryDao> iter = direct.iterator(); iter.hasNext();) {
+				CategoryDao cat = iter.next();
+				CategoryLevel catlvl = new CategoryLevel(cat, level);
+				sublevels.add(catlvl);
+			}
+
+		}
+		return sublevels;
+	}
+	
+	public List<CategoryDao> getDirectSubcategories(Long parentid) {
+		return catRepository.findDirectSubcategories(parentid);
+	}
+	
+	public List<CategoryLevel> getAllSubcategories(CategoryDao cat) {
+		return getSubcategoriesRecursive(cat.getId(), 1, 1, true);
+	}
 	
 }

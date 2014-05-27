@@ -82,11 +82,14 @@ public class CategoryManager {
 	}
 
 	public List<CategoryLevel> getCategoriesUpToLevel(int level) {
+		// categoryService.getCategoriesUpToLevel(int level)
 		return getSubcategoriesRecursive(new Long(0), level, 1, false);
 	}
 
 	private List<CategoryLevel> getSubcategoriesRecursive(Long parentid,
 			int maxlvl, int currentlvl, boolean ignorelvl) {
+		// done
+		
 		List<CategoryLevel> returncats = new ArrayList<CategoryLevel>();
 
 		// get categories belonging to parentid
@@ -117,6 +120,7 @@ public class CategoryManager {
 
 	private List<CategoryLevel> getDirectSubcategoryLvls(Long parentid,
 			int level) {
+		// moved
 		List<CategoryDao> direct = getDirectSubcategories(parentid);
 		List<CategoryLevel> sublevels = new ArrayList<CategoryLevel>();
 		if (direct != null) {
@@ -131,13 +135,18 @@ public class CategoryManager {
 	}
 
 	public List<CategoryDao> getDirectSubcategories(Long parentid) {
+		// service of same name
 		return cmd.getDirectSubcategories(parentid);
 	}
 
+
 	public List<CategoryLevel> getAllSubcategories(CategoryDao cat) {
+		// service of same name
 		return getSubcategoriesRecursive(cat.getId(), 1, 1, true);
 	}
 
+	
+	////////////  START HERE
 	public Long getParentIdForCat(Long id) {
 		return cmd.getParentIdForCat(id);
 	}

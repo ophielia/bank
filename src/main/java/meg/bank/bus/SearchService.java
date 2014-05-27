@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import meg.bank.bus.dao.CategoryDao;
 import meg.bank.bus.dao.ExpenseDao;
+import meg.bank.bus.imp.ImportManager;
 import meg.bank.bus.repo.ExpenseRepository;
 import meg.bank.bus.report.CategorySummaryDisp;
 import meg.bank.bus.ExpenseCriteria;
