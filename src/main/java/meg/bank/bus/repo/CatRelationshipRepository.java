@@ -13,4 +13,7 @@ public interface CatRelationshipRepository {
 	@Query("select r from CatRelationshipDao as r where r.parentId=:parentid and r.childId = :childid")
 	CatRelationshipDao findByParentAndChild(@Param("parentid") Long parentid,@Param("childid") Long childid);
 	
+	@Query("select r from CatRelationshipDao as r where  r.childId = :childid")
+	CatRelationshipDao findByChild(@Param("childid") Long childid);
+	
 }

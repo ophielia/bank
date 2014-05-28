@@ -146,12 +146,14 @@ public class CategoryManager {
 	}
 
 	
-	////////////  START HERE
+
 	public Long getParentIdForCat(Long id) {
+		// service getParentIdForCat
 		return cmd.getParentIdForCat(id);
 	}
 
 	public CategoryLevel getAsCategoryLevel(Long id) {
+		// service of same name
 		// get CategoryDao
 		CategoryDao catd = getCategory(id);
 		// get CategoryLevel number
@@ -162,6 +164,7 @@ public class CategoryManager {
 	}
 	
 	public void changeCatMembership(Long catId, Long origParent, Long parentId) {
+		// service of same name
 		// get original category relationship
 		CatRelationshipDao catrel = getCategoryRel(origParent, catId);
 
@@ -174,7 +177,9 @@ public class CategoryManager {
 	}
 
 	public boolean hasCircularReference(Long newParentId, CategoryDao category) {
-		boolean hasCircular = false;
+		// service of same name
+/*
+ * 		boolean hasCircular = false;
 		List<CategoryLevel> allsubcategories = getAllSubcategories(category);
 		if (allsubcategories != null) {
 			for (CategoryLevel catlvl : allsubcategories) {
@@ -184,21 +189,38 @@ public class CategoryManager {
 				}
 			}
 		}
+ */
 
-		return hasCircular;
+		return false;
 	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	/**
 	 * Category Rule Methods
 	 * 
 	 */
 	public List<CategoryRuleDao> getCategoryRules() {
+		// repository, findAll
 		CategoryManagerDao catmandao = getCategoryManagerDao();
 		return catmandao.getCategoryRules();
 	}
 
 	public void createCategoryRule(String contains, Long catid) {
-		CategoryManagerDao catmandao = getCategoryManagerDao();
+		// service of same name
+	/*	CategoryManagerDao catmandao = getCategoryManagerDao();
 		// get last order
 		CategoryRuleDao lastcat = catmandao.getLastCategoryRule();
 		long neworder = 1;
@@ -211,11 +233,12 @@ public class CategoryManager {
 		newrule.setCategoryId(catid);
 		newrule.setLineorder(new Long(neworder));
 
-		catmandao.createOrSaveCategoryRule(newrule);
+		catmandao.createOrSaveCategoryRule(newrule);*/
 	}
 
 	public void removeCategoryRule(CategoryRuleDao cat) {
-		CategoryManagerDao catmandao = getCategoryManagerDao();
+		// service of same name
+	/*	CategoryManagerDao catmandao = getCategoryManagerDao();
 		// first, save the order of the rule to be removed
 		long oldorder = cat.getLineorder().longValue();
 		// remove the rule
@@ -230,12 +253,13 @@ public class CategoryManager {
 								rule.getLineorder().longValue() - 1));
 				catmandao.createOrSaveCategoryRule(rule);
 			}
-		}
+		}*/
 	}
 
 	public void updateCategoryRule(Long ruleid, String newcontains,
 			Long newcatid) {
-		CategoryManagerDao catmandao = getCategoryManagerDao();
+		// service of same name
+		/*CategoryManagerDao catmandao = getCategoryManagerDao();
 		// pull category rule
 		CategoryRuleDao rule = catmandao.getCategoryRule(ruleid);
 
@@ -244,11 +268,12 @@ public class CategoryManager {
 		rule.setCategoryId(newcatid);
 
 		// persist change
-		catmandao.createOrSaveCategoryRule(rule);
+		catmandao.createOrSaveCategoryRule(rule);*/
 	}
 
 	public void swapOrder(Long beforeid, Long afterid) {
-		CategoryManagerDao catmandao = getCategoryManagerDao();
+		// service of same name
+		/*CategoryManagerDao catmandao = getCategoryManagerDao();
 
 		// pull rules
 		CategoryRuleDao beforerule = catmandao.getCategoryRule(beforeid);
@@ -261,15 +286,15 @@ public class CategoryManager {
 
 		// persist change
 		catmandao.createOrSaveCategoryRule(beforerule);
-		catmandao.createOrSaveCategoryRule(afterrule);
+		catmandao.createOrSaveCategoryRule(afterrule);*/
 	}
 
-	/**
-	 * TargetGroup and Target Methods
-	 * 
-	 * @param targettype
-	 * 
-	 */
+	
+	
+	
+/*
+ * 
+all in TargetService....
 	public List<TargetGroupDao> getTargetGroupList(Long targettype) {
 		CategoryManagerDao catmandao = getCategoryManagerDao();
 		return catmandao.getTargetGroupList(targettype);
@@ -449,7 +474,28 @@ public class CategoryManager {
 
 		}
 	}
+	
+	*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
+	////////////  START HERE
 	public List<CategoryLevel> getSubcategoriesToLevel(Long catid,
 			int breakoutLevel) {
 		CategoryManagerDao catmandao = getCategoryManagerDao();
@@ -466,6 +512,7 @@ public class CategoryManager {
 	}
 
 	private int getCategoryLevel(CategoryDao cat) {
+		// in service now
 		CategoryManagerDao catmandao = getCategoryManagerDao();
 		Long catid = cat.getId();
 		int level = 1;

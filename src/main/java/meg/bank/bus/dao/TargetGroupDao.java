@@ -1,5 +1,10 @@
 package meg.bank.bus.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -28,4 +33,6 @@ public class TargetGroupDao {
 
 	private String yeartag;
 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "targetgroup")
+	private List<TargetDetailDao> targetdetails = new ArrayList<TargetDetailDao>();
 }

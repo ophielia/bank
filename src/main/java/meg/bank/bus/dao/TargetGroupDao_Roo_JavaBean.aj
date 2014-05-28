@@ -3,6 +3,8 @@
 
 package meg.bank.bus.dao;
 
+import java.util.List;
+import meg.bank.bus.dao.TargetDetailDao;
 import meg.bank.bus.dao.TargetGroupDao;
 
 privileged aspect TargetGroupDao_Roo_JavaBean {
@@ -53,6 +55,14 @@ privileged aspect TargetGroupDao_Roo_JavaBean {
     
     public void TargetGroupDao.setYeartag(String yeartag) {
         this.yeartag = yeartag;
+    }
+    
+    public List<TargetDetailDao> TargetGroupDao.getTargetdetails() {
+        return this.targetdetails;
+    }
+    
+    public void TargetGroupDao.setTargetdetails(List<TargetDetailDao> targetdetails) {
+        this.targetdetails = targetdetails;
     }
     
 }

@@ -5,13 +5,15 @@ add relationships - target group and details
 aggregate puzzle
 compile ready SearchService - remove hibernate from db hits - use scalarDao as model
 ---> transform CategoryManager - moving through and moving to service - repository....
-SearchServiceinto implementations of interface.
+SearchService into implementations of interface.
+
 note: CategoryTADao created on ids and not Entities.  Keep this way??
 
 
 
 ---- begin commit changes ----
 
+done - TargetService - migrate...
 
 ---- end commit changes ----
 

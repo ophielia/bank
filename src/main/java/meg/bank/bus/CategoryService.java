@@ -6,12 +6,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import meg.bank.bus.dao.CatRelationshipDao;
 import meg.bank.bus.dao.CategoryDao;
+import meg.bank.bus.dao.CategoryRuleDao;
+import meg.bank.bus.db.CategoryManagerDao;
 import meg.bank.bus.repo.CategoryRepository;
 import meg.bank.bus.repo.CatRelationshipRepository;
+import meg.bank.bus.repo.CategoryRuleRepository;
 
 @Service
 public class CategoryService {
@@ -21,6 +25,9 @@ public class CategoryService {
 	
 	@Autowired
 	CatRelationshipRepository catRelationRep;
+	
+	@Autowired
+	CategoryRuleRepository catRuleRep;	
 	
 	public List<CategoryDao> getCategories(boolean showall) {
 		if (showall) {
@@ -119,6 +126,136 @@ public class CategoryService {
 	
 	public List<CategoryLevel> getAllSubcategories(CategoryDao cat) {
 		return getSubcategoriesRecursive(cat.getId(), 1, 1, true);
+	}
+	
+	public Long getParentIdForCat(Long id) {
+		CatRelationshipDao result = catRelationRep.findByChild(id);
+		
+		if (result != null) {
+			return result.getParentId();
+
+		}
+		return null;
+	}
+	
+	public CategoryLevel getAsCategoryLevel(Long id) {
+		// service of same name
+		// get CategoryDao
+		CategoryDao catd = catRepository.findOne(id);
+		// get CategoryLevel number
+		int catlvl = getCategoryLevel(catd);
+		// create CategoryLevel Object and return
+		CategoryLevel lvl = new CategoryLevel(catd,catlvl);
+		return lvl;
+	}
+
+	
+	private int getCategoryLevel(CategoryDao cat) {
+		Long catid = cat.getId();
+		int level = 1;
+
+		// retrieve parent ids until toplevel category is found
+		Long parentid = getParentIdForCat(catid);
+		while (parentid.longValue() > 0) {
+			level++;
+			parentid = getParentIdForCat(parentid);
+		}
+
+		return level;
+	}
+	
+	public void changeCatMembership(Long catId, Long origParent, Long parentId) {
+		// get original category relationship
+		CatRelationshipDao catrel = getCategoryRel(origParent, catId);
+
+		// update category relationship to new
+		catrel.setParentId(parentId);
+
+		// persist changes
+		catRelationRep.save(catrel);
+
+	}
+	
+	public boolean hasCircularReference(Long newParentId, CategoryDao category) {
+		// service of same name
+		boolean hasCircular = false;
+		List<CategoryLevel> allsubcategories = getAllSubcategories(category);
+		if (allsubcategories != null) {
+			for (CategoryLevel catlvl : allsubcategories) {
+				CategoryDao categ = catlvl.getCategory();
+				if (categ.getId().longValue() == newParentId.longValue()) {
+					hasCircular = true;
+				}
+			}
+		}
+
+		return hasCircular;
+	}
+	
+	
+	
+	public void createCategoryRule(String contains, Long catid) {
+		long neworder = 1;
+		// get last order
+		List<CategoryRuleDao> allcats = catRuleRep.findAll(new Sort(Sort.Direction.DESC, "lineorder"));
+		if (allcats!=null) {
+			CategoryRuleDao lastcat = allcats.get(0);
+			if (lastcat != null) {
+				neworder = lastcat.getLineorder().longValue() + 1;
+			}
+		}
+
+		CategoryRuleDao newrule = new CategoryRuleDao();
+		newrule.setContaining(contains);
+		newrule.setCategoryId(catid);
+		newrule.setLineorder(new Long(neworder));
+
+		catRuleRep.save(newrule);
+	}
+
+	public void removeCategoryRule(CategoryRuleDao cat) {
+		// first, save the order of the rule to be removed
+		long oldorder = cat.getLineorder().longValue();
+		// remove the rule
+		catRuleRep.delete(cat.getId());
+		// update the following rules, so there aren't any gaps in the order
+		List<CategoryRuleDao> rules = catRuleRep.findCategoryRulesByOrder(oldorder);
+		if (rules != null && rules.size() > 0) {
+			for (CategoryRuleDao rule : rules) {
+				rule
+						.setLineorder(new Long(
+								rule.getLineorder().longValue() - 1));
+				catRuleRep.save(rule);
+			}
+		}
+	}
+
+	public void updateCategoryRule(Long ruleid, String newcontains,
+			Long newcatid) {
+		// pull category rule
+		CategoryRuleDao rule = catRuleRep.findOne(ruleid);
+
+		// update category rule
+		rule.setContaining(newcontains);
+		rule.setCategoryId(newcatid);
+
+		// persist change
+		catRuleRep.save(rule);
+	}
+
+	public void swapOrder(Long beforeid, Long afterid) {
+		// pull rules
+		CategoryRuleDao beforerule = catRuleRep.findOne(beforeid);
+		CategoryRuleDao afterrule = catRuleRep.findOne(afterid);
+
+		// update rules (swapping order)
+		Long beforeorder = beforerule.getLineorder();
+		beforerule.setLineorder(afterrule.getLineorder());
+		afterrule.setLineorder(beforeorder);
+
+		// persist change
+		catRuleRep.save(beforerule);
+		catRuleRep.save(afterrule);
 	}
 	
 }

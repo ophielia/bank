@@ -21,5 +21,7 @@ public interface CategoryRepository {
 	List<CategoryDao> findDirectSubcategories(@Param("parentid") Long parentid);
 
 	
+
+	
 	
 }

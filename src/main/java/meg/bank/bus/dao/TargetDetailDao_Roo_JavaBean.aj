@@ -4,6 +4,7 @@
 package meg.bank.bus.dao;
 
 import meg.bank.bus.dao.TargetDetailDao;
+import meg.bank.bus.dao.TargetGroupDao;
 
 privileged aspect TargetDetailDao_Roo_JavaBean {
     
@@ -29,6 +30,14 @@ privileged aspect TargetDetailDao_Roo_JavaBean {
     
     public void TargetDetailDao.setAmount(Double amount) {
         this.amount = amount;
+    }
+    
+    public TargetGroupDao TargetDetailDao.getTargetgroup() {
+        return this.targetgroup;
+    }
+    
+    public void TargetDetailDao.setTargetgroup(TargetGroupDao targetgroup) {
+        this.targetgroup = targetgroup;
     }
     
 }
