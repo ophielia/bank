@@ -5,11 +5,15 @@ package meg.util.common.dao;
 
 import java.util.Iterator;
 import java.util.List;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+
+import meg.bank.util.common.db.ColumnValueDao;
 import meg.bank.util.common.repo.ColumnValueRepository;
 import meg.util.common.dao.ColumnValueDaoDataOnDemand;
 import meg.util.common.dao.ColumnValueDaoIntegrationTest;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

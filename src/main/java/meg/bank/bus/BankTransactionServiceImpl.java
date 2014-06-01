@@ -41,7 +41,7 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 	private BankTARepository bankTransRep;
 	
 	@Autowired
-	private CategoryManager cms;
+	private CategoryService cms;
 	
 	@Autowired
 	private SearchService searchService;
@@ -410,7 +410,7 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 	@Override
 	public void assignFromCategories(Long catid, List<BankTADao> transtoadd) {
 		// create TransToCategory
-		CategoryDao cat = cms.getCategory(catid);
+		CategoryDao cat = catRep.findOne(catid);
 		TransToCategory ttc = new TransToCategory(cat, transtoadd);
 	
 		// add to "list"
