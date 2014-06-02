@@ -10,6 +10,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import meg.bank.bus.dao.CategoryDao;
 import meg.bank.bus.dao.ExpenseDao;
@@ -18,6 +19,7 @@ import meg.bank.bus.repo.ExpenseRepository;
 import meg.bank.bus.report.CategorySummaryDisp;
 import meg.bank.bus.ExpenseCriteria;
 
+@Service
 public class SearchServiceImpl implements SearchService {
 
 	@Autowired

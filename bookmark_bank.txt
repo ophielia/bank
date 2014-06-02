@@ -1,22 +1,40 @@
 Bootstrap!
 
-
+	old pages - transactions, edit transaction, category, edit category, 
+	target & target details, category rules, import, category rules
+	new thing - quickgroups
 aggregate puzzle
 
 
-future - change to JPA criteria!!??
+future - change to JPA criteria!!?? (SearchService)
+
+start web scaffolding
+	categoryrule controller / page
+	import should be done quickly
+		
+
+take care of column manager - still Hib
+
+remove dojo script
 
 
-
-
+think about menu.... make second level for categories, rules, targets
+	<li><moo:menulink label="menu_top_menuplans" url="/" />Transactions</li>
+	<li><moo:menulink label="menu_top_menuplans" url="/" />Import</li>
+	<li><moo:menulink label="menu_top_menuplans" url="/" />Maintain Categories</li>
+	<li><moo:menulink label="menu_top_menuplans" url="/" />Monthly Targets</li>
+	<li><moo:menulink label="menu_top_menuplans" url="/" />Yearly Targets</li>
+	<li><moo:menulink label="menu_top_menuplans" url="/" />Maintain Rules</li>
+	<li><moo:menulink label="menu_top_menuplans" url="/" />Assign By Rules</li>
+	<li><moo:menulink label="menu_top_menuplans" url="/" />Reports</li>
+	
+	
 ---- begin commit changes ----
 
-done -  transform CategoryManager - moving through and moving to service - repository....
-done - add relationships - target group and details
-done - SearchService, TargetService into implementations of interface.
-done - compile ready SearchService - remove hibernate from db hits - use scalarDao as model
-done - to be deleted - CategoryManager, CategoryManagerDaos, TransactionManagerDaos
-done - revisit BankTransService - remove old CategoryManager, and use new one.
+	done - webmvc setup
+	done - add hmenu....
+	done - clean up ColumnValues - tests, packages, bad compiles
+
 
 ---- end commit changes ----
 
@@ -32,6 +50,12 @@ done - get into git - github
 done - service / component annotations for BankTransactionService and implementation
 done - BankTransactionService into implementations of interface.
 done - TargetService - migrate...
+done -  transform CategoryManager - moving through and moving to service - repository....
+done - add relationships - target group and details
+done - SearchService, TargetService into implementations of interface.
+done - compile ready SearchService - remove hibernate from db hits - use scalarDao as model
+done - to be deleted - CategoryManager, CategoryManagerDaos, TransactionManagerDaos
+done - revisit BankTransService - remove old CategoryManager, and use new one.
 
 ---- end branch changes ----
 

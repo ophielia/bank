@@ -17,7 +17,7 @@ public interface CategoryRepository {
 	List<CategoryDao> findByDisplayinlistTrue();
 	
 
-	@Query("select r from CategoryDao as r where cat.id in  ( select rel.childId from CatRelationshipDao as rel where rel.parentId = :parentid)")
+	@Query("select r from CategoryDao as r where r.id in  ( select rel.childId from CatRelationshipDao as rel where rel.parentId = :parentid)")
 	List<CategoryDao> findDirectSubcategories(@Param("parentid") Long parentid);
 
 	

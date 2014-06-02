@@ -13,9 +13,9 @@ public interface TargetGroupRepository {
 	
 
 	@Query("select tg from TargetGroupDao as tg where tg.targettype=:targettype and  tg.monthtag = :monthtag")
-	List<TargetGroupDao> findTargetsByTypeAndTag(@Param("targettype") Long targettype,String monthtag);
+	List<TargetGroupDao> findTargetsByTypeAndTag(@Param("targettype") Long targettype,@Param("monthtag")String monthtag);
 
 	
-	@Query("select tg from TargetGroupDao as tgdao where tgdao.isDefault = true and tgdao.targettype = :targettype")
+	@Query("select tgdao from TargetGroupDao as tgdao where tgdao.isdefault = true and tgdao.targettype = :targettype")
 	TargetGroupDao findDefaultGroupByType(@Param("targettype") Long targettype);
 }
