@@ -12,11 +12,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
+import meg.bank.bus.CategoryService;
 import meg.bank.bus.repo.CategoryRepository;
 
 import org.junit.Before;
@@ -41,6 +43,8 @@ import org.springframework.ui.Model;
 
 
 
+
+
 import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -49,7 +53,9 @@ import junit.framework.Assert;
 public class CategoryControllerTest {
 
 	
-
+	@Mock
+	CategoryService catService;
+	
 	@Mock
 	CategoryRepository catRepo;
 
@@ -83,8 +89,11 @@ public class CategoryControllerTest {
     @Test
     public void getCreateForm() throws Exception {
 
-        this.mockMvc.perform(get("/categories?form")
+    	when(catService.getCategoriesAsMap()).thenReturn(new HashMap<Long,String>());
+    	
+        this.mockMvc.perform(get("/categories")
         		.accept(MediaType.TEXT_HTML)
+        		.param("form","form")
         		.header("content-type", "application/x-www-form-urlencoded"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("categories/create"));

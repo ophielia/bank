@@ -50,11 +50,11 @@ public class CategoryController {
 
 		if (bindingResult.hasErrors()) {
 			populateEditForm(uiModel, model);
-			return "categories/list";
+			return "categories/create";
 		}
         uiModel.asMap().clear();
-        CategoryDao cat=categoryService.addCategory( model.getName(),  model.getDescription(), model.getNonexpense());
-        return "redirect:/newbank/categories";
+        CategoryDao cat=categoryService.addCategory( model.getName(),  model.getDescription(), model.getNonexpense(), model.getDisplayinlist());
+        return "redirect:/categories";
         //return "redirect:/categories/" + encodeUrlPathSegment(cat.getId().toString(), httpServletRequest);
     }
     

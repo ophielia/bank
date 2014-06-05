@@ -11,11 +11,9 @@ future - change to JPA criteria!!?? (SearchService)
 start web scaffolding
 	categoryrule controller / page
 		
-		add create category to menu
+
 		test create category page - manually
 		test create category page - in Test
-		need true false - checkboxes for display, and non-expense
-		validation is wired in - needs to be tested / worked out
 		redirect after create should be to edit page - once it's created....
 
 	import should be done quickly
@@ -39,8 +37,11 @@ think about menu.... make second level for categories, rules, targets
 	
 ---- begin commit changes ----
 
-done - input tags works with "short" labels...
 
+		done - add create category to menu
+		test - need true false - checkboxes for display, and non-expense
+		done - validation is wired in - needs to be tested / worked out
+		
 ---- end commit changes ----
 
 ----- begin branch changes ----
@@ -64,7 +65,7 @@ done - revisit BankTransService - remove old CategoryManager, and use new one.
 done - webmvc setup
 done - add hmenu....
 done - clean up ColumnValues - tests, packages, bad compiles
-
+done - input tags works with "short" labels...
 
 
 ---- end branch changes ----

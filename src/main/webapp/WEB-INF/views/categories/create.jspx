@@ -12,14 +12,14 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_category" htmlEscape="false" var="page_title"/>
 <h1><spring:message arguments="${page_title}" code="entity_create" htmlEscape="false" /></h1>
 
-
-    <form:form  id="createcategory" method="POST"  action="/categories" modelAttribute="category">
+<spring:url value="/categories" var="actionurl" />
+    <form:form  id="createcategory" method="POST"  action="${actionurl}" modelAttribute="category">
  <spring:message arguments="category_name" code="field_invalid" var="field_invalid" htmlEscape="false" />       
 
 <field:input field="name" id="c_category_name" required="true" z="user-managed"/>    
 <field:input field="description" id="c_category_description" required="true" z="user-managed"/>    
-<field:input field="nonexpense" id="c_category_nonexp" required="true" z="user-managed"/>    
-<field:input field="displayinlist" id="c_category_display" required="true" z="user-managed"/> 
+<field:checkbox field="nonexpense" id="c_category_nonexp"  z="user-managed"/>    
+<field:checkbox field="displayinlist" id="c_category_display" z="user-managed"/> 
 
           <spring:message code="button_save" var="save_button" htmlEscape="false" />
           <input id="proceed" type="submit" value="${save_button}"/>   
