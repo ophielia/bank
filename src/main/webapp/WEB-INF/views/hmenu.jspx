@@ -9,7 +9,8 @@
 <ul id="nav">
 	<li><moo:menulink label="bank_transactions" url="/" /></li>
 	<li><moo:menulink label="bank_import" url="/" /></li>
-	<li><moo:menulink label="bank_categories" url="/" /></li>
+	<li><moo:menulink label="bank_categories" url="/categories" />
+	</li>
 	<li><moo:menulink label="bank_targets" url="/" /></li>
 	<li><moo:menulink label="bank_rules" url="/" /></li>
 	<li><moo:menulink label="bank_reports" url="/" /></li>

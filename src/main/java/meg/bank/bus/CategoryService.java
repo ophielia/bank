@@ -12,7 +12,7 @@ public interface CategoryService {
 	
 	public abstract List<CategoryDao> getCategories(boolean showall);
 
-	public abstract void addCategory(String name, String description,
+	public abstract CategoryDao addCategory(String name, String description,
 			Boolean nonexpcat);
 
 	public abstract HashMap<Long, String> getCategoriesAsMap();

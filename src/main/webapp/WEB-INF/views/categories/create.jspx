@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:form="http://www.springframework.org/tags/form"
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+<spring:message code="label_category" htmlEscape="false" var="page_title"/>
+<h1><spring:message arguments="${page_title}" code="entity_create" htmlEscape="false" /></h1>
+
+
+    <form:form  id="createcategory" method="POST"  action="/categories" modelAttribute="category">
+ <spring:message arguments="category_name" code="field_invalid" var="field_invalid" htmlEscape="false" />       
+
+<field:input field="name" id="c_category_name" required="true" z="user-managed"/>    
+<field:input field="description" id="c_category_description" required="true" z="user-managed"/>    
+<field:input field="nonexpense" id="c_category_nonexp" required="true" z="user-managed"/>    
+<field:input field="displayinlist" id="c_category_display" required="true" z="user-managed"/> 
+
+          <spring:message code="button_save" var="save_button" htmlEscape="false" />
+          <input id="proceed" type="submit" value="${save_button}"/>   
+</form:form>
+</div>

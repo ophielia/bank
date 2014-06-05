@@ -5,7 +5,7 @@
 
 <tiles-definitions>
 
-  <definition name="index" extends="default">
+<definition name="index" extends="default">
     <put-attribute name="body" value="/WEB-INF/views/index.jspx" />
     <put-attribute name="hmenu" value="/WEB-INF/views/hmenu.jspx" />
   </definition>

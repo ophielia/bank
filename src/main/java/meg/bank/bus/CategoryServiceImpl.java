@@ -44,7 +44,7 @@ public class CategoryServiceImpl implements CategoryService {
 	 * @see meg.bank.bus.CategoryService#addCategory(java.lang.String, java.lang.String, java.lang.Boolean)
 	 */
 	@Override
-	public void addCategory(String name, String description, Boolean nonexpcat) {
+	public CategoryDao addCategory(String name, String description, Boolean nonexpcat) {
 		// default description to name if empty
 		if (description == null)
 			description = name;
@@ -60,6 +60,8 @@ public class CategoryServiceImpl implements CategoryService {
 		catrel.setParentId(new Long(0));
 		catrel.setChildId(cat.getId());
 		catRelationRep.save(catrel);
+		
+		return cat;
 	}
 	
 	/* (non-Javadoc)
