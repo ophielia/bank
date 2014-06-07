@@ -15,11 +15,11 @@ public interface CategoryService {
 	public abstract CategoryDao addCategory(String name, String description,
 			Boolean nonexpcat, 	Boolean display);
 
-	public abstract HashMap<Long, String> getCategoriesAsMap();
+	public abstract HashMap<Long, CategoryDao> getCategoriesAsMap();
 
 	public abstract CatRelationshipDao getCategoryRel(Long parentid,
 			Long childid);
-
+	
 	public abstract List<CategoryLevel> getCategoriesUpToLevel(int level);
 
 	public abstract List<CategoryDao> getDirectSubcategories(Long parentid);
@@ -30,7 +30,7 @@ public interface CategoryService {
 
 	public abstract CategoryLevel getAsCategoryLevel(Long id);
 
-	public abstract void changeCatMembership(Long catId, Long origParent,
+	public abstract CatRelationshipDao changeCatMembership(Long catId, Long origParent,
 			Long parentId);
 
 	public abstract boolean hasCircularReference(Long newParentId,

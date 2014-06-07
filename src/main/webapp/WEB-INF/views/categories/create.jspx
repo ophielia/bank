@@ -21,6 +21,21 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <field:checkbox field="nonexpense" id="c_category_nonexp"  z="user-managed"/>    
 <field:checkbox field="displayinlist" id="c_category_display" z="user-managed"/> 
 
+<hr/>
+
+      <label for="parentcatid">
+<spring:message code="label_category_parentcat" htmlEscape="false"/>
+        :
+      </label>
+
+<form:errors path="parentcatid" />
+<form:select path="parentcatid">
+<form:option value="0" label="--Please Select" />
+<c:forEach items="${category.allcategories}" var="cat">
+<form:option value="${cat.key}" label="${cat.value.name}" />
+</c:forEach>
+<!-- <form:options items="${category.allcategories}" itemValue="id" itemLabel="name" /> -->
+</form:select>
           <spring:message code="button_save" var="save_button" htmlEscape="false" />
           <input id="proceed" type="submit" value="${save_button}"/>   
 </form:form>

@@ -19,7 +19,11 @@ import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import meg.bank.bus.CategoryService;
+import meg.bank.bus.dao.CatRelationshipDao;
+import meg.bank.bus.dao.CategoryDao;
+import meg.bank.bus.dao.CategoryDaoDataOnDemand;
 import meg.bank.bus.repo.CategoryRepository;
+import meg.bank.web.validation.CategoryModelValidator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +49,10 @@ import org.springframework.ui.Model;
 
 
 
+
+
+
+
 import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -52,6 +60,8 @@ import junit.framework.Assert;
 @ContextConfiguration("classpath*:/META-INF/spring/applicationContext*.xml")
 public class CategoryControllerTest {
 
+	@Mock
+	CategoryModelValidator cmv;
 	
 	@Mock
 	CategoryService catService;
@@ -89,7 +99,7 @@ public class CategoryControllerTest {
     @Test
     public void getCreateForm() throws Exception {
 
-    	when(catService.getCategoriesAsMap()).thenReturn(new HashMap<Long,String>());
+    	when(catService.getCategoriesAsMap()).thenReturn(new HashMap<Long,CategoryDao>());
     	
         this.mockMvc.perform(get("/categories")
         		.accept(MediaType.TEXT_HTML)
@@ -98,8 +108,31 @@ public class CategoryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("categories/create"));
 
+ 
     }
 
+    @Test
+    public void createCategory() throws Exception {
+    	CategoryDaoDataOnDemand cdod = new CategoryDaoDataOnDemand();
+    	CategoryDao cat = cdod.getNewTransientCategoryDao(0);
+    	cat.setId(2222L);
+    	
+    	when(catService.getCategoriesAsMap()).thenReturn(new HashMap<Long,CategoryDao>());
+    	when(catService.addCategory("form",	"form", new Boolean(true), new Boolean(true))).thenReturn(cat);
+    	when(catService.changeCatMembership(0L,0L,0L)).thenReturn(new CatRelationshipDao());
+    	
+        this.mockMvc.perform(post("/categories")
+        		.accept(MediaType.TEXT_HTML)
+        		.param("name","form")
+        		.param("description","form")
+        		.param("nonexpense","true")
+        		.param("displayinlist","true")
+        		.param("parentcatid","0")
+        		.header("content-type", "application/x-www-form-urlencoded"))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/categories"));
+
+    }
     
     
 }

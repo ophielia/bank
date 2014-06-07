@@ -10,11 +10,10 @@ future - change to JPA criteria!!?? (SearchService)
 
 start web scaffolding
 	categoryrule controller / page
-		
-
-		test create category page - manually
-		test create category page - in Test
-		redirect after create should be to edit page - once it's created....
+		done - create category page - manually
+		done - test create category page - in Test
+		done - redirect after create should be to list page - once it's created....
+		next - edit category page....
 
 	import should be done quickly
 		

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 
 import meg.bank.bus.CategoryService;
+import meg.bank.bus.dao.CatRelationshipDao;
 import meg.bank.bus.dao.CategoryDao;
 import meg.bank.bus.repo.CategoryRepository;
 import meg.bank.web.model.CategoryModel;
@@ -54,13 +55,19 @@ public class CategoryController {
 		}
         uiModel.asMap().clear();
         CategoryDao cat=categoryService.addCategory( model.getName(),  model.getDescription(), model.getNonexpense(), model.getDisplayinlist());
+
+        if (!model.getParentcatid().equals("0")) {
+            // now, update relationship
+            CatRelationshipDao rel = categoryService.changeCatMembership(cat.getId(), 0L, model.getParentcatid());
+        }
+        
         return "redirect:/categories";
         //return "redirect:/categories/" + encodeUrlPathSegment(cat.getId().toString(), httpServletRequest);
     }
     
     @RequestMapping(params = "form",method = RequestMethod.GET, produces = "text/html")
     public String createForm(Model uiModel) {
-    	HashMap<Long,String> allcats = categoryService.getCategoriesAsMap();
+    	HashMap<Long,CategoryDao> allcats = categoryService.getCategoriesAsMap();
     	CategoryModel newmodel = new CategoryModel(new CategoryDao(),allcats);
         populateEditForm(uiModel, newmodel);
         return "categories/create";

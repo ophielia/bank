@@ -15,7 +15,7 @@ public class CategoryModel {
 
 	private CategoryDao category;
 	
-	private HashMap<Long, String> allcategories;
+	private HashMap<Long, CategoryDao> allcategories;
 
 	public CategoryModel() {
 		this.category = new CategoryDao();
@@ -23,7 +23,7 @@ public class CategoryModel {
 		
 	}
 	
-	public CategoryModel(CategoryDao categoryDao, HashMap<Long, String> allcats) {
+	public CategoryModel(CategoryDao categoryDao, HashMap<Long, CategoryDao> allcats) {
 		this.category = categoryDao;
 		this.allcategories = allcats;
 	}
@@ -84,11 +84,11 @@ public class CategoryModel {
 		this.category = category;
 	}
 
-	public HashMap<Long, String> getAllcategories() {
+	public HashMap<Long, CategoryDao> getAllcategories() {
 		return allcategories;
 	}
 
-	public void setAllcategories(HashMap<Long, String> allcategories) {
+	public void setAllcategories(HashMap<Long, CategoryDao> allcategories) {
 		this.allcategories = allcategories;
 	}
 	

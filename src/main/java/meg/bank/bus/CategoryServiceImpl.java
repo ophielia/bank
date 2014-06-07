@@ -69,12 +69,12 @@ public class CategoryServiceImpl implements CategoryService {
 	 * @see meg.bank.bus.CategoryService#getCategoriesAsMap()
 	 */
 	@Override
-	public HashMap<Long, String> getCategoriesAsMap() {
-		HashMap<Long, String> hash = new HashMap<Long, String>();
+	public HashMap<Long, CategoryDao> getCategoriesAsMap() {
+		HashMap<Long, CategoryDao> hash = new HashMap<Long, CategoryDao>();
 		List<CategoryDao> categories = getCategories(false);
 		for (Iterator<CategoryDao> iter = categories.iterator(); iter.hasNext();) {
 			CategoryDao cat = iter.next();
-			hash.put(cat.getId(), cat.getName());
+			hash.put(cat.getId(), cat);
 		}
 		return hash;
 	}
@@ -206,7 +206,7 @@ public class CategoryServiceImpl implements CategoryService {
 	 * @see meg.bank.bus.CategoryService#changeCatMembership(java.lang.Long, java.lang.Long, java.lang.Long)
 	 */
 	@Override
-	public void changeCatMembership(Long catId, Long origParent, Long parentId) {
+	public CatRelationshipDao changeCatMembership(Long catId, Long origParent, Long parentId) {
 		// get original category relationship
 		CatRelationshipDao catrel = getCategoryRel(origParent, catId);
 
@@ -215,7 +215,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 		// persist changes
 		catRelationRep.save(catrel);
-
+		return catrel;
 	}
 	
 	/* (non-Javadoc)
