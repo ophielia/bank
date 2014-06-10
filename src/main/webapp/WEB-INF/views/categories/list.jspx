@@ -24,6 +24,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		<th><c:out value="${description}"/></th>
 		<th><c:out value="${nonexpense}"/></th>
 		<th><c:out value="${displayinlist}"/></th>
+		<th></th>
     </tr>
     <c:forEach var="cat" items="${catList}" varStatus="status">
         <tr>
@@ -31,6 +32,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	        <td>${cat.description}</td>
 	        <td>${cat.nonexpense}</td>
 	        <td>${cat.displayinlist}</td>
+	        <td><spring:url value="/categories/edit/${cat.id}?form" var="editlink"></spring:url>
+	        <a href="${editlink}">Edit</a>
+	        </td>
         </tr>
     </c:forEach>
     </table>

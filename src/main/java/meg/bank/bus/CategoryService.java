@@ -30,7 +30,7 @@ public interface CategoryService {
 
 	public abstract CategoryLevel getAsCategoryLevel(Long id);
 
-	public abstract CatRelationshipDao changeCatMembership(Long catId, Long origParent,
+	public abstract CatRelationshipDao changeCatMembership(Long catId, 
 			Long parentId);
 
 	public abstract boolean hasCircularReference(Long newParentId,
@@ -44,5 +44,7 @@ public interface CategoryService {
 			Long newcatid);
 
 	public abstract void swapOrder(Long beforeid, Long afterid);
+
+	public abstract CategoryDao updateCategory(CategoryDao category);
 
 }

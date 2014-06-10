@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_meg_bank_bus_dao_CategoryRuleDao" object="${categoryruledao}" path="/categoryrule" z="5xBnoCGZQF63poEvVovRn4b55g4=">
+        <field:display field="lineorder" id="s_meg_bank_bus_dao_CategoryRuleDao_lineorder" object="${categoryruledao}" z="oi57AVyjmCLZQIFy//HsDfRa5lU="/>
+        <field:display field="containing" id="s_meg_bank_bus_dao_CategoryRuleDao_containing" object="${categoryruledao}" z="Prr67YqiNTWwX8V+Z1sslQ2K6xo="/>
+        <field:display field="categoryId" id="s_meg_bank_bus_dao_CategoryRuleDao_categoryId" object="${categoryruledao}" z="UNu6oyxppOpzu8EoTK3aVlnW8OQ="/>
+    </page:show>
+</div>

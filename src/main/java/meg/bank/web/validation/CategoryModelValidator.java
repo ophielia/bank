@@ -42,6 +42,12 @@ public class CategoryModelValidator implements Validator {
 			errors.rejectValue(cv.getPropertyPath().toString(),
 					cv.getMessageTemplate());
 		}
+		
+		// check circular references
+		boolean hascircular = categoryService.hasCircularReference(model.getParentcatid(), model.getCategory());
+		if (hascircular) {
+			errors.rejectValue("parentcatid", "error_circularref","doesn't work");
+		}
 	}
 
 }

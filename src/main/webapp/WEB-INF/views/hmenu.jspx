@@ -13,6 +13,9 @@
 		<ul>
 			<li><moo:menulink label="bank_categories" url="/categories" /></li>
 			<li><moo:menulink label="bank_categories_new" url="/categories?form" /></li>
+			<li><menu:item id="i_categoryruledao_list" messageCode="global_menu_list" url="/categoryrule" /></li>
+			<li><menu:item id="i_categoryruledao_list" messageCode="global_menu_list" url="/categoryrule" /></li>
+			
 		</ul>
 	</li>
 	<li><moo:menulink label="bank_targets" url="/" /></li>

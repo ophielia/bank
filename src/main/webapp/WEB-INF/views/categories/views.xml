@@ -11,4 +11,9 @@
   <definition extends="default" name="categories/create">
         <put-attribute name="body" value="/WEB-INF/views/categories/create.jspx"/>
     </definition>
+
+  <definition extends="default" name="categories/edit">
+        <put-attribute name="body" value="/WEB-INF/views/categories/edit.jspx"/>
+    </definition>
+
 </tiles-definitions>

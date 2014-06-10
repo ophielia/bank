@@ -119,7 +119,7 @@ public class CategoryControllerTest {
     	
     	when(catService.getCategoriesAsMap()).thenReturn(new HashMap<Long,CategoryDao>());
     	when(catService.addCategory("form",	"form", new Boolean(true), new Boolean(true))).thenReturn(cat);
-    	when(catService.changeCatMembership(0L,0L,0L)).thenReturn(new CatRelationshipDao());
+    	when(catService.changeCatMembership(0L,0L)).thenReturn(new CatRelationshipDao());
     	
         this.mockMvc.perform(post("/categories")
         		.accept(MediaType.TEXT_HTML)
@@ -134,5 +134,43 @@ public class CategoryControllerTest {
 
     }
     
-    
+    @Test
+    public void getEditForm() throws Exception {
+    	 
+    	
+    	when(catService.getCategoriesAsMap()).thenReturn(new HashMap<Long,CategoryDao>());
+    	when(catRepo.findOne(12345L)).thenReturn(new CategoryDao());
+    	
+        this.mockMvc.perform(get("/categories/edit/{id}",12345L)
+        		.accept(MediaType.TEXT_HTML)
+        		.param("form","form")
+        		.header("content-type", "application/x-www-form-urlencoded"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("categories/edit"));
+
+ 
+    }
+
+    @Test
+    public void editCategory() throws Exception {
+    	CategoryDaoDataOnDemand cdod = new CategoryDaoDataOnDemand();
+    	CategoryDao cat = cdod.getNewTransientCategoryDao(0);
+    	cat.setId(2222L);
+    	
+    	when(catService.getCategoriesAsMap()).thenReturn(new HashMap<Long,CategoryDao>());
+    	when(catService.addCategory("form",	"form", new Boolean(true), new Boolean(true))).thenReturn(cat);
+    	when(catService.changeCatMembership(0L,0L)).thenReturn(new CatRelationshipDao());
+    	
+        this.mockMvc.perform(put("/categories")
+        		.accept(MediaType.TEXT_HTML)
+        		.param("name","form")
+        		.param("description","form")
+        		.param("nonexpense","true")
+        		.param("displayinlist","true")
+        		.param("parentcatid","0")
+        		.header("content-type", "application/x-www-form-urlencoded"))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/categories"));
+
+    }    
 }

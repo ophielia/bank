@@ -10,10 +10,7 @@ future - change to JPA criteria!!?? (SearchService)
 
 start web scaffolding
 	categoryrule controller / page
-		done - create category page - manually
-		done - test create category page - in Test
-		done - redirect after create should be to list page - once it's created....
-		next - edit category page....
+			
 
 	import should be done quickly
 		
@@ -36,10 +33,16 @@ think about menu.... make second level for categories, rules, targets
 	
 ---- begin commit changes ----
 
+done - validation for parent category id!! (really - in create??) circular possible??
+done -  change model attribute from category to categorymodel (should fix errors)
+done -  investigate why changes aren't shown on error edit page....
+done - scaffold category rules...web mvc scaffold --class ~.web.security.SecurityController --backingType ~.model.security.Account --path /security/users
+done - create category page - manually
+done - test create category page - in Test
+done - redirect after create should be to list page - once it's created....
+done - edit category page....
+done - linked from category list to edit
 
-		done - add create category to menu
-		test - need true false - checkboxes for display, and non-expense
-		done - validation is wired in - needs to be tested / worked out
 		
 ---- end commit changes ----
 
@@ -65,6 +68,9 @@ done - webmvc setup
 done - add hmenu....
 done - clean up ColumnValues - tests, packages, bad compiles
 done - input tags works with "short" labels...
+done - add create category to menu
+done - need true false - checkboxes for display, and non-expense
+done - validation is wired in - needs to be tested / worked out
 
 
 ---- end branch changes ----

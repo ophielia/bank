@@ -206,9 +206,9 @@ public class CategoryServiceImpl implements CategoryService {
 	 * @see meg.bank.bus.CategoryService#changeCatMembership(java.lang.Long, java.lang.Long, java.lang.Long)
 	 */
 	@Override
-	public CatRelationshipDao changeCatMembership(Long catId, Long origParent, Long parentId) {
+	public CatRelationshipDao changeCatMembership(Long catId, Long parentId) {
 		// get original category relationship
-		CatRelationshipDao catrel = getCategoryRel(origParent, catId);
+		CatRelationshipDao catrel =catRelationRep.findByChild(catId); 
 
 		// update category relationship to new
 		catrel.setParentId(parentId);
@@ -318,6 +318,20 @@ public class CategoryServiceImpl implements CategoryService {
 		// persist change
 		catRuleRep.save(beforerule);
 		catRuleRep.save(afterrule);
+	}
+
+	@Override
+	public CategoryDao updateCategory(CategoryDao toupdate) {
+		CategoryDao cat = catRepository.findOne(toupdate.getId());
+		if (cat!=null) {
+			cat.setName(toupdate.getName());
+			cat.setDescription(toupdate.getDescription());
+			cat.setNonexpense(toupdate.getNonexpense());
+			cat.setDisplayinlist(toupdate.getDisplayinlist());
+			catRepository.save(cat);
+			return cat;
+		}
+		return toupdate;
 	}
 	
 }

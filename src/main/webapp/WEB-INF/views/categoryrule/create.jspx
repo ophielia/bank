@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:create id="fc_meg_bank_bus_dao_CategoryRuleDao" modelAttribute="categoryRuleDao" path="/categoryrule" render="${empty dependencies}" z="QPaJwarLT3V4C236f8VX3X2ukj0=">
+        <field:input field="lineorder" id="c_meg_bank_bus_dao_CategoryRuleDao_lineorder" validationMessageCode="field_invalid_integer" z="KeXB2cvclXhTHxpAKAfjx6okT2U="/>
+        <field:input field="containing" id="c_meg_bank_bus_dao_CategoryRuleDao_containing" required="true" z="8EZAmeKQa++S3D/n3TEsuYPxe1E="/>
+        <field:input field="categoryId" id="c_meg_bank_bus_dao_CategoryRuleDao_categoryId" required="true" validationMessageCode="field_invalid_integer" z="eQy5awifsNiUlvtx8pADgv4tTwI="/>
+    </form:create>
+    <form:dependency dependencies="${dependencies}" id="d_meg_bank_bus_dao_CategoryRuleDao" render="${not empty dependencies}" z="8XFskcWSY1aO/qyNEvbYQF6X5AM="/>
+</div>

@@ -2,6 +2,7 @@ package meg.bank.web;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,13 +17,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 
 @RequestMapping("/categories")
+@SessionAttributes("categoryModel")
 @Controller
 public class CategoryController {
 
@@ -58,7 +62,7 @@ public class CategoryController {
 
         if (!model.getParentcatid().equals("0")) {
             // now, update relationship
-            CatRelationshipDao rel = categoryService.changeCatMembership(cat.getId(), 0L, model.getParentcatid());
+            CatRelationshipDao rel = categoryService.changeCatMembership(cat.getId(),  model.getParentcatid());
         }
         
         return "redirect:/categories";
@@ -73,8 +77,46 @@ public class CategoryController {
         return "categories/create";
     }
     
+
+    @RequestMapping(value="/edit/{id}", method = RequestMethod.PUT, produces = "text/html")
+    public String edit(@PathVariable("id") Long id,CategoryModel model,  Model uiModel,BindingResult bindingResult, HttpServletRequest httpServletRequest) {
+    	catValidator.validate(model, bindingResult);
+
+		if (bindingResult.hasErrors()) {
+//			populateEditForm(uiModel, model);
+			return "categories/edit";
+		}
+        uiModel.asMap().clear();
+        CategoryDao cat=categoryService.updateCategory(model.getCategory());
+
+            // now, update relationship
+            CatRelationshipDao rel = categoryService.changeCatMembership(cat.getId(), model.getParentcatid());
+        
+        return "redirect:/categories";
+        //return "redirect:/categories/" + encodeUrlPathSegment(cat.getId().toString(), httpServletRequest);
+    }
+    
+
+    
+    
+    @RequestMapping(params = "form",value = "/edit/{id}",method = RequestMethod.GET, produces = "text/html")
+    public String createEditForm(@PathVariable("id") Long id,Model uiModel) {
+    	HashMap<Long,CategoryDao> allcats = categoryService.getCategoriesAsMap();
+    	CategoryDao cat = catRepo.findOne(id);
+    	if (cat!=null) {
+        	CategoryModel newmodel = new CategoryModel(cat,allcats);
+        	List<CategoryDao> list = categoryService.getDirectSubcategories(cat.getId());
+        	newmodel.setSubcategories(list);
+
+            populateEditForm(uiModel, newmodel);
+            return "categories/edit";
+    		
+    	}
+    	return "redirect:/categories";
+    }
+    
     void populateEditForm(Model uiModel, CategoryModel model) {
-        uiModel.addAttribute("category", model);
+        uiModel.addAttribute("categoryModel", model);
     }    
     
     String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

@@ -9,6 +9,7 @@ public class CategoryModel {
 
 
 
+
 	private Long parentcatid;
 
 	private List<CategoryDao> subcategories;
@@ -26,6 +27,16 @@ public class CategoryModel {
 	public CategoryModel(CategoryDao categoryDao, HashMap<Long, CategoryDao> allcats) {
 		this.category = categoryDao;
 		this.allcategories = allcats;
+	}
+
+	
+	
+	public Long getId() {
+		return getCategory().getId();
+	}
+
+	public void setId(Long id) {
+		getCategory().setId(id);
 	}
 
 	public String getName() {
