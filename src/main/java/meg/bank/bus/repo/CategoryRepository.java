@@ -1,10 +1,8 @@
 package meg.bank.bus.repo;
 import java.util.List;
 
-import meg.bank.bus.dao.BankTADao;
 import meg.bank.bus.dao.CategoryDao;
 
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.roo.addon.layers.repository.jpa.RooJpaRepository;

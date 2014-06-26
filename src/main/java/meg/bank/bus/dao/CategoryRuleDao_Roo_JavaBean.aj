@@ -31,4 +31,12 @@ privileged aspect CategoryRuleDao_Roo_JavaBean {
         this.categoryId = categoryId;
     }
     
+    public String CategoryRuleDao.getCatDisplay() {
+        return this.catDisplay;
+    }
+    
+    public void CategoryRuleDao.setCatDisplay(String catDisplay) {
+        this.catDisplay = catDisplay;
+    }
+    
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_meg_bank_bus_dao_MediaUploadDao" items="${mediauploaddaos}" z="ypLCCn0NUzMcucACC1hOawcdHY0=">
+        <table:table data="${mediauploaddaos}" id="l_meg_bank_bus_dao_MediaUploadDao" path="/import" z="MNBZSOfv23VxpBCv1zJM94ONfjs=">
+            <table:column id="c_meg_bank_bus_dao_MediaUploadDao_filepath" property="filepath" z="vPhBntunSzX3A/SGevB4RLjzXt8="/>
+            <table:column id="c_meg_bank_bus_dao_MediaUploadDao_contentType" property="contentType" z="aFl6BvuDXg9OWgNM153cL5/nAdM="/>
+            <table:column id="c_meg_bank_bus_dao_MediaUploadDao_importClient" property="importClient" z="JTQodMmMOj8IDj9KDpDEOBS+yL4="/>
+            <table:column id="c_meg_bank_bus_dao_MediaUploadDao_content" property="content" z="VQohP9DiZdVAi9wGvaCLfcH/gfE="/>
+        </table:table>
+    </page:list>
+</div>

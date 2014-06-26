@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <spring:url value="/categoryrule?form" var="newlink"/>
+    <spring:message code="bank_rules" var="rule"/>
+    <spring:message arguments="${rule}" code="entity_create" var="linktitle"/>
+    <spring:message arguments="${rule}" code="entity_list_all" var="title"/>
+    <h1>${title}</h1>
+    <a href="${newlink}">${linktitle}</a>
+
+<spring:message code="label_meg_bank_bus_dao_categoryruledao_containing" htmlEscape="false" var="containing"/>    
+<spring:message code="label_meg_bank_bus_dao_categoryruledao_catdisplay" htmlEscape="false" var="category"/>    
+    
+<table id="reviewedtable">
+    <tr>
+		<th></th>
+		<th><c:out value="${containing}"/></th>
+		<th><c:out value="${category}"/></th>
+		<th></th>
+		<th></th>
+    </tr>
+    <c:forEach var="cat" items="${categoryruledaos}" varStatus="status">
+        <tr>
+            <td><c:if test="${not status.first}" >Move Up</c:if></td>
+	        <td>${cat.containing}</td>
+	        <td>${cat.catDisplay}</td>
+	        <td><spring:url value="/categoryrule/edit/${cat.id}?form" var="editlink"></spring:url>
+	        <a href="${editlink}">Edit</a>
+	       			<td>Edit   Delete</td>
+	        </td>
+        </tr>
+    </c:forEach>
+    </table>    
+</div>

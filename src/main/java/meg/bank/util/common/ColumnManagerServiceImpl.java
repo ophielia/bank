@@ -4,18 +4,24 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
-import meg.bank.util.common.db.ColumnKeyDao;
 import meg.bank.util.common.db.ColumnValueDao;
-import meg.bank.util.common.repo.ColumnValueManagerDao;
+import meg.bank.util.common.repo.ColumnValueRepository;
 
-public class ColumnValueManager {
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-	private ColumnValueManagerDao cvmd;
+@Service
+public class ColumnManagerServiceImpl implements ColumnManagerService {
 
+	@Autowired
+	private ColumnValueRepository cvmd;
+
+	@Override
 	public Hashtable getColumnHash(String lookup) {
 		return getColumnHash(lookup, true);
 	}
 
+	@Override
 	public Hashtable getColumnHash(String lookup, boolean displayonly) {
 		Hashtable hash = new Hashtable();
 		// retrieve all displays for lookup
@@ -30,16 +36,16 @@ public class ColumnValueManager {
 		return hash;
 	}
 
-	public List getColumnValueList(String lookup) {
+	@Override
+	public List<ColumnValueDao> getColumnValueList(String lookup) {
 		return getColumnValueList(lookup, true);
 	}
 
-	public List getColumnValueList(String lookup, boolean displayonly) {
+	@Override
+	public List<ColumnValueDao> getColumnValueList(String lookup, boolean displayonly) {
 		// retrieve all displays for lookup
-		return cvmd.getColumnValuesForKey(lookup, displayonly);
+		return cvmd.getColumnValuesForKey( lookup,displayonly);
 	}
 	
-	public void setColumnValueManagerDao(ColumnValueManagerDao cvmd) {
-		this.cvmd = cvmd;
-	}
+
 }

@@ -35,7 +35,7 @@ public class ImportManager {
 	@Autowired
 	BankTransactionService bankTrans;
 
-	private String archivedir;
+	private String archivedir="C:/Users/Margaret/bankfiles/";
 
 	public final class ImportClient {
 		public final static int SocGen = 1;

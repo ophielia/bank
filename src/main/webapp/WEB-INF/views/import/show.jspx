@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_meg_bank_bus_dao_MediaUploadDao" object="${mediauploaddao}" path="/import" z="kxSxbVap0BNPw1HEyt9b8g+6mYI=">
+        <field:display field="filepath" id="s_meg_bank_bus_dao_MediaUploadDao_filepath" object="${mediauploaddao}" z="sAngQoWPU7NCfHVTKPM0pZ2QUEs="/>
+        <field:display field="contentType" id="s_meg_bank_bus_dao_MediaUploadDao_contentType" object="${mediauploaddao}" z="Yea9YIz96g0o6t3xa8gWfCYMYCM="/>
+        <field:display field="importClient" id="s_meg_bank_bus_dao_MediaUploadDao_importClient" object="${mediauploaddao}" z="dB9pL6H1TDwZmJM2w5GR7iybM+A="/>
+        <field:display field="content" id="s_meg_bank_bus_dao_MediaUploadDao_content" object="${mediauploaddao}" z="WQzxs6Gv9dt3d1Wq25FLDtFkMRo="/>
+    </page:show>
+</div>

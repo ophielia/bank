@@ -8,18 +8,19 @@ import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooToString
-@RooJpaEntity(table = "CATEGORYRULE")
-public class CategoryRuleDao {
+@RooJpaEntity(table = "MediaUpload")
+public class MediaUploadDao {
 	
-	private Long lineorder;
-
-	@NotNull
-	private String containing;
+	private String filepath;
 	
 	@NotNull
-	private Long categoryId;
+	private String contentType;
 	
-
+	@NotNull
+	private Integer importClient;
+	
+	
 	@Transient
-	private String catDisplay;
+	private byte[] content;
+	
 }

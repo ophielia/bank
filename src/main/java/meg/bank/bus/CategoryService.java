@@ -17,6 +17,8 @@ public interface CategoryService {
 
 	public abstract HashMap<Long, CategoryDao> getCategoriesAsMap();
 
+	public abstract HashMap<Long, CategoryDao> getCategoriesAsMap(boolean exclNonDisp);
+	
 	public abstract CatRelationshipDao getCategoryRel(Long parentid,
 			Long childid);
 	
@@ -36,7 +38,7 @@ public interface CategoryService {
 	public abstract boolean hasCircularReference(Long newParentId,
 			CategoryDao category);
 
-	public abstract void createCategoryRule(String contains, Long catid);
+	public abstract void createOrUpdCategoryRule(CategoryRuleDao catRule);
 
 	public abstract void removeCategoryRule(CategoryRuleDao cat);
 

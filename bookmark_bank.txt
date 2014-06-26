@@ -9,10 +9,14 @@ aggregate puzzle
 future - change to JPA criteria!!?? (SearchService)
 
 start web scaffolding
-	categoryrule controller / page
-			
+		add move up functionality
 
-	import should be done quickly
+Run test on CategoryServiceTest		
+				
+	next up - TargetGroup
+		go ahead and make a model....
+		
+	import started
 		
 
 check / take care of column manager - still Hib
@@ -42,6 +46,13 @@ done - test create category page - in Test
 done - redirect after create should be to list page - once it's created....
 done - edit category page....
 done - linked from category list to edit
+done categoryrule controller / page
+done - 	change name in menu (no Dao) and move to rules section.
+done - 	add link to new on list page
+done - 	add transient field display to CategoryRuleDao
+done - 	fill in controller / (new) services method
+done - remove filemove from controller
+done - make sure is working with SocGenHelper....
 
 		
 ---- end commit changes ----

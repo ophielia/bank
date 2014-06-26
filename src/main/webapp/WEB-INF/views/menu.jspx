@@ -7,5 +7,9 @@
             <menu:item id="i_categoryruledao_new" messageCode="global_menu_new" url="/categoryrule?form" z="ohq2Pzhvq8ijJm/kJKEzpTQMCiI="/>
             <menu:item id="i_categoryruledao_list" messageCode="global_menu_list" url="/categoryrule?page=1&amp;size=${empty param.size ? 10 : param.size}" z="mBR1/gYAUXmp5NqByJBVPhcvYGQ="/>
         </menu:category>
+        <menu:category id="c_mediauploaddao" z="mUIi40IUt8+1iUh2ikd+zR275B0=">
+            <menu:item id="i_mediauploaddao_new" messageCode="global_menu_new" url="/import?form" z="152rH0ylwgDzB03bbLQlGecW4Co="/>
+            <menu:item id="i_mediauploaddao_list" messageCode="global_menu_list" url="/import?page=1&amp;size=${empty param.size ? 10 : param.size}" z="E7im0ROZiZPxUNGxj1IcF+WTJ4w="/>
+        </menu:category>
     </menu:menu>
 </div>

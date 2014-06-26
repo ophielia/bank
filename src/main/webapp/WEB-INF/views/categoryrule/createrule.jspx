@@ -23,11 +23,4 @@
         <spring:message code="button_save" htmlEscape="false" var="save_button"/>
         <input id="proceed" type="submit" value="${save_button}"/>
     </form:form>
-    <form:create id="fc_meg_bank_bus_dao_CategoryRuleDao" modelAttribute="categoryRuleDao" path="/categoryrule" render="${empty dependencies}" z="QPaJwarLT3V4C236f8VX3X2ukj0=">
-        <field:input field="lineorder" id="c_meg_bank_bus_dao_CategoryRuleDao_lineorder" validationMessageCode="field_invalid_integer" z="KeXB2cvclXhTHxpAKAfjx6okT2U="/>
-        <field:input field="containing" id="c_meg_bank_bus_dao_CategoryRuleDao_containing" required="true" z="8EZAmeKQa++S3D/n3TEsuYPxe1E="/>
-        <field:input field="categoryId" id="c_meg_bank_bus_dao_CategoryRuleDao_categoryId" required="true" validationMessageCode="field_invalid_integer" z="eQy5awifsNiUlvtx8pADgv4tTwI="/>
-        <field:input field="catDisplay" id="c_meg_bank_bus_dao_CategoryRuleDao_catDisplay" z="5sy1s9D8u6wZ0O/3486lXyuBlcE="/>
-    </form:create>
-    <form:dependency dependencies="${dependencies}" id="d_meg_bank_bus_dao_CategoryRuleDao" render="${not empty dependencies}" z="8XFskcWSY1aO/qyNEvbYQF6X5AM="/>
 </div>

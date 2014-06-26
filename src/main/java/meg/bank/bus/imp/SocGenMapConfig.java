@@ -36,14 +36,14 @@ public class SocGenMapConfig implements MapConfig {
 
 		map = new FieldMapping();
 		map.setFromFieldTag("field2");
-		map.setSetterMethod("setDesc");
+		map.setSetterMethod("setDescription");
 		mappings.add(map);
 
 		return mappings;
 	}
 
 	public String getHelperClassName() {
-		return "meg.bank.bus.SocGenMappingHelper";
+		return "meg.bank.bus.imp.SocGenMappingHelper";
 	}
 
 }

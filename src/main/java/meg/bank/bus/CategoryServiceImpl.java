@@ -70,14 +70,19 @@ public class CategoryServiceImpl implements CategoryService {
 	 */
 	@Override
 	public HashMap<Long, CategoryDao> getCategoriesAsMap() {
+		return getCategoriesAsMap(false);
+	}
+	
+	@Override
+	public HashMap<Long, CategoryDao> getCategoriesAsMap(boolean exclNonDisp) {
+		boolean showNonDisp = !exclNonDisp;
 		HashMap<Long, CategoryDao> hash = new HashMap<Long, CategoryDao>();
-		List<CategoryDao> categories = getCategories(false);
-		for (Iterator<CategoryDao> iter = categories.iterator(); iter.hasNext();) {
-			CategoryDao cat = iter.next();
+		List<CategoryDao> categories = getCategories(showNonDisp);
+		for (CategoryDao cat:categories) {
 			hash.put(cat.getId(), cat);
 		}
 		return hash;
-	}
+	}	
 	
 	/* (non-Javadoc)
 	 * @see meg.bank.bus.CategoryService#getCategoryRel(java.lang.Long, java.lang.Long)
@@ -244,22 +249,20 @@ public class CategoryServiceImpl implements CategoryService {
 	 * @see meg.bank.bus.CategoryService#createCategoryRule(java.lang.String, java.lang.Long)
 	 */
 	@Override
-	public void createCategoryRule(String contains, Long catid) {
-		long neworder = 1;
-		// get last order
-		List<CategoryRuleDao> allcats = catRuleRep.findAll(new Sort(Sort.Direction.DESC, "lineorder"));
-		if (allcats!=null) {
-			CategoryRuleDao lastcat = allcats.get(0);
-			if (lastcat != null) {
-				neworder = lastcat.getLineorder().longValue() + 1;
+	public void createOrUpdCategoryRule(CategoryRuleDao newrule) {
+		if (newrule.getId()==null ) {
+			long neworder = 1;
+			// get last order
+			List<CategoryRuleDao> allcats = catRuleRep.findAll(new Sort(Sort.Direction.DESC, "lineorder"));
+			if (allcats!=null && allcats.size()>0) {
+				CategoryRuleDao lastcat = allcats.get(0);
+				if (lastcat != null) {
+					neworder = lastcat.getLineorder().longValue() + 1;
+				}
 			}
+
+			newrule.setLineorder(new Long(neworder));
 		}
-
-		CategoryRuleDao newrule = new CategoryRuleDao();
-		newrule.setContaining(contains);
-		newrule.setCategoryId(catid);
-		newrule.setLineorder(new Long(neworder));
-
 		catRuleRep.save(newrule);
 	}
 
