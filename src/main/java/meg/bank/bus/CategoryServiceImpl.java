@@ -249,7 +249,7 @@ public class CategoryServiceImpl implements CategoryService {
 	 * @see meg.bank.bus.CategoryService#createCategoryRule(java.lang.String, java.lang.Long)
 	 */
 	@Override
-	public void createOrUpdCategoryRule(CategoryRuleDao newrule) {
+	public CategoryRuleDao createOrUpdCategoryRule(CategoryRuleDao newrule) {
 		if (newrule.getId()==null ) {
 			long neworder = 1;
 			// get last order
@@ -263,30 +263,37 @@ public class CategoryServiceImpl implements CategoryService {
 
 			newrule.setLineorder(new Long(neworder));
 		}
-		catRuleRep.save(newrule);
+		catRuleRep.saveAndFlush(newrule);
+		return newrule;
 	}
 
 	/* (non-Javadoc)
 	 * @see meg.bank.bus.CategoryService#removeCategoryRule(meg.bank.bus.dao.CategoryRuleDao)
 	 */
 	@Override
-	public void removeCategoryRule(CategoryRuleDao cat) {
-		// first, save the order of the rule to be removed
-		long oldorder = cat.getLineorder().longValue();
-		// remove the rule
-		catRuleRep.delete(cat.getId());
-		// update the following rules, so there aren't any gaps in the order
-		List<CategoryRuleDao> rules = catRuleRep.findCategoryRulesByOrder(oldorder);
-		if (rules != null && rules.size() > 0) {
-			for (CategoryRuleDao rule : rules) {
-				rule
-						.setLineorder(new Long(
-								rule.getLineorder().longValue() - 1));
-				catRuleRep.save(rule);
+	public void removeCategoryRule(Long ruleid) {
+		// get CategoryRule
+		CategoryRuleDao categoryrule = catRuleRep.findOne(ruleid);
+		
+		if (categoryrule!=null) {
+			// first, save the order of the rule to be removed
+			long oldorder = categoryrule.getLineorder().longValue();
+			// remove the rule
+			catRuleRep.delete(categoryrule.getId());
+			// update the following rules, so there aren't any gaps in the order
+			List<CategoryRuleDao> rules = catRuleRep.findCategoryRulesGreaterThanOrder(oldorder);
+			if (rules != null && rules.size() > 0) {
+				for (CategoryRuleDao rule : rules) {
+					rule
+							.setLineorder(new Long(
+									rule.getLineorder().longValue() - 1));
+					catRuleRep.save(rule);
+				}
 			}
 		}
 	}
 
+	
 	/* (non-Javadoc)
 	 * @see meg.bank.bus.CategoryService#updateCategoryRule(java.lang.Long, java.lang.String, java.lang.Long)
 	 */
@@ -308,19 +315,28 @@ public class CategoryServiceImpl implements CategoryService {
 	 * @see meg.bank.bus.CategoryService#swapOrder(java.lang.Long, java.lang.Long)
 	 */
 	@Override
-	public void swapOrder(Long beforeid, Long afterid) {
+	public void moveRuleUp(Long moveupid) {
 		// pull rules
-		CategoryRuleDao beforerule = catRuleRep.findOne(beforeid);
-		CategoryRuleDao afterrule = catRuleRep.findOne(afterid);
+		CategoryRuleDao afterruls = catRuleRep.findOne(moveupid);
+		Long lineorder = afterruls.getLineorder();
+		
+		if (lineorder.longValue() >1) {
+			List<CategoryRuleDao> beforerules = catRuleRep.findCategoryRulesByOrder(lineorder-1);
+			if (beforerules!=null && beforerules.size()>0) {
+				// get before rule
+				CategoryRuleDao before = beforerules.get(0);
+				// assign lineorder to beforerule
+				before.setLineorder(lineorder);
+				// set afterrule to lineorder minus 1
+				afterruls.setLineorder(lineorder-1);
+				
+				// persist changes
+				createOrUpdCategoryRule(before);
+				createOrUpdCategoryRule(afterruls);
+			}
+			
+		}
 
-		// update rules (swapping order)
-		Long beforeorder = beforerule.getLineorder();
-		beforerule.setLineorder(afterrule.getLineorder());
-		afterrule.setLineorder(beforeorder);
-
-		// persist change
-		catRuleRep.save(beforerule);
-		catRuleRep.save(afterrule);
 	}
 
 	@Override

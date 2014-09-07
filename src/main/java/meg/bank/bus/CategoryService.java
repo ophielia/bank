@@ -38,14 +38,14 @@ public interface CategoryService {
 	public abstract boolean hasCircularReference(Long newParentId,
 			CategoryDao category);
 
-	public abstract void createOrUpdCategoryRule(CategoryRuleDao catRule);
+	public abstract CategoryRuleDao createOrUpdCategoryRule(CategoryRuleDao catRule);
 
-	public abstract void removeCategoryRule(CategoryRuleDao cat);
+	public abstract void removeCategoryRule(Long categoryruleid);
 
 	public abstract void updateCategoryRule(Long ruleid, String newcontains,
 			Long newcatid);
 
-	public abstract void swapOrder(Long beforeid, Long afterid);
+	public abstract void moveRuleUp(Long moveupid);
 
 	public abstract CategoryDao updateCategory(CategoryDao category);
 

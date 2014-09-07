@@ -1,6 +1,7 @@
 package meg.bank.bus.dao;
 
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
@@ -23,5 +24,8 @@ public class TargetDetailDao {
 	
     @ManyToOne
     private TargetGroupDao targetgroup;
+    
+    @Transient
+    private String catdisplay;
 
 }

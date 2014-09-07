@@ -70,7 +70,7 @@ public class CategoryRuleController {
         return "categoryrule/list";
     }
  
-	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
+	@RequestMapping(value = "/create",method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid CategoryRuleDao categoryRuleDao, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, categoryRuleDao);
@@ -81,6 +81,28 @@ public class CategoryRuleController {
         return "redirect:/categoryrule/";
     }
 
+	@RequestMapping(value = "/moveup/{id}",method = RequestMethod.GET, produces = "text/html")
+    public String moveUp(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
+		String referrer = httpServletRequest.getHeader("Referer");
+        if (referrer!=null && referrer.length()>0) {
+        	if (id!=null&& id.longValue()>0) {
+        		catService.moveRuleUp(id);
+        	}
+        }
+        return "redirect:/categoryrule/";
+    }	
+	
+	@RequestMapping(value = "/delete/{id}",method = RequestMethod.GET, produces = "text/html")
+    public String delete(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
+		String referrer = httpServletRequest.getHeader("Referer");
+        if (referrer!=null && referrer.length()>0) {
+        	if (id!=null&& id.longValue()>0) {
+        		catService.removeCategoryRule(id);
+        	}
+        }
+        return "redirect:/categoryrule/";
+    }		
+	
 	@RequestMapping(value = "/{id}", produces = "text/html")
 	public String show(@PathVariable("id") Long id, Model uiModel) {
 		CategoryRuleDao rule = categoryRuleRepository.findOne(id);
@@ -105,7 +127,7 @@ public class CategoryRuleController {
         return "redirect:/categoryrule/" + encodeUrlPathSegment(categoryRuleDao.getId().toString(), httpServletRequest);
     }
 
-	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
+	@RequestMapping(value = "/edit/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         populateEditForm(uiModel, categoryRuleRepository.findOne(id));
         return "categoryrule/update";

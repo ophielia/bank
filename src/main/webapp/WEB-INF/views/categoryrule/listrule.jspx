@@ -3,6 +3,7 @@
 xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
 xmlns:c="http://java.sun.com/jsp/jstl/core" 
 xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
 xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
@@ -15,7 +16,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <spring:message code="label_meg_bank_bus_dao_categoryruledao_containing" htmlEscape="false" var="containing"/>    
 <spring:message code="label_meg_bank_bus_dao_categoryruledao_catdisplay" htmlEscape="false" var="category"/>    
-    
+
+
+
 <table id="reviewedtable">
     <tr>
 		<th></th>
@@ -26,12 +29,17 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     </tr>
     <c:forEach var="cat" items="${categoryruledaos}" varStatus="status">
         <tr>
-            <td><c:if test="${not status.first}" >Move Up</c:if></td>
+            <td><c:if test="${not status.first}" >
+            <spring:url value="/categoryrule/moveup/${cat.id}" var="uplink"></spring:url>
+            <a href="${uplink}">Up</a></c:if></td>
 	        <td>${cat.containing}</td>
 	        <td>${cat.catDisplay}</td>
 	        <td><spring:url value="/categoryrule/edit/${cat.id}?form" var="editlink"></spring:url>
 	        <a href="${editlink}">Edit</a>
-	       			<td>Edit   Delete</td>
+	       			<td>
+            <spring:url value="/categoryrule/delete/${cat.id}" var="deletelink"></spring:url>
+            <a href="${deletelink}">Delete</a>
+</td>
 	        </td>
         </tr>
     </c:forEach>
