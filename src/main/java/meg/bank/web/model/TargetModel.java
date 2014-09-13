@@ -1,17 +1,55 @@
 package meg.bank.web.model;
 
+import java.util.List;
+
 import meg.bank.bus.dao.TargetDetailDao;
 import meg.bank.bus.dao.TargetGroupDao;
 
 public class TargetModel {
 
 	private TargetGroupDao targetgroup;
-	private TargetDetailDao targetdetail;
 
-	private int actionidx;
+	private Long catid;
+	private Double amount;
+	
+	private String action;
+	private int actionid;
+	private String targettypedisp;
 	
 	
 
+	public TargetModel(TargetGroupDao targetgroup) {
+		super();
+		this.targetgroup = targetgroup;
+	}
+
+	public TargetModel() {
+		this.targetgroup = new TargetGroupDao();
+	}
+	
+	public boolean containsDetailEntry() {
+		return (amount!=null || catid!=null);
+	}
+
+	// getters and setters for main members
+	public TargetGroupDao getTargetgroup() {
+		return targetgroup;
+	}
+
+	public void setTargetgroup(TargetGroupDao targetgroup) {
+		this.targetgroup = targetgroup;
+	}
+
+	public List<TargetDetailDao> getTargetdetails() {
+		return targetgroup.getTargetdetails();
+	}
+
+	public void setTargetdetails(List<TargetDetailDao> targetdetails) {
+		this.targetgroup.setTargetdetails(targetdetails);
+	}
+
+
+	
 	// getters and setters for group portion
 	public Long getTargettype() {
 		return targetgroup.getTargettype();
@@ -63,27 +101,49 @@ public class TargetModel {
 
 	// getters and setters for detail portion
 	public Long getCatid() {
-		return targetdetail.getCatid();
+		return catid;
 	}
 
 	public void setCatid(Long catid) {
-		targetdetail.setCatid(catid);
+		this.catid = catid;
 	}
 
 	public Double getAmount() {
-		return targetdetail.getAmount();
+		return amount;
 	}
 
 	public void setAmount(Double amount) {
-		targetdetail.setAmount(amount);
+		this.amount = amount;
 	}
 
-	public int getActionidx() {
-		return actionidx;
+
+	
+
+	public int getActionid() {
+		return actionid;
 	}
 
-	public void setActionidx(int actionidx) {
-		this.actionidx = actionidx;
+	public void setActionid(int actionidx) {
+		this.actionid = actionidx;
+	}
+
+	
+	
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	public void setTargettypeDisplay(String ttypedisp) {
+		this.targettypedisp = ttypedisp;
+		
+	}
+	
+	public String getTargettypeDisplay() {
+		return this.targettypedisp;
 	}
 
 }

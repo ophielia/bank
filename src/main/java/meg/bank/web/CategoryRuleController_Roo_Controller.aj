@@ -6,10 +6,7 @@ package meg.bank.web;
 import meg.bank.bus.dao.CategoryRuleDao;
 import meg.bank.web.CategoryRuleController;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 privileged aspect CategoryRuleController_Roo_Controller {
     
@@ -17,16 +14,6 @@ privileged aspect CategoryRuleController_Roo_Controller {
     public String CategoryRuleController.createForm(Model uiModel) {
         populateEditForm(uiModel, new CategoryRuleDao());
         return "categoryrule/create";
-    }
-    
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-    public String CategoryRuleController.delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        CategoryRuleDao categoryRuleDao = categoryRuleRepository.findOne(id);
-        categoryRuleRepository.delete(categoryRuleDao);
-        uiModel.asMap().clear();
-        uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
-        uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
-        return "redirect:/categoryrule";
     }
     
 }

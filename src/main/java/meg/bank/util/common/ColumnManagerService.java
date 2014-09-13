@@ -14,6 +14,8 @@ public interface ColumnManagerService {
 	public abstract List<ColumnValueDao> getColumnValueList(String lookup);
 
 	public abstract List<ColumnValueDao> getColumnValueList(String lookup, boolean displayonly);
+	
+	public abstract String getDisplayForValue(String lookup, String value);
 
 
 }

@@ -13,5 +13,6 @@ public interface ColumnValueRepository {
 	@Query("select cv from ColumnValueDao as cv where cv.active = :isActive and cv.columnkey = (select id from ColumnKeyDao as ck where ck.lookup = :lookup) order by cv.disporder")
 	List<ColumnValueDao> getColumnValuesForKey(@Param("lookup") String lookup,@Param("isActive") Boolean isActive);
 
-	
+	@Query("select cv from ColumnValueDao as cv where cv.value= :value and cv.columnkey = (select id from ColumnKeyDao as ck where ck.lookup = :lookup) order by cv.disporder")
+	ColumnValueDao getColumnValuesForKeyAndValue(@Param("lookup") String lookup,@Param("value") String value);	
 }

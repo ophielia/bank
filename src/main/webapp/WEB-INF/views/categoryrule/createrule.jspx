@@ -7,7 +7,7 @@
         <spring:message arguments="${page_title}" code="entity_create" htmlEscape="false"/>
     </h1>
     <spring:url value="/categoryrule/create" var="actionurl"/>
-    <form:form action="${actionurl}" id="updatecategoryrule" method="PUT" modelAttribute="categoryRuleDao">
+    <form:form action="${actionurl}" id="updatecategoryrule" method="POST" modelAttribute="categoryRuleDao">
         <field:input field="containing" id="label_meg_bank_bus_dao_CategoryRuleDao_containing" required="true" z="user-managed"/>
         <label for="categoryId">
             <spring:message code="label_category_parentcat" htmlEscape="false"/>

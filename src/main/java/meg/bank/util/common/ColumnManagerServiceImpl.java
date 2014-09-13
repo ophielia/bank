@@ -46,6 +46,12 @@ public class ColumnManagerServiceImpl implements ColumnManagerService {
 		// retrieve all displays for lookup
 		return cvmd.getColumnValuesForKey( lookup,displayonly);
 	}
+
+	@Override
+	public String getDisplayForValue(String lookup, String value) {
+		ColumnValueDao cv = cvmd.getColumnValuesForKeyAndValue(lookup, value);
+		return cv.getDisplay();
+	}
 	
 
 }

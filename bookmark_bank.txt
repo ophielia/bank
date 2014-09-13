@@ -7,21 +7,27 @@ aggregate puzzle
 
 
 future - change to JPA criteria!!?? (SearchService)
-
-start web scaffolding
-		add move up functionality
-
-Run test on CategoryServiceTest		
-				
-	next up - TargetGroup
-		go ahead and make a model....
-		
-	import started
-		
-
 check / take care of column manager - still Hib
+Category Edit page - not displaying current "owning" category
+remove hard copy dojo scripts
 
-remove dojo script
+next up - TargetGroup
+	go ahead and make a model....
+---> create new rule not working
+
+
+delete validateTargetDetail method
+---> working on edit target group page.
+add target detail - doesn't add duplicate category
+---->  add delete detail to editpage
+-----> add error handling to page
+	add error tags to show errors
+	test different error handling 
+begin working on editing existing rows
+add handling to show correct tag when page is loaded (javascript depending upon type)
+       
+
+ColumnManagerService displayonly should change sql depending upon true or false
 
 
 think about menu.... make second level for categories, rules, targets
@@ -37,23 +43,22 @@ think about menu.... make second level for categories, rules, targets
 	
 ---- begin commit changes ----
 
-done - validation for parent category id!! (really - in create??) circular possible??
-done -  change model attribute from category to categorymodel (should fix errors)
-done -  investigate why changes aren't shown on error edit page....
-done - scaffold category rules...web mvc scaffold --class ~.web.security.SecurityController --backingType ~.model.security.Account --path /security/users
-done - create category page - manually
-done - test create category page - in Test
-done - redirect after create should be to list page - once it's created....
-done - edit category page....
-done - linked from category list to edit
-done categoryrule controller / page
-done - 	change name in menu (no Dao) and move to rules section.
-done - 	add link to new on list page
-done - 	add transient field display to CategoryRuleDao
-done - 	fill in controller / (new) services method
-done - remove filemove from controller
-done - make sure is working with SocGenHelper....
-
+done - continue work on TargetModel - constructor, and categoryhash
+done -  working on create target page.  
+done - get page to compile
+done - fill out page with selects
+done - begin working on back end  - will need new method which creates the group. (old create changed to copy....)
+done - fill in show page (initial - without details...)
+done - add TargetDetail to model validator
+done - back end also needs a load TargetModel method
+done - toggle visibility of entry row.
+done - wire in entry row to add detail
+done - jpa session hell - can't call up proxy....
+done - row select year tag...
+done - fill in show page to show rows as well.
+done - solve problem about group save - how and when to save it. save with edit
+done - error testing in jsp
+done - implement validator to validateTargetDetail
 		
 ---- end commit changes ----
 
@@ -82,8 +87,32 @@ done - input tags works with "short" labels...
 done - add create category to menu
 done - need true false - checkboxes for display, and non-expense
 done - validation is wired in - needs to be tested / worked out
-
-
+done - validation for parent category id!! (really - in create??) circular possible??
+done -  change model attribute from category to categorymodel (should fix errors)
+done -  investigate why changes aren't shown on error edit page....
+done - scaffold category rules...web mvc scaffold --class ~.web.security.SecurityController --backingType ~.model.security.Account --path /security/users
+done - create category page - manually
+done - test create category page - in Test
+done - redirect after create should be to list page - once it's created....
+done - edit category page....
+done - linked from category list to edit
+done categoryrule controller / page
+done - 	change name in menu (no Dao) and move to rules section.
+done - 	add link to new on list page
+done - 	add transient field display to CategoryRuleDao
+done - 	fill in controller / (new) services method
+done - remove filemove from controller
+done - make sure is working with SocGenHelper....
+done - Run test on CategoryServiceTest		
+done - import started				
+done - write test for CRS.moveUp
+done -make it green
+done - write test for CRS.delete
+done - make it green
+done - add moveUp to CategoryRuleController
+done - add delete to CategoryRuleController
+done - take dojo script from cloud
+done - Rules - add move up functionality
 ---- end branch changes ----
 
 

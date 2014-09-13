@@ -8,14 +8,6 @@ import meg.bank.bus.dao.TargetGroupDao;
 
 privileged aspect TargetDetailDao_Roo_JavaBean {
     
-    public Long TargetDetailDao.getGroupid() {
-        return this.groupid;
-    }
-    
-    public void TargetDetailDao.setGroupid(Long groupid) {
-        this.groupid = groupid;
-    }
-    
     public Long TargetDetailDao.getCatid() {
         return this.catid;
     }
@@ -38,6 +30,14 @@ privileged aspect TargetDetailDao_Roo_JavaBean {
     
     public void TargetDetailDao.setTargetgroup(TargetGroupDao targetgroup) {
         this.targetgroup = targetgroup;
+    }
+    
+    public String TargetDetailDao.getCatdisplay() {
+        return this.catdisplay;
+    }
+    
+    public void TargetDetailDao.setCatdisplay(String catdisplay) {
+        this.catdisplay = catdisplay;
     }
     
 }

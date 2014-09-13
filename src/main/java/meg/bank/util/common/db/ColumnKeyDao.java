@@ -2,6 +2,7 @@ package meg.bank.util.common.db;
 
 import java.util.List;
 
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -19,6 +20,6 @@ public class ColumnKeyDao {
 	@Size(max = 100)
 	private String lookup;
 
-	@OneToMany(mappedBy = "columnkey")
+	@OneToMany(mappedBy = "columnkey", fetch=FetchType.EAGER)
 	private List<ColumnValueDao> columnvalues;
 }

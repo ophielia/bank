@@ -35,7 +35,6 @@ privileged aspect TargetDetailDaoDataOnDemand_Roo_DataOnDemand {
         TargetDetailDao obj = new TargetDetailDao();
         setAmount(obj, index);
         setCatid(obj, index);
-        setGroupid(obj, index);
         return obj;
     }
     
@@ -47,11 +46,6 @@ privileged aspect TargetDetailDaoDataOnDemand_Roo_DataOnDemand {
     public void TargetDetailDaoDataOnDemand.setCatid(TargetDetailDao obj, int index) {
         Long catid = new Integer(index).longValue();
         obj.setCatid(catid);
-    }
-    
-    public void TargetDetailDaoDataOnDemand.setGroupid(TargetDetailDao obj, int index) {
-        Long groupid = new Integer(index).longValue();
-        obj.setGroupid(groupid);
     }
     
     public TargetDetailDao TargetDetailDaoDataOnDemand.getSpecificTargetDetailDao(int index) {
