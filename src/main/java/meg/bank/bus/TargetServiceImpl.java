@@ -201,7 +201,7 @@ public class TargetServiceImpl implements TargetService {
 	@Override
 	public TargetGroupDao loadTargetForMonth(String month) {
 		// look for target by month
-		List<TargetGroupDao> list = targetGrpRep.findTargetsByTypeAndTag(TargetService.TargetType.Month,month);
+		List<TargetGroupDao> list = targetGrpRep.findTargetsByTypeAndMonthTag(TargetService.TargetType.Month,month);
 		if (list!=null&& list.size()>0) {
 			TargetGroupDao tg = list.get(0);
 			tg.getTargetdetails();
@@ -219,7 +219,7 @@ public class TargetServiceImpl implements TargetService {
 	@Override
 	public TargetGroupDao loadTargetForYear(String year) {
 		// look for target by year
-		List<TargetGroupDao> list = targetGrpRep.findTargetsByTypeAndTag(TargetService.TargetType.Year,year);
+		List<TargetGroupDao> list = targetGrpRep.findTargetsByTypeAndMonthTag(TargetService.TargetType.Year,year);
 		if (list!=null&& list.size()>0) {
 			TargetGroupDao tg = list.get(0);
 			tg.getTargetdetails();
@@ -238,10 +238,15 @@ public class TargetServiceImpl implements TargetService {
 	@Override
 	public void deleteTargetDetails(List<Long> deleted) {
 		for (Long deleteid : deleted) {
-			targetDetRep.delete(deleteid);
+			deleteTargetDetail(deleteid);
 		}
 	}
 
+	@Override
+	public void deleteTargetDetail(Long deleteid) {
+			targetDetRep.delete(deleteid);
+	}	
+	
 	/* (non-Javadoc)
 	 * @see meg.bank.bus.TargetService#saveTarget(meg.bank.bus.dao.TargetGroupDao)
 	 */
@@ -251,7 +256,7 @@ public class TargetServiceImpl implements TargetService {
 		if (target.getTargettype().longValue() == TargetService.TargetType.Month
 				.longValue()) {
 			// check if any other groups have the same month tag
-			List<TargetGroupDao> results = targetGrpRep.findTargetsByTypeAndTag(TargetService.TargetType.Month,target.getMonthtag());
+			List<TargetGroupDao> results = targetGrpRep.findTargetsByTypeAndMonthTag(TargetService.TargetType.Month,target.getMonthtag());
 			if (results!=null && results.size()>0) {
 				TargetGroupDao previoustag = results.get(0);
 				// if so, remove month tag from other group
@@ -262,7 +267,7 @@ public class TargetServiceImpl implements TargetService {
 		} else {
 			// for year types
 			// check if any other groups have the same year tag
-						List<TargetGroupDao> results = targetGrpRep.findTargetsByTypeAndTag(TargetService.TargetType.Year,target.getYeartag());
+						List<TargetGroupDao> results = targetGrpRep.findTargetsByTypeAndMonthTag(TargetService.TargetType.Year,target.getYeartag());
 						if (results!=null && results.size()>0) {
 							TargetGroupDao previoustag = results.get(0);
 							// if so, remove month tag from other group
@@ -333,6 +338,18 @@ public class TargetServiceImpl implements TargetService {
 		return detail;
 
 
+	}
+
+
+	@Override
+	public void mergeTargetDetail(Long detailid, TargetDetailDao editdetail) {
+		// get target detail
+		TargetDetailDao fromdb = targetDetRep.findOne(detailid);
+		// merge new info
+		fromdb.setCatid(editdetail.getCatid());
+		fromdb.setAmount(editdetail.getAmount());
+		// save change
+		targetDetRep.save(fromdb);
 	}
 
 

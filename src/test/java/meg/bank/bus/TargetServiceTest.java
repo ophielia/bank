@@ -1,11 +1,13 @@
 package meg.bank.bus;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import meg.bank.bus.dao.TargetDetailDao;
+import meg.bank.bus.dao.TargetDetailDaoDataOnDemand;
 import meg.bank.bus.dao.TargetGroupDao;
-import meg.bank.bus.repo.CategoryRuleRepository;
+import meg.bank.bus.repo.TargetDetailRepository;
 import meg.bank.bus.repo.TargetGroupRepository;
 import meg.bank.web.model.TargetModel;
 
@@ -28,6 +30,9 @@ TargetService targetService;
 
 @Autowired
 TargetGroupRepository targetGrpRep;
+
+@Autowired
+TargetDetailRepository targetDetailRep;
 
 
 @Test
@@ -81,7 +86,53 @@ public void testAddTargetDetailToGroup() {
 	Assert.assertEquals(new Double(11),first.getAmount());
 }
 
+@Test
+public void testDeleteTargetDetail() {
+	// create group
+	TargetGroupDao group = new TargetGroupDao();
+	group.setTargettype(TargetService.TargetType.Month);
+	group.setName("tTest");
+	group.setDescription("tDescription");
+	group.setIsdefault(new Boolean(true));
+	group.setMonthtag("Jan");
+	group = targetService.saveOrUpdateTargetGroup(group);
+	// create detail
+	TargetDetailDao detail = new TargetDetailDao();
+	detail.setCatid(new Long(11));
+	detail.setAmount(new Double(11));
+	// service call
+	detail = targetService.addTargetDetailToGroup(detail, group);	
+	// add more details
+	TargetDetailDaoDataOnDemand tddod = new TargetDetailDaoDataOnDemand();
+	TargetDetailDao det2 = tddod.getNewTransientTargetDetailDao(12);
+	TargetDetailDao det3 = tddod.getNewTransientTargetDetailDao(13);
+	TargetDetailDao det4 = tddod.getNewTransientTargetDetailDao(14);
+	// make list 
+	List<Long> detailids = new ArrayList<Long>();
+	det2=targetService.addTargetDetailToGroup(det2,group);
+	det3=targetService.addTargetDetailToGroup(det3,group);
+	det4=targetService.addTargetDetailToGroup(det4,group);
+	detailids.add(det2.getId());
+	detailids.add(det3.getId());
+	detailids.add(det4.getId());
+	// get TargetDetails by group, and assert 4
+	List<TargetDetailDao> testlist = targetDetailRep.findByTargetGroup(group);
+	Assert.assertEquals(4, testlist.size());
+	
+	// first delete details in list
+	targetService.deleteTargetDetails(detailids);
+	
+	// get TargetDetails by group, and assert only 1
+	testlist = targetDetailRep.findByTargetGroup(group);
+	Assert.assertEquals(1, testlist.size());
 
+	// now delete details singly
+	targetService.deleteTargetDetail(detail.getId());
+	
+	// get TargetDetails by group, and assert 0
+	testlist = targetDetailRep.findByTargetGroup(group);
+	Assert.assertEquals(0, testlist.size());	
+}
 
 /*
  * public List<TargetGroupDao> getTargetGroupList(Long targettype) {

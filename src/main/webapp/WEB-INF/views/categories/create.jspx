@@ -13,7 +13,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <h1><spring:message arguments="${page_title}" code="entity_create" htmlEscape="false" /></h1>
 
 <spring:url value="/categories" var="actionurl" />
-    <form:form  id="createcategory" method="POST"  action="${actionurl}" modelAttribute="category">
+    <form:form  id="createcategory" method="POST"  action="${actionurl}" modelAttribute="categoryModel">
  <spring:message arguments="category_name" code="field_invalid" var="field_invalid" htmlEscape="false" />       
 
 <field:input field="name" id="c_category_name" required="true" z="user-managed"/>    

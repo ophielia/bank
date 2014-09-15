@@ -12,20 +12,9 @@ Category Edit page - not displaying current "owning" category
 remove hard copy dojo scripts
 
 next up - TargetGroup
-	go ahead and make a model....
----> create new rule not working
 
 
-delete validateTargetDetail method
----> working on edit target group page.
-add target detail - doesn't add duplicate category
----->  add delete detail to editpage
------> add error handling to page
-	add error tags to show errors
-	test different error handling 
-begin working on editing existing rows
-add handling to show correct tag when page is loaded (javascript depending upon type)
-       
+
 
 ColumnManagerService displayonly should change sql depending upon true or false
 
@@ -43,23 +32,30 @@ think about menu.... make second level for categories, rules, targets
 	
 ---- begin commit changes ----
 
-done - continue work on TargetModel - constructor, and categoryhash
-done -  working on create target page.  
-done - get page to compile
-done - fill out page with selects
-done - begin working on back end  - will need new method which creates the group. (old create changed to copy....)
-done - fill in show page (initial - without details...)
-done - add TargetDetail to model validator
-done - back end also needs a load TargetModel method
-done - toggle visibility of entry row.
-done - wire in entry row to add detail
-done - jpa session hell - can't call up proxy....
-done - row select year tag...
-done - fill in show page to show rows as well.
-done - solve problem about group save - how and when to save it. save with edit
-done - error testing in jsp
-done - implement validator to validateTargetDetail
-		
+
+done - create new rule not working
+done - wire controller for delete entry.....
+done - for a delete button - on(form, "submit, button:click", submitHandler);	
+done - begin working on editing existing rows
+done - add delete detail to editpage
+done - add handling to show correct tag when page is loaded (javascript depending upon type)
+done  - add errors for group fields
+done - working on edit target group page.
+done - next step, saving edit action
+done - currently - edit isn't working like it was before . fix that and get it so save.
+done - last clean up, edit page
+done - last clean up - fix table
+done - hide add detail button when edit
+done - clean out unused code in controller
+done - add reset button
+done - test - global save - wire in
+done - cant figure out why it's going to show after create - should be edit
+done - in validation for edit detail - don't count current category as repeat
+done - after validation - edit row with errors shown in edit, and also in list.  fix this.
+done - create page - add the month and year select boxes       
+done - group validation - // check no duplicate of month tag or year tag
+done - group validation - // check no duplicate of default
+
 ---- end commit changes ----
 
 ----- begin branch changes ----
@@ -113,6 +109,47 @@ done - add moveUp to CategoryRuleController
 done - add delete to CategoryRuleController
 done - take dojo script from cloud
 done - Rules - add move up functionality
+done - continue work on TargetModel - constructor, and categoryhash
+done -  working on create target page.  
+done - get page to compile
+done - fill out page with selects
+done - begin working on back end  - will need new method which creates the group. (old create changed to copy....)
+done - fill in show page (initial - without details...)
+done - add TargetDetail to model validator
+done - back end also needs a load TargetModel method
+done - toggle visibility of entry row.
+done - wire in entry row to add detail
+done - jpa session hell - can't call up proxy....
+done - row select year tag...
+done - fill in show page to show rows as well.
+done - solve problem about group save - how and when to save it. save with edit
+done - error testing in jsp
+done - implement validator to validateTargetDetail
+done - continue work on TargetModel - constructor, and categoryhash
+done -  working on create target page.  
+done - get page to compile
+done - fill out page with selects
+done - begin working on back end  - will need new method which creates the group. (old create changed to copy....)
+done - fill in show page (initial - without details...)
+done - add TargetDetail to model validator
+done - back end also needs a load TargetModel method
+done - toggle visibility of entry row.
+done - wire in entry row to add detail
+done - jpa session hell - can't call up proxy....
+done - row select year tag...
+done - fill in show page to show rows as well.
+done - solve problem about group save - how and when to save it. save with edit
+done - error testing in jsp
+done - implement validator to validateTargetDetail
+done - add error handling to page
+done - go ahead and make a model....
+done - add error tags to show errors
+done - test different error handling 
+done - make back end for delete and test
+done - add target detail - doesn't add duplicate category
+done - delete validateTargetDetail method
+		
+
 ---- end branch changes ----
 
 

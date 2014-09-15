@@ -15,6 +15,8 @@ public class TargetModel {
 	private String action;
 	private int actionid;
 	private String targettypedisp;
+
+	private Long detailid;
 	
 	
 
@@ -115,6 +117,14 @@ public class TargetModel {
 	public void setAmount(Double amount) {
 		this.amount = amount;
 	}
+	
+	public Long getDetailid() {
+		return detailid;
+	}
+
+	public void setDetailid(Long detailid) {
+		this.detailid = detailid;
+	}	
 
 
 	

@@ -41,6 +41,8 @@ public interface TargetService {
 	public abstract TargetGroupDao loadTargetForYear(String year);
 
 	public abstract void deleteTargetDetails(List<Long> deleted);
+	
+	public abstract void deleteTargetDetail(Long deleteid);	
 
 	public abstract void saveTarget(TargetGroupDao target);
 
@@ -48,5 +50,8 @@ public interface TargetService {
 
 	public abstract TargetDetailDao addTargetDetailToGroup(TargetDetailDao newdetail,
 			TargetGroupDao targetgroup);
+
+	public abstract void mergeTargetDetail(Long detailid,
+			TargetDetailDao editdetail);
 
 }
