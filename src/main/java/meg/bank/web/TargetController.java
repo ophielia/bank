@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
@@ -72,7 +73,8 @@ public class TargetController {
 	}
 
 	protected void populateTargetList(Model uiModel) {
-		uiModel.addAttribute("targetList",targetGrpRep.findAll());
+		List<TargetGroupDao> grouplist = targetService.getTargetGroupList();
+		uiModel.addAttribute("targetList",grouplist);
 	}
 
 	protected void populateEditForm(Model uiModel, TargetModel model) {
@@ -132,6 +134,7 @@ public class TargetController {
 	@RequestMapping(produces = "text/html")
     public String showList(Model uiModel) {
     	populateTargetList(uiModel);
+    	populateEditForm(uiModel,new TargetModel());
     	return "target/list";
     }
 
@@ -154,6 +157,15 @@ public class TargetController {
         return "target/edit";
     }
 
+    @RequestMapping(params = "action=setdefault",method = RequestMethod.GET, produces = "text/html")
+    public String setDefaultGroup(@RequestParam("actionid") Long actionid, Model uiModel) {
+    	if (actionid!=null) {
+    		targetService.updateDefaultTargetGroup(actionid);
+    	}
+
+        return showList(uiModel);
+    }
+    
     @RequestMapping(params = "form",method = RequestMethod.GET, produces = "text/html")
     public String createForm(Model uiModel) {
     	TargetModel newmodel = new TargetModel(new TargetGroupDao());

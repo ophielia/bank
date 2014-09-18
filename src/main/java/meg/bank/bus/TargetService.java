@@ -20,7 +20,7 @@ public interface TargetService {
 	 * @param targettype
 	 *
 	 */
-	public abstract List<TargetGroupDao> getTargetGroupList(Long targettype);
+	public abstract List<TargetGroupDao> getTargetGroupList();
 
 	public abstract void copyTargetGroup(Long targettype);
 
@@ -32,7 +32,7 @@ public interface TargetService {
 
 	public abstract TargetGroupDao getTargetGroup(Long editid);
 
-	public abstract void updateDefaultTargetGroup(Long editid, Long targettype);
+	public abstract void updateDefaultTargetGroup(Long editid);
 
 	public abstract TargetGroupDao loadTarget(Long loadid);
 

@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
+import meg.bank.bus.imp.ImportManager;
+
 public class ExpenseCriteria {
 
 	public final class Month {
@@ -275,6 +277,25 @@ this.excludeNonExpense=excludeNonExpense;
 		return showsubcategories;
 	}	
 	
+	public boolean showSingleCategory() {
+		// single category set, and show subcategories not set
+		boolean showsinglecategory = getCategory() != null && (getShowSubcats()==null);
+		// OR showsubcats set to false
+		showsinglecategory |= (getShowSubcats()!=null && !getShowSubcats().booleanValue());
+		return showsinglecategory;
+	}
+	
+	public boolean showListOfCategories() {
+		// single category set, and show subcategories not set
+		boolean showcategorylist =(getCategoryLevelList() != null
+				&& getCategoryLevelList().size() > 0);
+		return showcategorylist;
+	}
+	
+	public boolean showBySource() {
+		return getSource()!=null && getSource().longValue()!=ImportManager.ImportClient.All;
+	}
+	
 	public ExpenseCriteria clone()  {
 		ExpenseCriteria newobj = new ExpenseCriteria();
 		newobj.startdate= this.startdate;
@@ -290,4 +311,6 @@ this.excludeNonExpense=excludeNonExpense;
 		newobj.showsubcategories = this.showsubcategories;
 		return newobj;
 	}
+
+	
 }

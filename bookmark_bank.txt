@@ -11,7 +11,6 @@ check / take care of column manager - still Hib
 Category Edit page - not displaying current "owning" category
 remove hard copy dojo scripts
 
-next up - TargetGroup
 
 
 
@@ -32,29 +31,13 @@ think about menu.... make second level for categories, rules, targets
 	
 ---- begin commit changes ----
 
+done - next up - TargetGroup List - update default
+done -- basically working - just need to reflect value in checkbox (checked for true....)
+done - javascript for setting id before submit
+done - TargetController method for receiving default update
+done - Wire to backend
 
-done - create new rule not working
-done - wire controller for delete entry.....
-done - for a delete button - on(form, "submit, button:click", submitHandler);	
-done - begin working on editing existing rows
-done - add delete detail to editpage
-done - add handling to show correct tag when page is loaded (javascript depending upon type)
-done  - add errors for group fields
-done - working on edit target group page.
-done - next step, saving edit action
-done - currently - edit isn't working like it was before . fix that and get it so save.
-done - last clean up, edit page
-done - last clean up - fix table
-done - hide add detail button when edit
-done - clean out unused code in controller
-done - add reset button
-done - test - global save - wire in
-done - cant figure out why it's going to show after create - should be edit
-done - in validation for edit detail - don't count current category as repeat
-done - after validation - edit row with errors shown in edit, and also in list.  fix this.
-done - create page - add the month and year select boxes       
-done - group validation - // check no duplicate of month tag or year tag
-done - group validation - // check no duplicate of default
+
 
 ---- end commit changes ----
 
@@ -148,7 +131,28 @@ done - test different error handling
 done - make back end for delete and test
 done - add target detail - doesn't add duplicate category
 done - delete validateTargetDetail method
-		
+done - create new rule not working
+done - wire controller for delete entry.....
+done - for a delete button - on(form, "submit, button:click", submitHandler);	
+done - begin working on editing existing rows
+done - add delete detail to editpage
+done - add handling to show correct tag when page is loaded (javascript depending upon type)
+done  - add errors for group fields
+done - working on edit target group page.
+done - next step, saving edit action
+done - currently - edit isn't working like it was before . fix that and get it so save.
+done - last clean up, edit page
+done - last clean up - fix table
+done - hide add detail button when edit
+done - clean out unused code in controller
+done - add reset button
+done - test - global save - wire in
+done - cant figure out why it's going to show after create - should be edit
+done - in validation for edit detail - don't count current category as repeat
+done - after validation - edit row with errors shown in edit, and also in list.  fix this.
+done - create page - add the month and year select boxes       
+done - group validation - // check no duplicate of month tag or year tag
+done - group validation - // check no duplicate of default		
 
 ---- end branch changes ----
 
@@ -157,3 +161,8 @@ Notes:
 
 1: CategoryTADao created on ids and not Entities.  Keep this way?? Yes - so many recursives.  might get coomplicated with objects.
 
+Later Development
+
+1. separate different target types into different pages
+2. TargetGroup - put monthtag and yeartag into same field.
+3. fuzziness with importclient in importmanager.  Would need to be handled much differently in a multiuserenvironment

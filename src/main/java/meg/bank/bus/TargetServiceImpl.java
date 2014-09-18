@@ -16,6 +16,7 @@ import meg.bank.util.common.ColumnManagerService;
 import meg.bank.web.model.TargetModel;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,11 +43,15 @@ public class TargetServiceImpl implements TargetService {
 	 * @see meg.bank.bus.TargetService#getTargetGroupList(java.lang.Long)
 	 */
 	@Override
-	public List<TargetGroupDao> getTargetGroupList(Long targettype) {
+	public List<TargetGroupDao> getTargetGroupList() {
 		// call to repository
-		// MM remove....CategoryManagerDao catmandao = getCategoryManagerDao();
-		//return catmandao.getTargetGroupList(targettype);
-		return null;
+		//return list sorted by targettype, yeartag and monthtag
+		List<String> sortcolumns = new ArrayList<String>();
+		sortcolumns.add("targettype");
+		sortcolumns.add("yeartag");
+		sortcolumns.add("monthtag");
+		List<TargetGroupDao> grouplist = targetGrpRep.findAll(new Sort(Sort.Direction.ASC, sortcolumns));
+		return grouplist;
 	}
 
 
@@ -116,10 +121,9 @@ public class TargetServiceImpl implements TargetService {
 	 */
 	@Override
 	public TargetGroupDao getTargetGroup(Long editid) {
-		// replace with repository findOne
-		// remove
-		/*CategoryManagerDao catmandao = getCategoryManagerDao();
-		return catmandao.getTargetGroup(editid);*/
+		if (editid!=null) {
+			return targetGrpRep.findOne(editid);
+		}
 		return null;
 	}
 
@@ -127,20 +131,23 @@ public class TargetServiceImpl implements TargetService {
 	 * @see meg.bank.bus.TargetService#updateDefaultTargetGroup(java.lang.Long, java.lang.Long)
 	 */
 	@Override
-	public void updateDefaultTargetGroup(Long editid, Long targettype) {
-		// get previous default
-		TargetGroupDao defaulttg = getDefaultTargetGroup(targettype);
+	public void updateDefaultTargetGroup(Long editid) {
+		// get group to be made default
+		TargetGroupDao newdefault = getTargetGroup(editid);
+		
+		if (newdefault!=null) {
+			// get previous default
+			TargetGroupDao defaulttg = getDefaultTargetGroup(newdefault.getTargettype());
 
-		// update previous default
-		defaulttg.setIsdefault(new Boolean(false));
-		targetGrpRep.save(defaulttg);
+			// update previous default
+			defaulttg.setIsdefault(new Boolean(false));
+			targetGrpRep.save(defaulttg);
 
-		// get new default
-		TargetGroupDao newdefault = targetGrpRep.findOne(editid);
 
-		// update new default
-		newdefault.setIsdefault(new Boolean(true));
-		targetGrpRep.save(newdefault);
+			// update new default
+			newdefault.setIsdefault(new Boolean(true));
+			targetGrpRep.save(newdefault);
+		}
 	}
 
 	/* (non-Javadoc)
