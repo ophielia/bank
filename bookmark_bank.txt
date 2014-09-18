@@ -6,13 +6,16 @@ Bootstrap!
 aggregate puzzle
 
 
-future - change to JPA criteria!!?? (SearchService)
+
 check / take care of column manager - still Hib
 Category Edit page - not displaying current "owning" category
 remove hard copy dojo scripts
+look at failed maven all tests
 
-
-
+---->future - change to JPA criteria!!?? (SearchService)
+continuing expenselist:
+	add bulk update category
+	add edit links
 
 
 ColumnManagerService displayonly should change sql depending upon true or false
@@ -31,13 +34,15 @@ think about menu.... make second level for categories, rules, targets
 	
 ---- begin commit changes ----
 
-done - next up - TargetGroup List - update default
-done -- basically working - just need to reflect value in checkbox (checked for true....)
-done - javascript for setting id before submit
-done - TargetController method for receiving default update
-done - Wire to backend
-
-
+done - JPA Criteria used for ExpenseList (not aggregates) in SearchService
+done - begin wiring page. - step 1
+done - make page
+done - make ExpenseListController
+done - make ExpenseListModel
+done -  bug in ExpenseCriteria - nothing for daterange all.  Add handling in setDateRangeFromType
+done - in ExpenseCriteria - change Month class to DateRange class
+done - add all options to selects in expense page
+done - still not returning results
 
 ---- end commit changes ----
 
@@ -153,6 +158,11 @@ done - after validation - edit row with errors shown in edit, and also in list. 
 done - create page - add the month and year select boxes       
 done - group validation - // check no duplicate of month tag or year tag
 done - group validation - // check no duplicate of default		
+done - next up - TargetGroup List - update default
+done -- basically working - just need to reflect value in checkbox (checked for true....)
+done - javascript for setting id before submit
+done - TargetController method for receiving default update
+done - Wire to backend
 
 ---- end branch changes ----
 

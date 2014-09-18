@@ -274,7 +274,7 @@ public class SearchServiceImpl implements SearchService {
 				
 			}
 			// categorized type
-			if (criteria.getCategorizedType() != null) {
+			if (criteria.getCategorizedType() != null &&  criteria.getCategorizedType()!=ExpenseCriteria.CategorizedType.ALL) {
 				// categorized type exists - add to sql
 				ParameterExpression<Boolean> param = cb.parameter(Boolean.class,
 						"hascat");
@@ -337,7 +337,7 @@ public class SearchServiceImpl implements SearchService {
 				q.setParameter("transdate", criteria.getDateStart());
 			}
 			// categorized type
-			if (criteria.getCategorizedType() != null) {
+			if (criteria.getCategorizedType() != null && criteria.getCategorizedType()!=ExpenseCriteria.CategorizedType.ALL) {
 				if (criteria.getCategorizedType().longValue() == ExpenseCriteria.CategorizedType.NOCATS) {
 					q.setParameter("hascat", false);
 				} else if (criteria.getCategorizedType().longValue() == ExpenseCriteria.CategorizedType.ONLYCATS) {

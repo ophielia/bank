@@ -1,5 +1,6 @@
 package meg.bank.bus;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -8,33 +9,28 @@ import java.util.List;
 
 import meg.bank.bus.imp.ImportManager;
 
-public class ExpenseCriteria {
+public class ExpenseCriteria implements Serializable {
 
-	public final class Month {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public final class DateRange {
 		public static final int CURRENT = 1;
-
 		public static final int LAST = 2;
-
 		public static final int BEFORELAST = 3;
-
 		public static final int DATERANGE = 4;
-
 		public static final int ALL = 0;
-
 		public static final int THISWEEK = 5;
-
 		public static final int LASTWEEK = 6;
-
 		public static final int THISYEAR = 7;
-
 		public static final int LASTYEAR = 8;
 	}
 
 	public final class CategorizedType {
 		public static final int NOCATS = 1;
-
 		public static final int ONLYCATS = 2;
-
 		public static final int ALL = 3;
 	}
 	
@@ -82,6 +78,8 @@ public class ExpenseCriteria {
 	private Long categoryid;
 
 	private int dayCount;
+	
+	private Long daterangetype;
 
 	private List<CategoryLevel> categoryLevelList;
 
@@ -95,21 +93,32 @@ public class ExpenseCriteria {
 	private Boolean showsubcategories;
 
 	public void setDateRangeByType(Long dateRangeType) {
+		this.daterangetype = dateRangeType;
+		setDateRangeFromType(dateRangeType);
+
+	}
+	
+	private void setDateRangeFromType(Long dateRangeType) {
+		this.daterangetype = dateRangeType;
 		// return if "DATERANGE"
-		if (dateRangeType.longValue() == Month.DATERANGE) {
+		if (dateRangeType.longValue() == DateRange.DATERANGE) {
 			return;
 		}
+		// return if "ALL"
+		if (dateRangeType.longValue() == DateRange.ALL) {
+			return;
+		}		
 		// set start and end dates
 		Calendar start = Calendar.getInstance();
 		Calendar end = Calendar.getInstance();
-		if (dateRangeType.longValue() == Month.CURRENT) {
+		if (dateRangeType.longValue() == DateRange.CURRENT) {
 			end.add(Calendar.MONTH, 1);
-		} else if (dateRangeType.longValue() == Month.LAST) {
+		} else if (dateRangeType.longValue() == DateRange.LAST) {
 			start.add(Calendar.MONTH, -1);
-		} else if (dateRangeType.longValue() == Month.BEFORELAST) {
+		}  else if (dateRangeType.longValue() == DateRange.BEFORELAST) {
 			start.add(Calendar.MONTH, -2);
 			end.add(Calendar.MONTH, -1);
-		} else if (dateRangeType.longValue() == Month.THISWEEK) {
+		} else if (dateRangeType.longValue() == DateRange.THISWEEK) {
 			// get current day
 			int currentday = start.get(Calendar.DAY_OF_WEEK);
 
@@ -120,7 +129,7 @@ public class ExpenseCriteria {
 			end = (Calendar) start.clone();
 			end.add(Calendar.DAY_OF_MONTH, 7);
 
-		} else if (dateRangeType.longValue() == Month.LASTWEEK) {
+		} else if (dateRangeType.longValue() == DateRange.LASTWEEK) {
 			// get current day
 			int currentday = start.get(Calendar.DAY_OF_WEEK);
 
@@ -134,14 +143,14 @@ public class ExpenseCriteria {
 
 		}
 
-		if (dateRangeType.longValue() != Month.THISWEEK
-				&& dateRangeType.longValue() != Month.LASTWEEK) {
+		if (dateRangeType.longValue() != DateRange.THISWEEK
+				&& dateRangeType.longValue() != DateRange.LASTWEEK) {
 			// set dates to first of month
 			start.set(Calendar.DAY_OF_MONTH, 1);
 			end.set(Calendar.DAY_OF_MONTH, 1);
 		}
 		
-		if (dateRangeType.longValue()== Month.THISYEAR) {
+		if (dateRangeType.longValue()== DateRange.THISYEAR) {
 			// set date to january 1st
 			start.set(Calendar.DAY_OF_MONTH, 1);
 			start.set(Calendar.MONTH, Calendar.JANUARY);
@@ -149,7 +158,7 @@ public class ExpenseCriteria {
 			end.add(Calendar.MONTH, 1);
 		}
 		
-		if (dateRangeType.longValue()== Month.LASTYEAR) {
+		if (dateRangeType.longValue()== DateRange.LASTYEAR) {
 			// set date to january 1st
 			start.add(Calendar.YEAR, -1);
 			start.set(Calendar.DAY_OF_MONTH, 1);
@@ -163,10 +172,16 @@ public class ExpenseCriteria {
 		setDateStart(start.getTime());
 		setDateEnd(end.getTime());
 
-	}
+	}	
 
+	public Long getDateRangeByType() {
+		return daterangetype;
+	}
+	
 	public void setCategorizedType(Long categorizedType) {
-		categorizedtype = categorizedType;
+		if (categorizedType.longValue()>0) {
+			categorizedtype = categorizedType;
+		}
 
 	}
 
@@ -250,7 +265,10 @@ this.excludeNonExpense=excludeNonExpense;
 	}
 
 	public void setSource(Long source) {
-		this.source = source;
+		if (source>0) {
+			this.source = source;	
+		}
+		
 	}
 
 	public Long getTransactionType() {

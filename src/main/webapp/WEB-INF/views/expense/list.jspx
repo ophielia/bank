@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    
+    <spring:message code="label_expenselist" var="expensetitle"/>
+    <h1>${expensetitle}</h1>
+
+<spring:message code="label_expenselist_date" htmlEscape="false" var="ldate"/>    
+<spring:message code="label_expenselist_cattype" htmlEscape="false" var="lcattype"/>    
+<spring:message code="label_expenselist_cat" htmlEscape="false" var="lcat"/>    
+<spring:message code="label_expenselist_source" htmlEscape="false" var="lsource"/>    
+<spring:message code="label_expenselist_transtype" htmlEscape="false" var="ltype"/>    
+<spring:message code="label_expenselist_detail" htmlEscape="false" var="ldetail"/>    
+<spring:message code="label_expenselist_amount" htmlEscape="false" var="lamount"/>    
+
+
+
+<spring:url value="/expense" var="actionurl"/>
+<form:form action="${actionurl}" id="expenselist" method="PUT" modelAttribute="expenseListModel">
+
+<table>
+<THEAD>
+<tr>
+<td>${ldate}</td>
+<td>${lcattype}</td>
+<td>${lcat}</td>
+<td>${lsource}</td>
+<td>${ltype}</td>
+</tr>
+</THEAD>
+<tbody>
+				<tr>
+					<td><form:select path="dateRangeByType">
+							<form:options items="${daterangelist}" itemValue="value"
+								itemLabel="display" />
+						</form:select></td>
+					<td><form:select path="categorizedType">
+
+							<form:options items="${cattypelist}" itemValue="value"
+								itemLabel="display" />
+						</form:select></td>
+					<td><form:select path="category">
+							<form:option value="" label="- - Select - - " />
+							<c:forEach items="${categorylist}" var="cat">
+								<form:option label="${cat.name}" value="${cat.id}" />
+							</c:forEach>
+						</form:select></td>
+					<td><form:select path="source">
+							<form:options items="${sourcelist}" itemValue="value"
+								itemLabel="display" />
+						</form:select></td>
+					<td><form:select path="transactionType">
+							<form:options items="${transtypelist}" itemValue="value"
+								itemLabel="display" />
+						</form:select></td>
+				</tr>
+			</tbody>
+</table>
+		<spring:message code="button_search" htmlEscape="false" var="search_button"/>
+        <input id="searchbutton" type="submit" value="${search_button}"/>
+        
+<TABLE>
+		<thead>
+				<tr >
+			<th></th>
+			<th>${ldate}</th>
+			<th>${lcat}</th>
+			<th>${ldetail}</th>
+			<th>${lamount}</th>
+			<th></th>
+		</tr>
+		</thead>
+		<tbody>
+ <c:forEach var="exp" items="${expenseListModel.expenses}">
+ 			<tr>
+ 			<td></td>
+			<td><fmt:formatDate value="${exp.transdate}" var="dateString" pattern="MM/dd/yyyy" />${dateString}</td>
+			<td>${exp.catName}</td>
+			<td>${exp.detail}</td>
+			<td>
+			<c:choose>
+			<c:when test="hascat">
+			${exp.catamount}
+			</c:when>
+			<c:otherwise>
+			${exp.transtotal}
+			</c:otherwise>
+			</c:choose></td>
+			<td></td>
+ 			</tr>
+ </c:forEach>		
+		</tbody>
+		</TABLE>        
+</form:form>
+
+</div>
