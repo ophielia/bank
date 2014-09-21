@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import meg.bank.bus.BankTransactionService;
 import meg.bank.bus.CategoryService;
 import meg.bank.bus.ExpenseCriteria;
 import meg.bank.bus.SearchService;
@@ -14,11 +15,16 @@ import meg.bank.bus.imp.ImportManager;
 import meg.bank.util.common.ColumnManagerService;
 import meg.bank.util.common.db.ColumnValueDao;
 import meg.bank.web.model.ExpenseListModel;
+import meg.bank.web.validation.ExpenseListModelValidator;
+import meg.bank.web.validation.TargetModelValidator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,11 +39,17 @@ public class ExpenseListController {
 	@Autowired
 	SearchService searchService;
 	
+	@Autowired
+	BankTransactionService transService;
+		
     @Autowired
     ColumnManagerService cvManager;
 
     @Autowired
     CategoryService categoryService;
+    
+	@Autowired
+	ExpenseListModelValidator modelValidator;    
     
 	@RequestMapping(produces = "text/html")
     public String showList(@ModelAttribute("expenseListModel") ExpenseListModel model,Model uiModel,HttpServletRequest request) {
@@ -56,14 +68,45 @@ public class ExpenseListController {
 		session.setAttribute(sessioncriteria,criteria);
 		List<ExpenseDao> list = searchService.getExpenses(criteria);
 		model.setExpenses(list);
+
 		return "expense/list";
 	}
 	
-	public String updateMultiCategories() {
+	
+	@RequestMapping(method = RequestMethod.PUT, params = "updatecat",produces = "text/html")
+	public String updateMultiCategories(@ModelAttribute("expenseListModel") ExpenseListModel model,Model uiModel,BindingResult bindingResult,HttpServletRequest request) {
+		ExpenseCriteria criteria = model.getCriteria();
+		HttpSession session = request.getSession();
+		session.setAttribute(sessioncriteria,criteria);
 		
-		return null;
+		// error checking here
+		modelValidator.validateUpdate(model, bindingResult);
+		
+		
+		// get expenses to update
+		List<String> toupdate = model.getCheckedExpenseIds();
+		if (bindingResult.hasErrors()) {
+			// retrieve and set list
+			List<ExpenseDao> list = searchService.getExpenses(criteria);
+			model.setExpenses(list);		
+			// return
+			return "expense/list";
+		}
+		
+		// update expenses
+		transService.assignCategoriesToExpenses(model.getBatchUpdate(), toupdate);
+		
+		// retrieve and set list
+		List<ExpenseDao> list = searchService.getExpenses(criteria);
+		model.setExpenses(list);		
+		// return
+		return "expense/list";
 	}
 	
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+	    binder.setAutoGrowCollectionLimit(1024);
+	}
 	
 	private ExpenseCriteria getDefaultCriteria() {
 		ExpenseCriteria criteria = new ExpenseCriteria();

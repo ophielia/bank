@@ -8,6 +8,8 @@ import meg.bank.bus.report.CategorySummaryDisp;
 public interface SearchService {
 
 	public abstract List<ExpenseDao> getExpenses(ExpenseCriteria criteria);
+	
+	public abstract List<ExpenseDao> getAllExpenses();
 
 	public abstract List<CategorySummaryDisp> getExpenseTotalByMonth(
 			ExpenseCriteria criteria);
@@ -17,5 +19,7 @@ public interface SearchService {
 
 	public abstract List<CategorySummaryDisp> getExpenseTotal(
 			ExpenseCriteria criteria);
+	
+	public List<ExpenseDao> getExpenseListByIds(List<String> idlist) ;	
 
 }

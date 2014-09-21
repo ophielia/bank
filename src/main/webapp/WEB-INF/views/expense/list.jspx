@@ -65,7 +65,14 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </table>
 		<spring:message code="button_search" htmlEscape="false" var="search_button"/>
         <input id="searchbutton" type="submit" value="${search_button}"/>
-        
+       <br />
+       <hr />
+       <br />
+        <form:errors cssClass="errors" path="batchUpdate" />
+       <form:select path="batchUpdate">
+				<form:option value="" label="--Please Select" />
+				<form:options items="${categorylist}" itemValue="id" itemLabel="name" />
+			</form:select> 		 <input id="searchbutton" type="submit" name="updatecat" value="Update Selected"/>
 <TABLE>
 		<thead>
 				<tr >
@@ -78,9 +85,11 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		</tr>
 		</thead>
 		<tbody>
- <c:forEach var="exp" items="${expenseListModel.expenses}">
+ <c:forEach var="exp" items="${expenseListModel.expenses}" varStatus="expstatus">
  			<tr>
- 			<td></td>
+ 			<td><form:checkbox path="checked[${expstatus.index}]"  />
+ 			<form:input path="idref[${expstatus.index}]" value="${exp.id}" type="hidden"></form:input>
+ 			</td>
 			<td><fmt:formatDate value="${exp.transdate}" var="dateString" pattern="MM/dd/yyyy" />${dateString}</td>
 			<td>${exp.catName}</td>
 			<td>${exp.detail}</td>

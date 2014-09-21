@@ -26,7 +26,7 @@ public interface BankTransactionService {
 
 	public abstract Date getMostRecentTransDate();
 
-	public abstract void addTransaction(BankTADao trans);
+	public abstract BankTADao addTransaction(BankTADao trans);
 
 	public abstract List<BankTADao> getAllBankTransactions();
 
@@ -55,7 +55,7 @@ public interface BankTransactionService {
 
 	public abstract List<ExpenseDao> getExpenses(ExpenseCriteria criteria);
 
-	public abstract void assignExpensesFromCategories(Long catid, List selected);
+	public abstract void assignCategoriesToExpenses(Long catid, List<String>  selectedids);
 
 	public abstract List<CategorySummaryDisp> getExpenseTotalByMonth(
 			ExpenseCriteria criteria, String dispname);

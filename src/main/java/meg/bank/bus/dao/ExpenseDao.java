@@ -44,7 +44,7 @@ columns={}
 public class ExpenseDao {
 
 	@Id
-	private Long id;
+	private String id;
 	private Long transid;
 	private Date transdate;
 	private Boolean hascat;
@@ -65,6 +65,15 @@ public class ExpenseDao {
 	private String year;
 	private Integer source;
 
+
+	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public Double getCatamount() {
         return this.catamount;

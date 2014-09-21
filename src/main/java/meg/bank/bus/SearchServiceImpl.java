@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -184,6 +185,37 @@ public class SearchServiceImpl implements SearchService {
 		// return list of CategorySummaryDisp objects
 		return displays;
 	}
+	
+	
+	public List<ExpenseDao> getExpenseListByIds(List<String> idlist) {
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<ExpenseDao> c = cb.createQuery(ExpenseDao.class);
+		Root<ExpenseDao> exp = c.from(ExpenseDao.class);
+		c.select(exp);
+
+		if (idlist != null) {
+			// making space for parameters
+			ParameterExpression<Collection> ids = cb.parameter(Collection.class);
+			c.where(exp.get("id").in(ids));
+			Collection<String> idsParameter = new ArrayList<String> ();
+			for (String param:idlist) {
+				idsParameter.add(param);
+			}
+					
+			// creating the query
+			TypedQuery<ExpenseDao> q = entityManager.createQuery(c);
+
+			// setting the parameters
+			q.setParameter(ids, idsParameter);
+
+			
+			return q.getResultList();
+
+		}
+
+		return null;
+	}
+	
 	private StringBuffer getWhereClauseForCriteria(ExpenseCriteria criteria,
 			boolean hibernatereplace) {
 		// base statement
@@ -374,6 +406,22 @@ public class SearchServiceImpl implements SearchService {
 		}
 
 		return null;
+	}
+
+	@Override
+	public List<ExpenseDao> getAllExpenses() {
+
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<ExpenseDao> c = cb.createQuery(ExpenseDao.class);
+		Root<ExpenseDao> exp = c.from(ExpenseDao.class);
+		c.select(exp);
+		c.orderBy(cb.desc(exp.get("transdate")), cb.asc(exp.get("transid")));
+
+		// creating the query
+		TypedQuery<ExpenseDao> q = entityManager.createQuery(c);
+
+		return q.getResultList();
+
 	}
 
 }	

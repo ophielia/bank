@@ -4,15 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import meg.bank.bus.dao.BankTADao;
+import meg.bank.bus.dao.BankTADaoDataOnDemand;
 import meg.bank.bus.dao.CategoryDao;
 import meg.bank.bus.dao.ExpenseDao;
-import meg.bank.bus.dao.TargetDetailDao;
-import meg.bank.bus.dao.TargetDetailDaoDataOnDemand;
-import meg.bank.bus.dao.TargetGroupDao;
 import meg.bank.bus.imp.ImportManager;
-import meg.bank.bus.repo.TargetDetailRepository;
-import meg.bank.bus.repo.TargetGroupRepository;
-import meg.bank.web.model.TargetModel;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -33,6 +29,9 @@ public class SearchServiceTest {
 
 	@Autowired
 	CategoryService categoryService;
+	
+	@Autowired
+	BankTransactionService transService;	
 
 	List<CategoryDao> cats;
 
@@ -76,6 +75,28 @@ public class SearchServiceTest {
 		
 		catids=new ArrayList<CategoryLevel>();
 		
+	}
+	
+	@Test
+	public void testGetExpenseByIds() {
+		// create three new transactions (BankTADao)
+		BankTADaoDataOnDemand bdod = new BankTADaoDataOnDemand();
+		BankTADao t1 = bdod.getNewTransientBankTADao(1);
+		BankTADao t2 = bdod.getNewTransientBankTADao(2);
+		BankTADao t3 = bdod.getNewTransientBankTADao(3);
+		t1=transService.addTransaction(t1);
+		t2=transService.addTransaction(t2);
+		t3=transService.addTransaction(t3);
+		// add ids for transactions into list
+		List<String> ids = new ArrayList<String>();
+		ids.add("140");
+		ids.add("141");
+		ids.add("142");
+		// get list through service call
+		List<ExpenseDao> results = searchService.getExpenseListByIds(ids);
+		// Assert that the list isn't null
+		Assert.assertNotNull(results);
+
 	}
 
 }

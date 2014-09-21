@@ -201,12 +201,12 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 	 * @see meg.bank.bus.BankTransactionService#addTransaction(meg.bank.bus.dao.BankTADao)
 	 */
 	@Override
-	public void addTransaction(BankTADao trans) {
+	public BankTADao addTransaction(BankTADao trans) {
 	// set deleted to false
 			trans.setDeleted(new Boolean(false));
 			// call Dao interface here
 			bankTransRep.save(trans);
-	
+			return trans;
 		}
 
 
@@ -264,11 +264,11 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 		catta.setBanktaid(bankta.getId());
 	
 		// add CategoryTADao to DB
-		catTransRep.save(catta);
+		catTransRep.saveAndFlush(catta);
 	
 		// update Transaction
 		bankta.setHascat(new Boolean(true));
-		bankTransRep.save(bankta);
+		bankTransRep.saveAndFlush(bankta);
 	}
 
 	/* (non-Javadoc)
@@ -434,10 +434,10 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 	 * @see meg.bank.bus.BankTransactionService#assignExpensesFromCategories(java.lang.Long, java.util.List)
 	 */
 	@Override
-	public void assignExpensesFromCategories(Long catid, List selected) {
+	public void assignCategoriesToExpenses(Long catid, List<String> selectedids) {
+		List<ExpenseDao> toupdate = searchService.getExpenseListByIds(selectedids);
 		// loop through selected list
-		for (Iterator iter = selected.iterator(); iter.hasNext();) {
-			ExpenseDao expense = (ExpenseDao) iter.next();
+		for (ExpenseDao expense:toupdate) {
 			if (expense.getHascat().booleanValue()) {
 				// if expense has a category already, existing category must be
 				// updated
@@ -455,7 +455,7 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 		// update with new catid
 		catexp.setCatid(newcatid);
 		// persist change
-		catTransRep.save(catexp);
+		catTransRep.saveAndFlush(catexp);
 	}
 
 	/* (non-Javadoc)

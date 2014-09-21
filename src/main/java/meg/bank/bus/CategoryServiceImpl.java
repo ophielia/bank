@@ -54,13 +54,13 @@ public class CategoryServiceImpl implements CategoryService {
 		cat.setDescription(description);
 		cat.setNonexpense(nonexpcat);
 		cat.setDisplayinlist(display);
-		catRepository.save(cat);
+		catRepository.saveAndFlush(cat);
 
 		// add category relationship
 		CatRelationshipDao catrel = new CatRelationshipDao();
 		catrel.setParentId(new Long(0));
 		catrel.setChildId(cat.getId());
-		catRelationRep.save(catrel);
+		catRelationRep.saveAndFlush(catrel);
 		
 		return cat;
 	}
