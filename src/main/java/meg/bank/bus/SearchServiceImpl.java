@@ -14,6 +14,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -288,8 +289,9 @@ public class SearchServiceImpl implements SearchService {
 		CriteriaQuery<ExpenseDao> c = cb.createQuery(ExpenseDao.class);
 		Root<ExpenseDao> exp = c.from(ExpenseDao.class);
 		c.select(exp);
-		c.orderBy(cb.desc(exp.get("transdate")), cb.asc(exp.get("transid")));
-
+		setOrderBy(criteria,cb,c,exp);
+		
+		
 		if (criteria != null) {
 			// put together where clause
 			List<Predicate> whereclause = new ArrayList<Predicate>();
@@ -406,6 +408,45 @@ public class SearchServiceImpl implements SearchService {
 		}
 
 		return null;
+	}
+
+	private void setOrderBy(ExpenseCriteria criteria, CriteriaBuilder cb,
+			CriteriaQuery<ExpenseDao> query, Root<ExpenseDao> root) {
+		
+		List<String> sortstrings=new ArrayList<String>();
+		// set sort string
+		if (criteria.getSorttype() != null) {
+			if (criteria.getSorttype().equals(ExpenseCriteria.SortType.Amount)) {
+				sortstrings.add("displayamount");
+			} else if (criteria.getSorttype().equals(
+					ExpenseCriteria.SortType.Category)) {
+				sortstrings.add("catName");
+			} else if (criteria.getSorttype().equals(
+					ExpenseCriteria.SortType.Date)) {
+				sortstrings.add("transdate");
+				sortstrings.add("transid");
+			} else if (criteria.getSorttype().equals(
+					ExpenseCriteria.SortType.Detail)) {
+				sortstrings.add("detail");
+			}
+		} else {
+			sortstrings.add("transdate");
+			sortstrings.add("transid");
+		}
+		
+		// now, put into list of order objects with direction
+		List<Order> orderstatements = new ArrayList<Order>();
+		for (String sortparam:sortstrings) {
+			if (criteria.getSortdir()!=null && criteria.getSortdir().longValue()==ExpenseCriteria.SortDirection.Asc) {
+				 Order neworder = cb.asc(root.get(sortparam));
+				 orderstatements.add(neworder);
+			} else {
+				Order neworder = cb.desc(root.get(sortparam));
+				 orderstatements.add(neworder);
+			}
+		}
+		query.orderBy(orderstatements);
+		
 	}
 
 	@Override

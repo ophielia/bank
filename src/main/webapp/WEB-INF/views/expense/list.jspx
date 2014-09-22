@@ -20,9 +20,39 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_expenselist_detail" htmlEscape="false" var="ldetail"/>    
 <spring:message code="label_expenselist_amount" htmlEscape="false" var="lamount"/>    
 
-
-
 <spring:url value="/expense" var="actionurl"/>
+
+<script type="text/javascript">
+ require([
+          'dojo/dom',"dojo/on",
+          'dojo/domReady!'
+      ], function (dom,on) {
+	 
+	 	function getIndex(prefix,text) {
+			// gets a substring of the text, starting at the char after the length of the prefix
+			var stripped = text.substr(prefix.length);
+			return stripped;
+		} 
+		 
+
+
+	// wire up sort buttons
+	   	dojo.query("th[id^='aSort']").forEach(function(node) {
+	  		var id = node.id;
+
+	          on(dojo.byId(id), 'click', function(event){
+	        	  clickedid = event.currentTarget.id;
+	      		  sortaction = getIndex('aSort',clickedid);
+	      		  var form = dojo.byId('expenselist');
+	      		  form.action = "${actionurl}?sort=" + sortaction;
+	      		  form.submit();
+	          });
+	  	});
+	
+	});
+ </script>
+
+
 <form:form action="${actionurl}" id="expenselist" method="PUT" modelAttribute="expenseListModel">
 
 <table>
@@ -77,10 +107,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		<thead>
 				<tr >
 			<th></th>
-			<th>${ldate}</th>
-			<th>${lcat}</th>
-			<th>${ldetail}</th>
-			<th>${lamount}</th>
+			<th id="aSortDate">${ldate}</th>
+			<th id="aSortCat">${lcat}</th>
+			<th id="aSortDetail">${ldetail}</th>
+			<th id="aSortAmount">${lamount}</th>
 			<th></th>
 		</tr>
 		</thead>
@@ -93,15 +123,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			<td><fmt:formatDate value="${exp.transdate}" var="dateString" pattern="MM/dd/yyyy" />${dateString}</td>
 			<td>${exp.catName}</td>
 			<td>${exp.detail}</td>
-			<td>
-			<c:choose>
-			<c:when test="hascat">
-			${exp.catamount}
-			</c:when>
-			<c:otherwise>
-			${exp.transtotal}
-			</c:otherwise>
-			</c:choose></td>
+			<td>${exp.displayamount}</td>
 			<td></td>
  			</tr>
  </c:forEach>		

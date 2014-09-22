@@ -46,6 +46,20 @@ public class ExpenseCriteria implements Serializable {
 		public static final int CALYEAR = 2;
 		public static final int ALL = 3;
 	}
+	
+	public final class SortType {
+		public static final String Date = "Date";
+		public static final String Category = "Cat";
+		public static final String Detail = "Detail";
+		public static final String Amount ="Amount";
+	}
+	
+	public static final class SortDirection {
+		public static final Long Asc = 1L;
+		public static final Long Desc= 2L;
+	}	
+	
+	
 	public static final String DateRangeLkup = "daterange";
 
 	public static final String CatTypeLkup = "cattype";
@@ -91,6 +105,10 @@ public class ExpenseCriteria implements Serializable {
 	private Long compareType;
 
 	private Boolean showsubcategories;
+	
+	private String sorttype;
+	
+	private Long sortdir;
 
 	public void setDateRangeByType(Long dateRangeType) {
 		this.daterangetype = dateRangeType;
@@ -98,82 +116,6 @@ public class ExpenseCriteria implements Serializable {
 
 	}
 	
-	private void setDateRangeFromType(Long dateRangeType) {
-		this.daterangetype = dateRangeType;
-		// return if "DATERANGE"
-		if (dateRangeType.longValue() == DateRange.DATERANGE) {
-			return;
-		}
-		// return if "ALL"
-		if (dateRangeType.longValue() == DateRange.ALL) {
-			return;
-		}		
-		// set start and end dates
-		Calendar start = Calendar.getInstance();
-		Calendar end = Calendar.getInstance();
-		if (dateRangeType.longValue() == DateRange.CURRENT) {
-			end.add(Calendar.MONTH, 1);
-		} else if (dateRangeType.longValue() == DateRange.LAST) {
-			start.add(Calendar.MONTH, -1);
-		}  else if (dateRangeType.longValue() == DateRange.BEFORELAST) {
-			start.add(Calendar.MONTH, -2);
-			end.add(Calendar.MONTH, -1);
-		} else if (dateRangeType.longValue() == DateRange.THISWEEK) {
-			// get current day
-			int currentday = start.get(Calendar.DAY_OF_WEEK);
-
-			// get last Saturday
-			Long toroll = (Long) weekhelper.get(new Integer(currentday));
-			start.add(Calendar.DAY_OF_MONTH, (int) toroll.longValue());
-			// get next Saturday
-			end = (Calendar) start.clone();
-			end.add(Calendar.DAY_OF_MONTH, 7);
-
-		} else if (dateRangeType.longValue() == DateRange.LASTWEEK) {
-			// get current day
-			int currentday = start.get(Calendar.DAY_OF_WEEK);
-
-			// get last Saturday
-			Long toroll = (Long) weekhelper.get(new Integer(currentday));
-			start.add(Calendar.DAY_OF_MONTH, (int) toroll.longValue());
-			start.add(Calendar.DAY_OF_MONTH, -7);
-			// get next Saturday
-			end = (Calendar) start.clone();
-			end.add(Calendar.DAY_OF_MONTH, 7);
-
-		}
-
-		if (dateRangeType.longValue() != DateRange.THISWEEK
-				&& dateRangeType.longValue() != DateRange.LASTWEEK) {
-			// set dates to first of month
-			start.set(Calendar.DAY_OF_MONTH, 1);
-			end.set(Calendar.DAY_OF_MONTH, 1);
-		}
-		
-		if (dateRangeType.longValue()== DateRange.THISYEAR) {
-			// set date to january 1st
-			start.set(Calendar.DAY_OF_MONTH, 1);
-			start.set(Calendar.MONTH, Calendar.JANUARY);
-			end.set(Calendar.DAY_OF_MONTH, 1);
-			end.add(Calendar.MONTH, 1);
-		}
-		
-		if (dateRangeType.longValue()== DateRange.LASTYEAR) {
-			// set date to january 1st
-			start.add(Calendar.YEAR, -1);
-			start.set(Calendar.DAY_OF_MONTH, 1);
-			start.set(Calendar.MONTH, Calendar.JANUARY);
-			end.set(Calendar.DAY_OF_MONTH, 31);
-			end.set(Calendar.MONTH, Calendar.DECEMBER);
-			end.set(Calendar.YEAR, start.get(Calendar.YEAR));
-		}		
-
-		// set dates
-		setDateStart(start.getTime());
-		setDateEnd(end.getTime());
-
-	}	
-
 	public Long getDateRangeByType() {
 		return daterangetype;
 	}
@@ -295,6 +237,30 @@ this.excludeNonExpense=excludeNonExpense;
 		return showsubcategories;
 	}	
 	
+	
+	
+	public String getSorttype() {
+		return sorttype;
+	}
+
+	public void setSorttype(String sorttype) {
+		if (this.sorttype != null && this.sorttype.equals(sorttype)) {
+			// same sort submitted - change the direction
+			changeSortDirection();
+		}
+		
+		this.sorttype = sorttype;
+	}
+
+
+	public Long getSortdir() {
+		return sortdir;
+	}
+
+	public void setSortdir(Long sortdir) {
+		this.sortdir = sortdir;
+	}
+
 	public boolean showSingleCategory() {
 		// single category set, and show subcategories not set
 		boolean showsinglecategory = getCategory() != null && (getShowSubcats()==null);
@@ -314,6 +280,96 @@ this.excludeNonExpense=excludeNonExpense;
 		return getSource()!=null && getSource().longValue()!=ImportManager.ImportClient.All;
 	}
 	
+
+	private void changeSortDirection() {
+		if (sortdir!=null) {
+			if (sortdir==SortDirection.Asc) {
+				this.sortdir = SortDirection.Desc;
+			} else {
+				this.sortdir=SortDirection.Asc;
+			}
+		} else {
+			sortdir=SortDirection.Desc;
+		} 
+		
+	}
+	
+	private void setDateRangeFromType(Long dateRangeType) {
+		this.daterangetype = dateRangeType;
+		// return if "DATERANGE"
+		if (dateRangeType.longValue() == DateRange.DATERANGE) {
+			return;
+		}
+		// return if "ALL"
+		if (dateRangeType.longValue() == DateRange.ALL) {
+			return;
+		}		
+		// set start and end dates
+		Calendar start = Calendar.getInstance();
+		Calendar end = Calendar.getInstance();
+		if (dateRangeType.longValue() == DateRange.CURRENT) {
+			end.add(Calendar.MONTH, 1);
+		} else if (dateRangeType.longValue() == DateRange.LAST) {
+			start.add(Calendar.MONTH, -1);
+		}  else if (dateRangeType.longValue() == DateRange.BEFORELAST) {
+			start.add(Calendar.MONTH, -2);
+			end.add(Calendar.MONTH, -1);
+		} else if (dateRangeType.longValue() == DateRange.THISWEEK) {
+			// get current day
+			int currentday = start.get(Calendar.DAY_OF_WEEK);
+	
+			// get last Saturday
+			Long toroll = (Long) weekhelper.get(new Integer(currentday));
+			start.add(Calendar.DAY_OF_MONTH, (int) toroll.longValue());
+			// get next Saturday
+			end = (Calendar) start.clone();
+			end.add(Calendar.DAY_OF_MONTH, 7);
+	
+		} else if (dateRangeType.longValue() == DateRange.LASTWEEK) {
+			// get current day
+			int currentday = start.get(Calendar.DAY_OF_WEEK);
+	
+			// get last Saturday
+			Long toroll = (Long) weekhelper.get(new Integer(currentday));
+			start.add(Calendar.DAY_OF_MONTH, (int) toroll.longValue());
+			start.add(Calendar.DAY_OF_MONTH, -7);
+			// get next Saturday
+			end = (Calendar) start.clone();
+			end.add(Calendar.DAY_OF_MONTH, 7);
+	
+		}
+	
+		if (dateRangeType.longValue() != DateRange.THISWEEK
+				&& dateRangeType.longValue() != DateRange.LASTWEEK) {
+			// set dates to first of month
+			start.set(Calendar.DAY_OF_MONTH, 1);
+			end.set(Calendar.DAY_OF_MONTH, 1);
+		}
+		
+		if (dateRangeType.longValue()== DateRange.THISYEAR) {
+			// set date to january 1st
+			start.set(Calendar.DAY_OF_MONTH, 1);
+			start.set(Calendar.MONTH, Calendar.JANUARY);
+			end.set(Calendar.DAY_OF_MONTH, 1);
+			end.add(Calendar.MONTH, 1);
+		}
+		
+		if (dateRangeType.longValue()== DateRange.LASTYEAR) {
+			// set date to january 1st
+			start.add(Calendar.YEAR, -1);
+			start.set(Calendar.DAY_OF_MONTH, 1);
+			start.set(Calendar.MONTH, Calendar.JANUARY);
+			end.set(Calendar.DAY_OF_MONTH, 31);
+			end.set(Calendar.MONTH, Calendar.DECEMBER);
+			end.set(Calendar.YEAR, start.get(Calendar.YEAR));
+		}		
+	
+		// set dates
+		setDateStart(start.getTime());
+		setDateEnd(end.getTime());
+	
+	}
+
 	public ExpenseCriteria clone()  {
 		ExpenseCriteria newobj = new ExpenseCriteria();
 		newobj.startdate= this.startdate;

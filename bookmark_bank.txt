@@ -15,9 +15,8 @@ look at failed maven all tests
 ---->future - change to JPA criteria!!?? (SearchService)
 continuing expenselist:
 	add edit links
-	also - show subcategories checkbox
+	also - show subcategories checkbox - (where were subcategories filled in before??)
 best to stop update before submit (javascript magic) if no category entered. otherwise all checkboxes are gone	
-	
 	
 
 
@@ -37,9 +36,10 @@ think about menu.... make second level for categories, rules, targets
 	
 ---- begin commit changes ----
 
-done - 	add bulk update category
-done - backend for update
-done - check sql for getExpenseListByIds, SearchService
+done - ordering - 
+done - fill in ExpenseCriteria methods for sorting
+done - wire into the Controller	
+
 
 ---- end commit changes ----
 
@@ -169,7 +169,9 @@ done -  bug in ExpenseCriteria - nothing for daterange all.  Add handling in set
 done - in ExpenseCriteria - change Month class to DateRange class
 done - add all options to selects in expense page
 done - still not returning results
-
+done - 	add bulk update category
+done - backend for update
+done - check sql for getExpenseListByIds, SearchService
 
 ---- end branch changes ----
 

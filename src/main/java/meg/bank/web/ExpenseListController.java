@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RequestMapping("/expense")
@@ -101,6 +102,23 @@ public class ExpenseListController {
 		model.setExpenses(list);		
 		// return
 		return "expense/list";
+	}
+	
+	
+	
+	@RequestMapping(method = RequestMethod.PUT,params="sort" ,produces = "text/html")
+	public String sortExpenses(@RequestParam("sort") String sorttype,@ModelAttribute("expenseListModel") ExpenseListModel model,Model uiModel,HttpServletRequest request) {
+		ExpenseCriteria criteria = model.getCriteria();
+		if (sorttype!=null) {
+			criteria.setSorttype(sorttype);	
+		}
+		HttpSession session = request.getSession();
+		session.setAttribute(sessioncriteria,criteria);
+		List<ExpenseDao> list = searchService.getExpenses(criteria);
+		model.setExpenses(list);
+
+		return "expense/list";
+	
 	}
 	
 	@InitBinder

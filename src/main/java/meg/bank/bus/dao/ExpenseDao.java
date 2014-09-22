@@ -38,7 +38,8 @@ entities={
         @FieldResult(name="comment", column="comment"),
         @FieldResult(name="month", column="month"),
         @FieldResult(name="year", column="year"),
-        @FieldResult(name="source", column="source")})},
+        @FieldResult(name="source", column="source"),
+        @FieldResult(name="displayamount", column="displayamount")})},
 columns={}
 )
 public class ExpenseDao {
@@ -64,6 +65,7 @@ public class ExpenseDao {
 	private String month;
 	private String year;
 	private Integer source;
+	private Double displayamount;
 
 
 	
@@ -210,4 +212,15 @@ public class ExpenseDao {
 	public void setYear(String year) {
         this.year = year;
     }
+
+	public Double getDisplayamount() {
+		return displayamount;
+	}
+
+	public void setDisplayamount(Double displayamount) {
+		this.displayamount = displayamount;
+	}
+
+	
+
 }
