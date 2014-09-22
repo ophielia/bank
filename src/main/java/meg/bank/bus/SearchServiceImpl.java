@@ -35,6 +35,9 @@ public class SearchServiceImpl implements SearchService {
     @PersistenceContext
     private EntityManager entityManager;
     
+    @Autowired
+    private CategoryService catService;
+    
 	private List<ExpenseDao> getExpenseByCatType(ExpenseCriteria criteria,Long catType) {
 		// calls searchService.getExpenseByCatType(ExpenseCriteria criteria,Long catType) 
 		// base statement
@@ -63,6 +66,16 @@ public class SearchServiceImpl implements SearchService {
 		// save orig cat type
 		Long origcattype = criteria.getCategorizedType();
 		
+		// check if category list has been filled, if necessary
+		if (criteria.getShowSubcats()!=null && criteria.getShowSubcats().booleanValue()) {
+			if (criteria.getCategoryLevelList()==null) {
+				// want to show subcategories, but they haven't been filled in - fix this
+				CategoryLevel catlevel = catService.getAsCategoryLevel(criteria.getCategory());
+				CategoryDao cat= catlevel.getCategory();
+				List<CategoryLevel> subcats = catService.getAllSubcategories(cat);
+				criteria.setCategoryLevelList(subcats);
+			} 
+		}
 		
 		if (origcattype==null || origcattype.longValue()==ExpenseCriteria.CategorizedType.ALL) {
 			// all
@@ -329,7 +342,7 @@ public class SearchServiceImpl implements SearchService {
 				}
 
 				Expression<Long> param = exp.<Long>get("catid");
-				whereclause.add(exp.in(catids));
+				whereclause.add(exp.get("catid").in(catids));
 			}	
 			// non-expense handling
 			if (criteria.getExcludeNonExpense() != null) {

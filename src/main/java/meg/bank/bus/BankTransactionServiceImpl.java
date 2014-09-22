@@ -435,16 +435,18 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 	 */
 	@Override
 	public void assignCategoriesToExpenses(Long catid, List<String> selectedids) {
-		List<ExpenseDao> toupdate = searchService.getExpenseListByIds(selectedids);
-		// loop through selected list
-		for (ExpenseDao expense:toupdate) {
-			if (expense.getHascat().booleanValue()) {
-				// if expense has a category already, existing category must be
-				// updated
-				updateCategoryExp(expense.getCattransid(), catid);
-			} else {
-				// otherwise, assign category to BankTA
-				assignCategory(expense.getTransid(), catid);
+		if (selectedids!=null && selectedids.size()>0) {
+			List<ExpenseDao> toupdate = searchService.getExpenseListByIds(selectedids);
+			// loop through selected list
+			for (ExpenseDao expense:toupdate) {
+				if (expense.getHascat().booleanValue()) {
+					// if expense has a category already, existing category must be
+					// updated
+					updateCategoryExp(expense.getCattransid(), catid);
+				} else {
+					// otherwise, assign category to BankTA
+					assignCategory(expense.getTransid(), catid);
+				}
 			}
 		}
 	}

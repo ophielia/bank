@@ -262,18 +262,25 @@ this.excludeNonExpense=excludeNonExpense;
 	}
 
 	public boolean showSingleCategory() {
-		// single category set, and show subcategories not set
-		boolean showsinglecategory = getCategory() != null && (getShowSubcats()==null);
-		// OR showsubcats set to false
-		showsinglecategory |= (getShowSubcats()!=null && !getShowSubcats().booleanValue());
-		return showsinglecategory;
+		// single category set??
+		if (getCategory()!=null) {
+			if (getShowSubcats()!=null) {
+				return !getShowSubcats();
+			} else {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public boolean showListOfCategories() {
 		// single category set, and show subcategories not set
-		boolean showcategorylist =(getCategoryLevelList() != null
-				&& getCategoryLevelList().size() > 0);
-		return showcategorylist;
+		if (getShowSubcats()!=null && getShowSubcats().booleanValue()) {
+			boolean showcategorylist =(getCategoryLevelList() != null
+					&& getCategoryLevelList().size() > 0);
+			return showcategorylist;
+		}
+		return false;
 	}
 	
 	public boolean showBySource() {

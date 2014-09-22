@@ -15,6 +15,7 @@ import meg.bank.bus.dao.CategoryRuleDao;
 import meg.bank.bus.repo.CategoryRepository;
 import meg.bank.bus.repo.CatRelationshipRepository;
 import meg.bank.bus.repo.CategoryRuleRepository;
+import meg.bank.web.model.CategoryModel;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -351,6 +352,20 @@ public class CategoryServiceImpl implements CategoryService {
 			return cat;
 		}
 		return toupdate;
+	}
+
+	@Override
+	public CategoryModel loadCategoryModel(Long id) {
+		CategoryDao cat = catRepository.findOne(id);
+		HashMap<Long, CategoryDao> allcats = getCategoriesAsMap();
+		CategoryModel newmodel = new CategoryModel(cat, allcats);
+		if (cat != null) {
+			List<CategoryDao> list = getDirectSubcategories(cat.getId());
+			newmodel.setSubcategories(list);
+			Long parentid = getParentIdForCat(id);
+			newmodel.setParentcatid(parentid);
+		}
+		return newmodel;
 	}
 	
 }

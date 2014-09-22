@@ -21,7 +21,7 @@ public class ExpenseListModel implements Serializable {
 	private List<Boolean> checked;
 	private List<String> idref;
 	private Long batchUpdate;
-
+	private Boolean showSubcats;
 	
 	
 	private ExpenseCriteria expensecriteria;
@@ -104,6 +104,16 @@ public class ExpenseListModel implements Serializable {
 
 	public void setBatchUpdate(Long batchUpdate) {
 		this.batchUpdate = batchUpdate;
+	}
+
+	
+	
+	public Boolean getShowSubcats() {
+		return expensecriteria.getShowSubcats();
+	}
+
+	public void setShowSubcats(Boolean showSubcats) {
+		this.expensecriteria.setShowSubcats(showSubcats);
 	}
 
 	public List<String> getCheckedExpenseIds() {

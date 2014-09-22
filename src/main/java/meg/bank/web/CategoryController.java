@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -42,6 +44,16 @@ public class CategoryController {
 	private void populateCategoryList(Model uiModel) {
 		uiModel.addAttribute("catList",catRepo.findAll());
 	}
+	
+	@ModelAttribute("categorylist")
+	protected List<CategoryDao> referenceCategoryData(HttpServletRequest request, Object command,
+			Errors errors) throws Exception {
+		List<CategoryDao> list = categoryService.getCategories(false);
+		
+		
+		// return model
+		return list;
+	}	
 	
 	@RequestMapping(produces = "text/html")
     public String showList(Model uiModel) {
@@ -102,12 +114,8 @@ public class CategoryController {
     @RequestMapping(params = "form",value = "/edit/{id}",method = RequestMethod.GET, produces = "text/html")
     public String createEditForm(@PathVariable("id") Long id,Model uiModel) {
     	HashMap<Long,CategoryDao> allcats = categoryService.getCategoriesAsMap();
-    	CategoryDao cat = catRepo.findOne(id);
-    	if (cat!=null) {
-        	CategoryModel newmodel = new CategoryModel(cat,allcats);
-        	List<CategoryDao> list = categoryService.getDirectSubcategories(cat.getId());
-        	newmodel.setSubcategories(list);
-
+    	CategoryModel newmodel = categoryService.loadCategoryModel(id);
+    	if (newmodel.getCategory()!=null) {
             populateEditForm(uiModel, newmodel);
             return "categories/edit";
     		

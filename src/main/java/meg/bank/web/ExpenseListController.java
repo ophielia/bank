@@ -132,6 +132,7 @@ public class ExpenseListController {
 		criteria.setCategorizedType(new Long(ExpenseCriteria.CategorizedType.ALL));
 		criteria.setSource(new Long(ImportManager.ImportClient.All));
 		criteria.setTransactionType(new Long(ExpenseCriteria.TransactionType.DEBITS));
+		criteria.setShowSubcats(false);
 		return criteria;
 	}
 

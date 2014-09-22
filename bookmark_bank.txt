@@ -8,17 +8,13 @@ aggregate puzzle
 
 
 check / take care of column manager - still Hib
-Category Edit page - not displaying current "owning" category
+
 remove hard copy dojo scripts
 look at failed maven all tests
 
 ---->future - change to JPA criteria!!?? (SearchService)
 continuing expenselist:
 	add edit links
-	also - show subcategories checkbox - (where were subcategories filled in before??)
-best to stop update before submit (javascript magic) if no category entered. otherwise all checkboxes are gone	
-	
-
 
 ColumnManagerService displayonly should change sql depending upon true or false
 
@@ -36,9 +32,10 @@ think about menu.... make second level for categories, rules, targets
 	
 ---- begin commit changes ----
 
-done - ordering - 
-done - fill in ExpenseCriteria methods for sorting
-done - wire into the Controller	
+done - also - show subcategories checkbox - (where were subcategories filled in before??)
+done - best to stop update before submit (javascript magic) if no category entered. otherwise all checkboxes are gone	
+done - Category Edit page - not displaying current "owning" category	
+
 
 
 ---- end commit changes ----
@@ -172,6 +169,9 @@ done - still not returning results
 done - 	add bulk update category
 done - backend for update
 done - check sql for getExpenseListByIds, SearchService
+done - ordering - 
+done - fill in ExpenseCriteria methods for sorting
+done - wire into the Controller	
 
 ---- end branch changes ----
 

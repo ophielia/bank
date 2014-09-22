@@ -6,6 +6,7 @@ import java.util.List;
 import meg.bank.bus.dao.CatRelationshipDao;
 import meg.bank.bus.dao.CategoryDao;
 import meg.bank.bus.dao.CategoryRuleDao;
+import meg.bank.web.model.CategoryModel;
 
 public interface CategoryService {
 
@@ -48,5 +49,7 @@ public interface CategoryService {
 	public abstract void moveRuleUp(Long moveupid);
 
 	public abstract CategoryDao updateCategory(CategoryDao category);
+
+	public abstract CategoryModel loadCategoryModel(Long id);
 
 }

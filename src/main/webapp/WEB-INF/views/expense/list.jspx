@@ -19,6 +19,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_expenselist_transtype" htmlEscape="false" var="ltype"/>    
 <spring:message code="label_expenselist_detail" htmlEscape="false" var="ldetail"/>    
 <spring:message code="label_expenselist_amount" htmlEscape="false" var="lamount"/>    
+<spring:message code="label_expenselist_showsubcats" htmlEscape="false" var="lsubcats"/>    
+<spring:message code="field_invalid" arguments="${lcat}" htmlEscape="false" var="missingcat"/>    
 
 <spring:url value="/expense" var="actionurl"/>
 
@@ -48,6 +50,18 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	      		  form.submit();
 	          });
 	  	});
+
+	   	form = dojo.byId("expenselist");
+	   	on(form, "input#batchupd:click", function(event){
+	   	   if (this.id="batchupd") {
+	   		checkselect = dojo.byId("batchUpdate");
+	   		if (checkselect.value == "") {
+	   			alert("${missingcat}");
+		   		event.preventDefault();
+		   		event.stopPropagation();	   			
+	   		}
+	   	   }
+	   	});
 	
 	});
  </script>
@@ -63,6 +77,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <td>${lcat}</td>
 <td>${lsource}</td>
 <td>${ltype}</td>
+<td>${lsubcats}</td>
 </tr>
 </THEAD>
 <tbody>
@@ -90,6 +105,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 							<form:options items="${transtypelist}" itemValue="value"
 								itemLabel="display" />
 						</form:select></td>
+						<td><form:checkbox path="showSubcats"/></td>
 				</tr>
 			</tbody>
 </table>
@@ -102,7 +118,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
        <form:select path="batchUpdate">
 				<form:option value="" label="--Please Select" />
 				<form:options items="${categorylist}" itemValue="id" itemLabel="name" />
-			</form:select> 		 <input id="searchbutton" type="submit" name="updatecat" value="Update Selected"/>
+			</form:select> 		 <input id="batchupd" type="submit" name="updatecat" value="Update Selected"/>
 <TABLE>
 		<thead>
 				<tr >

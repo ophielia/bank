@@ -33,11 +33,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
       </label>
 <form:errors id="parentcatid_errors" path="*" />
 <form:select path="parentcatid">
-<form:option value="0" label="--Please Select" />
-<c:forEach items="${categoryModel.allcategories}" var="cat">
-<form:option value="${cat.key}" label="${cat.value.name}" />
-</c:forEach>
-</form:select>
+				<form:option value="" label="--Please Select" />
+				<form:options items="${categorylist}" itemValue="id" itemLabel="name" />
+			</form:select> 
 </td>
 
 <td>
