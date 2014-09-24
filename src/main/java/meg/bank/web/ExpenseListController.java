@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-@RequestMapping("/expense")
+@RequestMapping("/expense/list")
 @Controller
 public class ExpenseListController {
 

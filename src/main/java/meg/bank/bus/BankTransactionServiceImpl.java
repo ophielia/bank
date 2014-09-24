@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +19,7 @@ import meg.bank.bus.repo.CategoryRepository;
 import meg.bank.bus.repo.CategoryRuleRepository;
 import meg.bank.bus.repo.CategoryTARepository;
 import meg.bank.bus.report.CategorySummaryDisp;
+import meg.bank.web.model.ExpenseEditModel;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -121,15 +123,7 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 		return listofassigned;
 	}
 	
-	/* (non-Javadoc)
-	 * @see meg.bank.bus.BankTransactionService#getNewCategoryExpense(java.lang.Long)
-	 */
-	@Override
-	public CategoryTADao getNewCategoryExpense(Long transactionId) {
-		CategoryTADao newcat = new CategoryTADao();
-		newcat.setBanktaid(transactionId);
-		return newcat;
-	}
+
 	
 	/* (non-Javadoc)
 	 * @see meg.bank.bus.BankTransactionService#deleteCategoryExpense(java.lang.Long)
@@ -261,7 +255,7 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 		catta.setAmount(bankta.getAmount());
 		catta.setCatid(catid);
 		catta.setCreatedon(new Date());
-		catta.setBanktaid(bankta.getId());
+		catta.setBanktrans(bankta);
 	
 		// add CategoryTADao to DB
 		catTransRep.saveAndFlush(catta);
@@ -356,7 +350,7 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 		if (tosave != null ) {
 			while (tosave.hasMoreElements()) {
 				CategoryTADao cat = (CategoryTADao) tosave.nextElement();
-				cat.setBanktaid(transaction.getId());
+				cat.setBanktrans(transaction);
 				cat.setCreatedon(new Date());
 				catTransRep.save(cat);
 			}
@@ -499,5 +493,20 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 			catsum.setCatName(dispname);
 		}
 		return displays;
+	}
+
+	@Override
+	public ExpenseEditModel loadExpenseEditModel(Long id) {
+		// load transaction
+		BankTADao bankta = bankTransRep.findOne(id);
+		// get any category expenses
+		List<CategoryTADao> catexpenses = bankta.getCategorizedExp();
+		// get hash of categories
+		HashMap<Long,CategoryDao> categoryref = cms.getCategoriesAsMap();
+		
+		// set all in the model
+		ExpenseEditModel model = new ExpenseEditModel(bankta,catexpenses,categoryref);
+		// return the model
+		return model;
 	}
 }

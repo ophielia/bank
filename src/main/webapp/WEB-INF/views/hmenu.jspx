@@ -7,7 +7,7 @@
     <jsp:output omit-xml-declaration="yes"/>
     
 <ul id="nav">
-	<li><moo:menulink label="bank_transactions" url="/expense" /></li>
+	<li><moo:menulink label="bank_transactions" url="/expense/list" /></li>
 	<li><moo:menulink label="bank_import" url="/import?form" /></li>
 	<li><moo:menulink label="bank_categories" url="/categories" />
 		<ul>

@@ -4,5 +4,7 @@
     <definition extends="default" name="expense/list">
         <put-attribute name="body" value="/WEB-INF/views/expense/list.jspx"/>
     </definition>
-
+    <definition extends="default" name="expense/edit">
+        <put-attribute name="body" value="/WEB-INF/views/expense/edit.jspx"/>
+    </definition>
 </tiles-definitions>

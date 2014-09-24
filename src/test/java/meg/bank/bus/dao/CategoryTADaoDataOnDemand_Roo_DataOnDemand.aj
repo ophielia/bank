@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Random;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import meg.bank.bus.dao.BankTADaoDataOnDemand;
 import meg.bank.bus.dao.CategoryTADao;
 import meg.bank.bus.dao.CategoryTADaoDataOnDemand;
 import meg.bank.bus.repo.CatTARepository;
@@ -28,12 +29,14 @@ privileged aspect CategoryTADaoDataOnDemand_Roo_DataOnDemand {
     private List<CategoryTADao> CategoryTADaoDataOnDemand.data;
     
     @Autowired
+    BankTADaoDataOnDemand CategoryTADaoDataOnDemand.bankTADaoDataOnDemand;
+    
+    @Autowired
     CatTARepository CategoryTADaoDataOnDemand.catTARepository;
     
     public CategoryTADao CategoryTADaoDataOnDemand.getNewTransientCategoryTADao(int index) {
         CategoryTADao obj = new CategoryTADao();
         setAmount(obj, index);
-        setBanktaid(obj, index);
         setCatid(obj, index);
         setComment(obj, index);
         setCreatedon(obj, index);
@@ -43,11 +46,6 @@ privileged aspect CategoryTADaoDataOnDemand_Roo_DataOnDemand {
     public void CategoryTADaoDataOnDemand.setAmount(CategoryTADao obj, int index) {
         Double amount = new Integer(index).doubleValue();
         obj.setAmount(amount);
-    }
-    
-    public void CategoryTADaoDataOnDemand.setBanktaid(CategoryTADao obj, int index) {
-        Long banktaid = new Integer(index).longValue();
-        obj.setBanktaid(banktaid);
     }
     
     public void CategoryTADaoDataOnDemand.setCatid(CategoryTADao obj, int index) {

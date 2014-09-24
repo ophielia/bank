@@ -11,6 +11,6 @@ import org.springframework.roo.addon.layers.repository.jpa.RooJpaRepository;
 @RooJpaRepository(domainType = CategoryTADao.class)
 public interface CategoryTARepository {
 	
-			@Query("select b from CategoryTADao b where b.banktaid=:transid")
+			@Query("select b from CategoryTADao b where b.banktrans=:transid")
 			List<CategoryTADao> findByBankTrans(@Param("transid") Long transid);			
 }

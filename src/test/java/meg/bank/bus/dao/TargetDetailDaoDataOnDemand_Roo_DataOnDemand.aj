@@ -45,6 +45,9 @@ privileged aspect TargetDetailDaoDataOnDemand_Roo_DataOnDemand {
     
     public void TargetDetailDaoDataOnDemand.setCatid(TargetDetailDao obj, int index) {
         Long catid = new Integer(index).longValue();
+        if (catid < 1L) {
+            catid = 1L;
+        }
         obj.setCatid(catid);
     }
     

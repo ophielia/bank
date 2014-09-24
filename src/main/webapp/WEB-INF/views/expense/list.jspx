@@ -22,7 +22,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_expenselist_showsubcats" htmlEscape="false" var="lsubcats"/>    
 <spring:message code="field_invalid" arguments="${lcat}" htmlEscape="false" var="missingcat"/>    
 
-<spring:url value="/expense" var="actionurl"/>
+<spring:url value="/expense/list" var="actionurl"/>
 
 <script type="text/javascript">
  require([
@@ -131,6 +131,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		</tr>
 		</thead>
 		<tbody>
+		
  <c:forEach var="exp" items="${expenseListModel.expenses}" varStatus="expstatus">
  			<tr>
  			<td><form:checkbox path="checked[${expstatus.index}]"  />
@@ -140,7 +141,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			<td>${exp.catName}</td>
 			<td>${exp.detail}</td>
 			<td>${exp.displayamount}</td>
-			<td></td>
+			<td>
+			<spring:url value="/expense/edit/${exp.transid}" var="editurl"/>
+			<a href="${editurl}">Edit</a>
+			</td>
  			</tr>
  </c:forEach>		
 		</tbody>

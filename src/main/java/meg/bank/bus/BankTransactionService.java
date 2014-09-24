@@ -7,30 +7,25 @@ import meg.bank.bus.dao.BankTADao;
 import meg.bank.bus.dao.CategoryTADao;
 import meg.bank.bus.dao.ExpenseDao;
 import meg.bank.bus.report.CategorySummaryDisp;
+import meg.bank.web.model.ExpenseEditModel;
 
 public interface BankTransactionService {
 
 	public abstract void deleteBankTA(Long todelete);
-
 	public abstract Date getFirstTransDate();
-
 	public abstract List<TransToCategory> getAssignedCategoryList();
-
-	public abstract CategoryTADao getNewCategoryExpense(Long transactionId);
-
+	public abstract List<BankTADao> getAllBankTransactions();
+	public abstract void clearCategoryAssignment(Long toclear);
+	
 	public abstract void deleteCategoryExpense(Long deleteid);
-
 	public abstract void deleteCategoryExpenseByTransaction(Long transid);
-
 	public abstract boolean doesDuplicateExist(BankTADao trans);
-
 	public abstract Date getMostRecentTransDate();
-
 	public abstract BankTADao addTransaction(BankTADao trans);
 
-	public abstract List<BankTADao> getAllBankTransactions();
+	
 
-	public abstract void clearCategoryAssignment(Long toclear);
+	
 
 	public abstract BankTADao getTransaction(Long transid);
 
@@ -65,5 +60,7 @@ public interface BankTransactionService {
 
 	public abstract List<CategorySummaryDisp> getExpenseTotal(
 			ExpenseCriteria criteria, String dispname);
+
+	public abstract ExpenseEditModel loadExpenseEditModel(Long id);
 
 }

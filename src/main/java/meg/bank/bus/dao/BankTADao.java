@@ -1,7 +1,10 @@
 package meg.bank.bus.dao;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
@@ -39,5 +42,8 @@ public class BankTADao {
 	private Date importdate;
 
 	private Integer source;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "banktrans")
+	private List<CategoryTADao> categorizedExp;
 
 }

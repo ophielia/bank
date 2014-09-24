@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    
+    <spring:message code="label_expenseedit" var="expensetitle"/>
+    <h1>${expensetitle}</h1>
+
+<spring:message code="label_expenselist_cat" htmlEscape="false" var="lcat"/>  
+<spring:message code="label_expenselist_amount" htmlEscape="false" var="lamount"/>
+<spring:message code="button_edit" htmlEscape="false" var="button_edit"/>    
+<spring:message code="button_clear" htmlEscape="false" var="button_clear"/>    
+<spring:message code="label_expenseedit_info" htmlEscape="false" var="label_expenseedit_info"/>    
+<spring:message code="label_expenselist_date" htmlEscape="false" var="label_expenselist_date"/>    
+<spring:message code="label_expenseedit_description" htmlEscape="false" var="label_expenseedit_description"/>    
+<spring:message code="label_expenselist_detail" htmlEscape="false" var="label_expenselist_detail"/>    
+<spring:message code="label_expenseedit_importdate" htmlEscape="false" var="label_expenseedit_importdate"/>    
+<spring:message code="label_expenselist_source" htmlEscape="false" var="label_expenselist_source"/>    
+<spring:message code="label_expenselist_amount" htmlEscape="false" var="label_expenselist_amount"/> 
+<spring:message code="button_addparam" arguments="${lcat}" htmlEscape="false" var="addcat"/>   
+
+
+<spring:message code="label_expenselist_cattype" htmlEscape="false" var="lcattype"/>    
+   
+<spring:message code="label_expenselist_transtype" htmlEscape="false" var="ltype"/>    
+<spring:message code="label_expenselist_detail" htmlEscape="false" var="ldetail"/>    
+<spring:message code="label_expenselist_showsubcats" htmlEscape="false" var="lsubcats"/>    
+<spring:message code="field_invalid" arguments="${lcat}" htmlEscape="false" var="missingcat"/>    
+
+<spring:url value="/expense/edit/${expenseEditModel.transid}" var="actionurl"/>
+
+<script type="text/javascript">
+ require([
+          'dojo/dom',"dojo/on","dojo/dom-construct","dojo/dom-style",
+          'dojo/domReady!'
+      ], function (dom,on,domConstruct,domStyle) {
+	 
+	 	function getIndex(prefix,text) {
+			// gets a substring of the text, starting at the char after the length of the prefix
+			var stripped = text.substr(prefix.length);
+			return stripped;
+		} 
+		 
+
+
+	// wire up categoryselect
+	   	button = dojo.byId("categoryentry");
+	   	on(button, "change", function(event){
+	   	   // find corresponding catid
+	   	   // get value of editIdx
+	   	   idx = dojo.byId("editIdx").value;
+	   	   handle = "entrycats" + idx;
+	   	   // get handle on input for entrycats with editIdx
+	   	   toset = dojo.byId(handle);
+	   	   // set it to value of selectbox
+	   	   toset.value=this.options[this.selectedIndex].id;
+	   	   // get handle on displayspan for category
+	   	   handle="displayhandle" + idx;
+	   	toset = dojo.byId(handle);
+	   	toset.innerHTML = this.options[this.selectedIndex].label;
+	   	   
+	   	});
+
+	   	 
+
+// wire up edit row buttons
+	   	dojo.query("input[id^='editcat']").forEach(function(node) {
+	  		var id = node.id;
+
+	          on(dojo.byId(id), 'click', function(event){
+	        	  // get index of clicked button
+	        	  clickedid = event.currentTarget.id;
+	        	  clickedidx = getIndex('editcat',clickedid);
+	        	  // set editIdx
+	        	  dojo.byId("editIdx").value=clickedidx;
+	        	  // get handle on display element
+	        	  displayname="displayhandle"+clickedidx;
+	        	  disphandle = dojo.byId(displayname);
+	        	  // get handle on select
+	        	  //selecthandle = dojo.byId("selecthandle");
+	        	  // place select after display element
+	        	  domConstruct.place("selecthandle",displayname,"after");
+	        	  // hide display element
+				   domStyle.set(displayname, "display", "none");	        	  
+	          });
+	  	});
+
+	   	form = dojo.byId("expenseedit");
+	   	on(form, "input[id^='editcat']:click", function(event){
+	   		event.preventDefault();
+	   		event.stopPropagation();
+	   	});
+	
+	});
+ </script>
+
+
+<form:form action="${actionurl}" id="expenseedit" method="PUT" modelAttribute="expenseEditModel">
+
+<table>
+      <tr>
+      <td><h3>${label_expenseedit_info}</h3>
+      ${label_expenselist_date}:<fmt:formatDate value="${expenseEditModel.transdate}" var="dateString" pattern="MM/dd/yyyy" />${dateString}
+      <br />
+      ${label_expenseedit_description}:${expenseEditModel.description}
+      <br />
+      ${label_expenselist_detail}:${expenseEditModel.detail}
+      <br />        
+       ${label_expenselist_source}:${expenseEditModel.source}
+      <br />   
+       ${label_expenseedit_importdate}: <fmt:formatDate value="${expenseEditModel.importdate}" var="importString" pattern="MM/dd/yyyy" />${importString}
+      <br />                 
+      <br />                 
+       ${label_expenselist_amount}: ${expenseEditModel.amount}
+      <br />        
+      
+      </td>
+      <td>Quick Groups</td>
+      </tr>
+      </table>
+      <br />
+      <br />
+<hr />
+      <input id="addcategory" name="addcategory" type="submit" value="${addcat}"/><br />
+
+      <table>
+      <THEAD>
+      <tr>
+      <td>${lcat}</td>
+      <td>${lamount}</td>
+      <td></td>
+      </tr>
+      </THEAD>
+      <tbody>
+      <c:forEach var="expcat" items="${expenseEditModel.entrycats}" varStatus="status">
+
+		<c:choose>
+		<c:when test="${status.index==expenseEditModel.editIdx}">
+			<tr>
+				<td><!--  choose select box or not -->
+				<span id="selecthandle"><select id="categoryentry">
+				<option id="" label="- - Select - - " />
+					<c:forEach var="category" items="${categorylist}">
+					<option id="${category.id}" label="${category.name}" />
+					</c:forEach>
+				</select></span>
+				<span style="display:none" id="displayhandle${status.index}">${expenseEditModel.entrycatdisplays[status.index]}</span> <form:input path="entrycats[${status.index}]" type="hidden"></form:input>
+				</td>
+				<td><form:input path="entryamounts[${status.index}]" type="text"></form:input></td>
+				<td> ${button_clear}</td>
+			</tr>	      
+		</c:when>
+		<c:otherwise>
+			<tr>
+			<td><!--  choose select box or not -->
+			<span id="displayhandle${status.index}">${expenseEditModel.entrycatdisplays[status.index]}</span>
+			<form:input path="entrycats[${status.index}]" type="hidden"></form:input> 
+			</td>
+			<td>${expenseEditModel.entryamounts[status.index]}</td>
+			<td><input id="editcat${status.index}" name="editcat${status.index}" type="submit" value="${button_edit}"/>   ${button_clear}</td>
+			</tr>
+		</c:otherwise>
+		</c:choose>
+      
+      
+      
+      </c:forEach>
+      </tbody>
+      </table>
+	Reset Cancel Distribute Amount   Distribute Remainder   Save
+	
+	<br /><form:input path="editIdx" type="text" ></form:input>
+      <c:if test="${999==expenseEditModel.editIdx}">
+      <span id="selecthandle"><select id="categoryentry">
+      <option id="" label="- - Select - - " />
+      <c:forEach var="category" items="${categorylist}">
+<option id="${category.id}" label="${category.name}" />
+      </c:forEach>
+      </select></span>
+      </c:if>	
+</form:form>
+
+</div>

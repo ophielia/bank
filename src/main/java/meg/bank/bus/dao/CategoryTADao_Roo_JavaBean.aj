@@ -4,6 +4,7 @@
 package meg.bank.bus.dao;
 
 import java.util.Date;
+import meg.bank.bus.dao.BankTADao;
 import meg.bank.bus.dao.CategoryTADao;
 
 privileged aspect CategoryTADao_Roo_JavaBean {
@@ -32,20 +33,20 @@ privileged aspect CategoryTADao_Roo_JavaBean {
         this.createdon = createdon;
     }
     
-    public Long CategoryTADao.getBanktaid() {
-        return this.banktaid;
-    }
-    
-    public void CategoryTADao.setBanktaid(Long banktaid) {
-        this.banktaid = banktaid;
-    }
-    
     public String CategoryTADao.getComment() {
         return this.comment;
     }
     
     public void CategoryTADao.setComment(String comment) {
         this.comment = comment;
+    }
+    
+    public BankTADao CategoryTADao.getBanktrans() {
+        return this.banktrans;
+    }
+    
+    public void CategoryTADao.setBanktrans(BankTADao banktrans) {
+        this.banktrans = banktrans;
     }
     
 }

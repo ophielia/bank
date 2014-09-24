@@ -14,7 +14,17 @@ look at failed maven all tests
 
 ---->future - change to JPA criteria!!?? (SearchService)
 continuing expenselist:
-	add edit links
+	
+remove empty constructor in EEM
+make edit link in expenselist polite
+
+javascript in page - 
+	make edit show an input box for amount (maybe hiddens for displayonly - like catid
+	try row level clear without server submit - working with hidden boxes.  But don't stress this - can be server submit
+	need an "unedit" function, to unhide displays, hide input.  Should show empty if cat not set
+	also, in unedit function, set select index to 0
+	
+	Implemented with server call - Reset, Cancel, Distribute Amount, Distribute Remainder, Save 
 
 ColumnManagerService displayonly should change sql depending upon true or false
 
@@ -32,12 +42,14 @@ think about menu.... make second level for categories, rules, targets
 	
 ---- begin commit changes ----
 
-done - also - show subcategories checkbox - (where were subcategories filled in before??)
-done - best to stop update before submit (javascript magic) if no category entered. otherwise all checkboxes are gone	
-done - Category Edit page - not displaying current "owning" category	
-
-
-
+done - 	add edit links
+done - begin work on edittransaction page
+done - basic mapping	
+done - model - fill in copyEntriesIntoCategories method.
+done -  back end loadExpenseEditModel
+done - test load EEM
+done - implement BTM load EEM
+done - run til it's green!
 ---- end commit changes ----
 
 ----- begin branch changes ----
@@ -172,6 +184,13 @@ done - check sql for getExpenseListByIds, SearchService
 done - ordering - 
 done - fill in ExpenseCriteria methods for sorting
 done - wire into the Controller	
+done - also - show subcategories checkbox - (where were subcategories filled in before??)
+done - best to stop update before submit (javascript magic) if no category entered. otherwise all checkboxes are gone	
+done - Category Edit page - not displaying current "owning" category	
+done - model - copied
+done - controller - copied
+done - page - stub copy
+
 
 ---- end branch changes ----
 
