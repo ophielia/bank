@@ -7,6 +7,7 @@ import java.util.List;
 import meg.bank.bus.dao.BankTADao;
 import meg.bank.bus.dao.BankTADaoDataOnDemand;
 import meg.bank.bus.dao.CategoryDao;
+import meg.bank.bus.dao.CategoryDaoDataOnDemand;
 import meg.bank.bus.dao.CategoryTADao;
 import meg.bank.bus.dao.ExpenseDao;
 import meg.bank.bus.repo.BankTARepository;
@@ -47,6 +48,8 @@ public class BankTransactionServiceTest {
 	BankTADao withcategorized;
 	BankTADao withoutcategorized;
 
+	List<CategoryDao> randomcats;
+	
 	@Before
 	public void setup() {
 		tCat = catService.addCategory("tCat", "", false, true);
@@ -62,8 +65,9 @@ public class BankTransactionServiceTest {
 		cat.setCatid(tCat.getId());
 		cat.setAmount(100D);
 		cat.setCreatedon(new Date());
-		withcategorized.setCategorizedExp(new ArrayList<CategoryTADao>());
-		withcategorized.getCategorizedExp().add(cat);
+		//withcategorized.setCategorizedExp(new ArrayList<CategoryTADao>());
+		//withcategorized.getCategorizedExp().add(cat);
+		//MM fix test
 		bankRepo.saveAndFlush(withcategorized);
 		cat.setBanktrans(withcategorized);
 		cat = catExpRepo.saveAndFlush(cat);
@@ -72,6 +76,9 @@ public class BankTransactionServiceTest {
 		bDod = new BankTADaoDataOnDemand();
 		withoutcategorized = bDod.getNewTransientBankTADao(12);
 		bankRepo.saveAndFlush(withoutcategorized);
+		
+		randomcats=catService.getCategories(true);
+		
 	}
 
 	@Test
@@ -138,6 +145,74 @@ public class BankTransactionServiceTest {
 		Assert.assertEquals(0, testmodel.getEntryamounts().size());
 	}
 
+	@Test
+	public void testSaveExpenseEditModel() {
+		// get trans with category as model
+		Long id = withcategorized.getId();
+		ExpenseEditModel model = transService.loadExpenseEditModel(id);
+		// add three more categories
+		List<CategoryTADao> exps = model.getCategoryExpenses();
+		
+		for (int i = 0; i < 3; i++) {
+			CategoryTADao newcat = new CategoryTADao();
+			newcat.setCatid(randomcats.get(i).getId());
+			newcat.setAmount(-10D);
+			exps.add(newcat);
+		}
+		model.setCategoryExpenses(exps);
+		// save from model
+		transService.saveFromExpenseEdit(model);
+
+		// load from model
+		ExpenseEditModel test = transService.loadExpenseEditModel(id);
+
+		// ensure that model contains 4 expenses
+		Assert.assertNotNull(test);
+		Assert.assertEquals(4, test.getCategoryExpenses().size());
+		
+		
+		
+		// now try with delete
+		model = transService.loadExpenseEditModel(id);
+		List<CategoryTADao> cats = model.getCategoryExpenses();
+		cats.remove(0);
+		model.setCategoryExpenses(cats);
+		// save from model
+		transService.saveFromExpenseEdit(model);
+
+		// load from model
+		test = transService.loadExpenseEditModel(id);
+
+		// ensure that model contains 3 expenses
+		Assert.assertNotNull(test);
+		Assert.assertEquals(3, test.getCategoryExpenses().size());		
+		
+		// now try with lots of same categories
+		id = withoutcategorized.getId();
+		model = transService.loadExpenseEditModel(id);
+		exps = new ArrayList<CategoryTADao>();
+		
+		Long catid = randomcats.get(3).getId();
+		for (int i = 0; i < 3; i++) {
+			CategoryTADao newcat = new CategoryTADao();
+			newcat.setCatid(catid);
+			newcat.setAmount(-10D);
+			exps.add(newcat);
+		}
+		
+		model.setCategoryExpenses(exps);
+		// save from model
+		transService.saveFromExpenseEdit(model);
+
+		// load from model
+		test = transService.loadExpenseEditModel(id);
+
+		// ensure that model contains 1 expense
+		Assert.assertNotNull(test);
+		Assert.assertEquals(1, test.getCategoryExpenses().size());			
+		
+	}
+	
 	/**
 	 * 
 	 addTransaction(BankTADao) assignCategory(Long, Long)

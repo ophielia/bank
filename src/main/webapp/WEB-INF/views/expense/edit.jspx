@@ -24,14 +24,14 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_expenselist_source" htmlEscape="false" var="label_expenselist_source"/>    
 <spring:message code="label_expenselist_amount" htmlEscape="false" var="label_expenselist_amount"/> 
 <spring:message code="button_addparam" arguments="${lcat}" htmlEscape="false" var="addcat"/>   
+<spring:message code="button_reset" htmlEscape="false" var="resetchanges"/>   
+<spring:message code="button_cancel" htmlEscape="false" var="cancel"/>   
+<spring:message code="button_distributeamounts" htmlEscape="false" var="button_distributeamounts"/>   
+<spring:message code="button_distributeremainder" htmlEscape="false" var="button_distributeremainder"/>   
+<spring:message code="button_save" htmlEscape="false" var="button_save"/>   
+<spring:message code="button_remove" htmlEscape="false" var="button_remove"/>   
 
 
-<spring:message code="label_expenselist_cattype" htmlEscape="false" var="lcattype"/>    
-   
-<spring:message code="label_expenselist_transtype" htmlEscape="false" var="ltype"/>    
-<spring:message code="label_expenselist_detail" htmlEscape="false" var="ldetail"/>    
-<spring:message code="label_expenselist_showsubcats" htmlEscape="false" var="lsubcats"/>    
-<spring:message code="field_invalid" arguments="${lcat}" htmlEscape="false" var="missingcat"/>    
 
 <spring:url value="/expense/edit/${expenseEditModel.transid}" var="actionurl"/>
 
@@ -46,59 +46,172 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			var stripped = text.substr(prefix.length);
 			return stripped;
 		} 
-		 
+	 	
+
+	function resetEdit(newedit) {
+			// check if in edit (editidx!=999)
+			editcheck = dojo.byId("editIdx").value;
+			if (editcheck != 999) {
+				// if in edit, need to reset
+				// hide select
+				domStyle.set("categoryentry", "display", "none");
+				// show category display span
+				displayspan = "displayhandle" + editcheck;
+				domStyle.set(displayspan, "display", "block");
+				// hide amount entry
+				dojo.byId("amountentry").value=0;
+				domStyle.set("amountentry", "display", "none");
+				// show amount display span
+				displayspan = "displayamthandle" + editcheck;
+				domStyle.set(displayspan, "display", "block");
+				// disable input
+				//inputname = "entryamounts" + editcheck;
+				//amountinput = dojo.byId(inputname);
+				//amountinput.disabled = true;
+				// set editidx = 999
+				dojo.byId("editIdx").value = 999;
+			}
+		}
+
+		// wire up categoryselect
+		button = dojo.byId("categoryentry");
+		on(button, "change", function(event) {
+			// find corresponding catid
+			// get value of editIdx
+			idx = dojo.byId("editIdx").value;
+			handle = "entrycats" + idx;
+			// get handle on input for entrycats with editIdx
+			toset = dojo.byId(handle);
+			// set it to value of selectbox
+			toset.value = this.options[this.selectedIndex].id;
+			// get handle on displayspan for category
+			handle = "displayhandle" + idx;
+			toset = dojo.byId(handle);
+			toset.innerHTML = this.options[this.selectedIndex].label;
+
+		});
+		
+		// wire up amount entry
+		button = dojo.byId("amountentry");
+		on(button, "change", function(event) {
+			// find corresponding catid
+			// get value of editIdx
+			idx = dojo.byId("editIdx").value;
+			handle = "entryamounts" + idx;
+			// get handle on input for entrycats with editIdx
+			toset = dojo.byId(handle);
+			// set it to value of selectbox
+			toset.value = this.value;
+			// get handle on displayspan for category
+			handle = "displayamthandle" + idx;
+			toset = dojo.byId(handle);
+			toset.innerHTML = this.value;
+
+		});		
+
+		<![CDATA[
+		// wire up edit row buttons
+		dojo.query("input[id^='editcat']").forEach(function(node) {
+			var id = node.id;
+
+			on(dojo.byId(id), 'click', function(event) {
+				// get index of clicked button
+				clickedid = event.currentTarget.id;
+				clickedidx = getIndex('editcat', clickedid);
+
+				// first, reset edit of any existing row
+				resetEdit(clickedidx);
+
+				// set editIdx
+				dojo.byId("editIdx").value = clickedidx;
+				// get handle on display element
+				displayname = "displayhandle" + clickedidx;
+
+				// place select after display element
+				domConstruct.place("selecthandle", displayname, "after");
+				// unhide select element
+				domStyle.set("selecthandle", "display", "block");
+				domStyle.set("categoryentry", "display", "block");
+				// hide display element
+				domStyle.set(displayname, "display", "none");
+				
+				// now, do the same for the amount entry
+				displayname = "displayamthandle" + clickedidx;
+				// place input after display element
+				domConstruct.place("amtentryhandle", displayname, "after");
+				// unhide input / span
+				domStyle.set("amtentryhandle", "display", "block");
+				domStyle.set("amountentry", "display", "block");	
+				// hide display element
+				domStyle.set(displayname, "display", "none");
+
+				// set values in amount and category edits
+				handle = "entryamounts" + clickedidx;
+				// get handle on input for entrycats with editIdx
+				togettoset = dojo.byId(handle);	
+				dojo.byId("amountentry").value=togettoset.value;
+				// now, for the select
+				setvalue = dojo.byId("entrycats" + clickedidx).value;
+				var selecttoset = dojo.byId("categoryentry");
+				if (setvalue != null && setvalue!="") {
+					for (var i = 1; i < selecttoset.length; i++) {
+						if (selecttoset.options[i].id == setvalue) {
+							selecttoset.selectedIndex = i;
+							break;
+						}
+					}
+				} else {
+					selecttoset.selectedIndex=0;
+				}
+			});
+		});
+		]]>
+
+		// wire up clear row buttons
+		dojo.query("input[id^='clearcat']").forEach(function(node) {
+			var id = node.id;
+
+			on(dojo.byId(id), 'click', function(event) {
+				// get index of clicked button
+				clickedid = event.currentTarget.id;
+				clickedidx = getIndex('clearcat', clickedid);
+
+				// get amountinput
+				inputname = "entryamounts" + clickedidx;
+				amountinput = dojo.byId(inputname);
+
+				// update display
+				handle = "displayamthandle" + clickedidx;
+				toset = dojo.byId(handle);
+				toset.innerHTML = 0;
+
+				// set to 0
+				amountinput.value = 0;
+
+			});
+		});
 
 
-	// wire up categoryselect
-	   	button = dojo.byId("categoryentry");
-	   	on(button, "change", function(event){
-	   	   // find corresponding catid
-	   	   // get value of editIdx
-	   	   idx = dojo.byId("editIdx").value;
-	   	   handle = "entrycats" + idx;
-	   	   // get handle on input for entrycats with editIdx
-	   	   toset = dojo.byId(handle);
-	   	   // set it to value of selectbox
-	   	   toset.value=this.options[this.selectedIndex].id;
-	   	   // get handle on displayspan for category
-	   	   handle="displayhandle" + idx;
-	   	toset = dojo.byId(handle);
-	   	toset.innerHTML = this.options[this.selectedIndex].label;
-	   	   
-	   	});
+		
+		form = dojo.byId("expenseedit");
+		on(form, "input[id^='editcat']:click", function(event) {
+			event.preventDefault();
+			event.stopPropagation();
+		});
+		on(form, "input[id^='clearcat']:click", function(event) {
+			event.preventDefault();
+			event.stopPropagation();
+		});
+		on(form, "input[id^='removecat']:click", function(event) {
+			clickedid = this.id;
+			clickedidx = getIndex('removecat', clickedid);
 
-	   	 
+			// get amountinput
+			dojo.byId("editIdx").value=clickedidx;
+		});		
 
-// wire up edit row buttons
-	   	dojo.query("input[id^='editcat']").forEach(function(node) {
-	  		var id = node.id;
-
-	          on(dojo.byId(id), 'click', function(event){
-	        	  // get index of clicked button
-	        	  clickedid = event.currentTarget.id;
-	        	  clickedidx = getIndex('editcat',clickedid);
-	        	  // set editIdx
-	        	  dojo.byId("editIdx").value=clickedidx;
-	        	  // get handle on display element
-	        	  displayname="displayhandle"+clickedidx;
-	        	  disphandle = dojo.byId(displayname);
-	        	  // get handle on select
-	        	  //selecthandle = dojo.byId("selecthandle");
-	        	  // place select after display element
-	        	  domConstruct.place("selecthandle",displayname,"after");
-	        	  // hide display element
-				   domStyle.set(displayname, "display", "none");	        	  
-	          });
-	  	});
-
-	   	form = dojo.byId("expenseedit");
-	   	on(form, "input[id^='editcat']:click", function(event){
-	   		event.preventDefault();
-	   		event.stopPropagation();
-	   	});
-	
 	});
- </script>
+</script>
 
 
 <form:form action="${actionurl}" id="expenseedit" method="PUT" modelAttribute="expenseEditModel">
@@ -128,7 +241,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
       <br />
 <hr />
       <input id="addcategory" name="addcategory" type="submit" value="${addcat}"/><br />
-
+<form:errors path="*" />
       <table>
       <THEAD>
       <tr>
@@ -150,10 +263,18 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 					<option id="${category.id}" label="${category.name}" />
 					</c:forEach>
 				</select></span>
-				<span style="display:none" id="displayhandle${status.index}">${expenseEditModel.entrycatdisplays[status.index]}</span> <form:input path="entrycats[${status.index}]" type="hidden"></form:input>
+				<span style="display:none" id="displayhandle${status.index}">${expenseEditModel.entrycatdisplays[status.index]}</span> 
+				<form:input path="entrycats[${status.index}]" type="hidden"></form:input>
 				</td>
-				<td><form:input path="entryamounts[${status.index}]" type="text"></form:input></td>
-				<td> ${button_clear}</td>
+				<td>
+				<span id="amtentryhandle"><input id="amountentry" value="${expenseEditModel.entryamounts[status.index]}"></input></span>
+				<span style="display:none" id="displayamthandle${status.index}">${expenseEditModel.entryamounts[status.index]}</span> 
+				<form:input path="entryamounts[${status.index}]" type="hidden"></form:input>
+				</td>
+				<td><input id="editcat${status.index}" name="editcat${status.index}" type="submit" value="${button_edit}" /> 
+				<input id="clearcat${status.index}" name="clearcat${status.index}" type="submit" value="${button_clear}" />
+				<input id="removecat${status.index}" name="removecategory" type="submit" value="${button_remove}" />
+				</td>
 			</tr>	      
 		</c:when>
 		<c:otherwise>
@@ -162,8 +283,13 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			<span id="displayhandle${status.index}">${expenseEditModel.entrycatdisplays[status.index]}</span>
 			<form:input path="entrycats[${status.index}]" type="hidden"></form:input> 
 			</td>
-			<td>${expenseEditModel.entryamounts[status.index]}</td>
-			<td><input id="editcat${status.index}" name="editcat${status.index}" type="submit" value="${button_edit}"/>   ${button_clear}</td>
+			<td>
+			<span id="displayamthandle${status.index}">${expenseEditModel.entryamounts[status.index]}</span> 
+			<form:input path="entryamounts[${status.index}]" type="hidden"></form:input>
+			</td>
+			<td><input id="editcat${status.index}" name="editcat${status.index}" type="submit" value="${button_edit}"/>   
+			<input id="clearcat${status.index}" name="clearcat${status.index}" type="submit" value="${button_clear}" />
+			<input id="removecat${status.index}" name="removecategory" type="submit" value="${button_remove}" /></td>
 			</tr>
 		</c:otherwise>
 		</c:choose>
@@ -173,16 +299,21 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
       </c:forEach>
       </tbody>
       </table>
-	Reset Cancel Distribute Amount   Distribute Remainder   Save
+	<input id="resetchanges" name="resetchanges" type="submit" value="${resetchanges}"/> 
+	<input id="cancel" name="cancel" type="submit" value="${cancel}"/> 
+	<input id="distributeall" name="distributeall" type="submit" value="${button_distributeamounts}"/> 
+	<input id="distributeremainder" name="distributeremainder" type="submit" value="${button_distributeremainder}"/> 
+	<input id="save" name="save" type="submit" value="${button_save}"/> 
 	
-	<br /><form:input path="editIdx" type="text" ></form:input>
+	<br /><form:input path="editIdx" type="hidden" ></form:input>
       <c:if test="${999==expenseEditModel.editIdx}">
-      <span id="selecthandle"><select id="categoryentry">
+      <span id="selecthandle"><select id="categoryentry" style="display:none">
       <option id="" label="- - Select - - " />
       <c:forEach var="category" items="${categorylist}">
 <option id="${category.id}" label="${category.name}" />
       </c:forEach>
       </select></span>
+      <span id="amtentryhandle" style="display:none"><input id="amountentry" value="${expenseEditModel.entryamounts[status.index]}"></input></span>
       </c:if>	
 </form:form>
 

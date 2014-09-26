@@ -4,9 +4,7 @@
 package meg.bank.bus.dao;
 
 import java.util.Date;
-import java.util.List;
 import meg.bank.bus.dao.BankTADao;
-import meg.bank.bus.dao.CategoryTADao;
 
 privileged aspect BankTADao_Roo_JavaBean {
     
@@ -72,14 +70,6 @@ privileged aspect BankTADao_Roo_JavaBean {
     
     public void BankTADao.setSource(Integer source) {
         this.source = source;
-    }
-    
-    public List<CategoryTADao> BankTADao.getCategorizedExp() {
-        return this.categorizedExp;
-    }
-    
-    public void BankTADao.setCategorizedExp(List<CategoryTADao> categorizedExp) {
-        this.categorizedExp = categorizedExp;
     }
     
 }

@@ -62,5 +62,6 @@ public interface BankTransactionService {
 			ExpenseCriteria criteria, String dispname);
 
 	public abstract ExpenseEditModel loadExpenseEditModel(Long id);
+	public abstract void saveFromExpenseEdit(ExpenseEditModel model);
 
 }

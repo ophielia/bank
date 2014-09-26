@@ -63,7 +63,7 @@ public class ExpenseEditModel implements Serializable {
 	}
 
 	public Double getAmount() {
-		return bankta.getAmount();
+		return bankta.getAmount()*-1;
 	}
 
 	public Date getTransdate() {
@@ -148,7 +148,7 @@ public class ExpenseEditModel implements Serializable {
 				CategoryDao lookup = catref.get(catid);
 				catdisplay = lookup.getName();
 			}
-			Double amount = entryamounts.get(i);
+			Double amount = entryamounts.get(i)*-1;
 			// get categoryexp
 			CategoryTADao cat = categoryexps.get(i);
 			cat.setCatid(catid);
@@ -174,9 +174,60 @@ public class ExpenseEditModel implements Serializable {
 				} else {
 					entrycatdisplays.add("empty");
 				}
-				entryamounts.add(catexp.getAmount()==null?0:catexp.getAmount());
+				entryamounts.add(catexp.getAmount()==null?0:catexp.getAmount()*-1);
 			}
 		}
 	}
+
+
+	public void setAmountsInCategorized(Double[] distributed) {
+    	for (int i=0;i<distributed.length;i++) {
+    		Double newamount = distributed[i]*-1;
+    		CategoryTADao cat = categoryexps.get(i);
+    		cat.setAmount(newamount);
+    	}
+		
+	}
+	
+	public Double getCategorizedTotal() {
+		// make total variable
+		Double totalamount = new Double(0);
+		// go through Categorized Expenses, adding up amounts
+		if (categoryexps!=null) {
+			for (CategoryTADao exp:categoryexps) {
+				totalamount += exp.getAmount()!=null?exp.getAmount():0;
+			}
+		}
+		// return total
+		return totalamount*-1;
+	}
+	
+	public int getEmptyCount() {
+		int count=0;
+		if (categoryexps!=null) {
+			for (CategoryTADao exp:categoryexps) {
+				if (exp.getAmount()==null||exp.getAmount()==0) {
+					count++;
+				}
+			}
+		}	
+		return count;
+	}
+	public void setAmountsInEmpties(Double[] distributed) {
+		int count=0;
+		if (categoryexps!=null) {
+			for (CategoryTADao exp:categoryexps) {
+				if (exp.getAmount()==null||exp.getAmount()==0) {
+					exp.setAmount(distributed[count].doubleValue()*-1);
+					count++;
+				}
+			}
+		}
+		setCategoryExpenses(categoryexps);
+	}
+	
+	
+	
+	
 
 }

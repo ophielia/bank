@@ -144,7 +144,7 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 		BankTADao trans = bankTransRep.findOne(transid);
 
 		if (trans!=null) {
-			List<CategoryTADao> catexplst = catTransRep.findByBankTrans(trans.getId());
+			List<CategoryTADao> catexplst = catTransRep.findByBankTrans(trans);
 			
 			for (Iterator<CategoryTADao> iterator=catexplst.iterator();iterator.hasNext();) {
 				CategoryTADao cat = iterator.next();
@@ -278,8 +278,8 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 	 */
 	@Override
 	public List<CategoryTADao> getCategoryExpForTrans(Long transid) {
-	
-		return catTransRep.findByBankTrans(transid);
+		BankTADao trans = bankTransRep.findOne(transid);
+		return catTransRep.findByBankTrans(trans);
 	}
 
 
@@ -500,7 +500,7 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 		// load transaction
 		BankTADao bankta = bankTransRep.findOne(id);
 		// get any category expenses
-		List<CategoryTADao> catexpenses = bankta.getCategorizedExp();
+		List<CategoryTADao> catexpenses = catTransRep.findByBankTrans(bankta);
 		// get hash of categories
 		HashMap<Long,CategoryDao> categoryref = cms.getCategoriesAsMap();
 		
@@ -508,5 +508,80 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 		ExpenseEditModel model = new ExpenseEditModel(bankta,catexpenses,categoryref);
 		// return the model
 		return model;
+	}
+
+	@Override
+	public void saveFromExpenseEdit(ExpenseEditModel model) {
+		// get BankTADao from db
+		BankTADao banktrans = bankTransRep.findOne(model.getTransid());
+		// first squish categories together
+		List<CategoryTADao> modelexpenses = model.getCategoryExpenses();
+		HashMap<Long,CategoryTADao> squished = new HashMap<Long,CategoryTADao>();
+		for (CategoryTADao catexp:modelexpenses) {
+			// get categoryid
+			Long catid = catexp.getCatid();
+			// if exists in squished, check and add to existing
+			if (squished.containsKey(catid)) {
+				CategoryTADao hashcat = squished.get(catid);
+				double newamount = catexp.getAmount().doubleValue() + hashcat.getAmount().doubleValue();
+				if (hashcat.getId()==null && catexp!=null) {
+					// copy hashcat into / add to catexp
+					catexp.setAmount(newamount);
+					// set catexp in hash
+					squished.put(catid, catexp);
+				} else {
+					// copy catexp into / add to hashcat
+					hashcat.setAmount(newamount);
+					// set hashcat in hash
+					squished.put(catid, hashcat);
+				}
+			} else {
+				// otherwise add to squished
+				squished.put(catid, catexp);
+			}
+
+		}
+		List<CategoryTADao> expenses =new ArrayList<CategoryTADao>();
+		for (Long key:squished.keySet()) {
+			expenses.add(squished.get(key));
+		}
+		
+		// secondly, make a list of ids in category expenses
+		List<Long> modelcatexpids = new ArrayList<Long>();
+		for (CategoryTADao catexp:expenses) {
+			// set bankta in catexp
+			catexp.setBanktrans(banktrans);
+			// save catexp
+			catexp = catTransRep.saveAndFlush(catexp);
+			// put id in list
+			modelcatexpids.add(catexp.getId());
+		}
+		
+		// get db category expenses
+		List<CategoryTADao> dbexpenses =catTransRep.findByBankTrans(banktrans);
+		if (dbexpenses!=null) {
+			// go through all category expenses, deleting those that don't exist in model
+			List<CategoryTADao> todelete =new ArrayList<CategoryTADao>();
+			for (CategoryTADao catexp:dbexpenses) {
+				Long catexpid = catexp.getId();
+				if (catexpid!=null && catexpid>0) {
+					if (!modelcatexpids.contains(catexpid)) {
+						// delete this
+						todelete.add(catexp);
+					}
+				}
+			}
+			for (CategoryTADao catexp:todelete) {
+				catTransRep.delete(catexp);
+			}
+		}
+		// update BankTADao - set hascat to true, set CategoryTADao in object
+		banktrans.setHascat(true);
+		//expenses=catTransRep.findByBankTrans(banktrans);
+		//banktrans.setCategorizedExp(expenses);
+		// save BankTADao
+		bankTransRep.saveAndFlush(banktrans);
+		// return
+		return;
 	}
 }

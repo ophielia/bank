@@ -43,7 +43,6 @@ public class BankTADao {
 
 	private Integer source;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "banktrans")
-	private List<CategoryTADao> categorizedExp;
+
 
 }

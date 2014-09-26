@@ -11,20 +11,13 @@ check / take care of column manager - still Hib
 
 remove hard copy dojo scripts
 look at failed maven all tests
-
----->future - change to JPA criteria!!?? (SearchService)
-continuing expenselist:
-	
-remove empty constructor in EEM
 make edit link in expenselist polite
-
-javascript in page - 
-	make edit show an input box for amount (maybe hiddens for displayonly - like catid
-	try row level clear without server submit - working with hidden boxes.  But don't stress this - can be server submit
-	need an "unedit" function, to unhide displays, hide input.  Should show empty if cat not set
-	also, in unedit function, set select index to 0
+future - change to JPA criteria!!?? (SearchService)
 	
-	Implemented with server call - Reset, Cancel, Distribute Amount, Distribute Remainder, Save 
+implement QuickGroup
+copy page, controller, validator, model from editexpense
+---->  prohibit from saving empty rows - saveFromExpenseEdit
+
 
 ColumnManagerService displayonly should change sql depending upon true or false
 
@@ -42,14 +35,19 @@ think about menu.... make second level for categories, rules, targets
 	
 ---- begin commit changes ----
 
-done - 	add edit links
-done - begin work on edittransaction page
-done - basic mapping	
-done - model - fill in copyEntriesIntoCategories method.
-done -  back end loadExpenseEditModel
-done - test load EEM
-done - implement BTM load EEM
-done - run til it's green!
+	done - Reset, 
+	done - Cancel, 
+	done - Distribute Amount, 
+	done - Distribute Remainder,
+	done - 	javascript problems - mostly solved.  need to set values when edit is clicked 
+	done -  Save
+	done - 	problem with deleting - the delete doesn't happen 
+	done - make edit show an input box for amount (maybe hiddens for displayonly - like catid
+	done - try row level clear without server submit - working with hidden boxes.  But don't stress this - can be server submit
+	done - need an "unedit" function, to unhide displays, hide input.  Should show empty if cat not set
+	done - also, in unedit function, set select index to 0
+	done - remove empty constructor in EEM
+		
 ---- end commit changes ----
 
 ----- begin branch changes ----
@@ -190,7 +188,14 @@ done - Category Edit page - not displaying current "owning" category
 done - model - copied
 done - controller - copied
 done - page - stub copy
-
+done - 	add edit links
+done - begin work on edittransaction page
+done - basic mapping	
+done - model - fill in copyEntriesIntoCategories method.
+done -  back end loadExpenseEditModel
+done - test load EEM
+done - implement BTM load EEM
+done - run til it's green!
 
 ---- end branch changes ----
 
