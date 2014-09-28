@@ -15,8 +15,15 @@ make edit link in expenselist polite
 future - change to JPA criteria!!?? (SearchService)
 	
 implement QuickGroup
-copy page, controller, validator, model from editexpense
----->  prohibit from saving empty rows - saveFromExpenseEdit
+
+fill in validator - messages, implement
+fill in edit page - messages
+fill in list page - messages
+begin implementing list page - preview and edit and new functions
+make preview 
+make the list page work
+tie into edit expense page
+
 
 
 ColumnManagerService displayonly should change sql depending upon true or false
@@ -35,18 +42,11 @@ think about menu.... make second level for categories, rules, targets
 	
 ---- begin commit changes ----
 
-	done - Reset, 
-	done - Cancel, 
-	done - Distribute Amount, 
-	done - Distribute Remainder,
-	done - 	javascript problems - mostly solved.  need to set values when edit is clicked 
-	done -  Save
-	done - 	problem with deleting - the delete doesn't happen 
-	done - make edit show an input box for amount (maybe hiddens for displayonly - like catid
-	done - try row level clear without server submit - working with hidden boxes.  But don't stress this - can be server submit
-	done - need an "unedit" function, to unhide displays, hide input.  Should show empty if cat not set
-	done - also, in unedit function, set select index to 0
-	done - remove empty constructor in EEM
+done - copy page, controller, validator, model from editexpense
+done -   prohibit from saving empty rows - saveFromExpenseEdit
+done - implement QuickGroupService - loadQuickGroupModelForId
+done - implement QuickGroupService - saveFromQuickGroupModel ("borrow heavily" from BankTransService savefrommodel)
+done - test for QuickGroupService - getExpenseDetailsForQuickGroup
 		
 ---- end commit changes ----
 
@@ -196,6 +196,18 @@ done -  back end loadExpenseEditModel
 done - test load EEM
 done - implement BTM load EEM
 done - run til it's green!
+done - Reset, 
+done - Cancel, 
+done - Distribute Amount, 
+done - Distribute Remainder,
+done - 	javascript problems - mostly solved.  need to set values when edit is clicked 
+done -  Save
+done - 	problem with deleting - the delete doesn't happen 
+done - make edit show an input box for amount (maybe hiddens for displayonly - like catid
+done - try row level clear without server submit - working with hidden boxes.  But don't stress this - can be server submit
+done - need an "unedit" function, to unhide displays, hide input.  Should show empty if cat not set
+done - also, in unedit function, set select index to 0
+done - remove empty constructor in EEM
 
 ---- end branch changes ----
 

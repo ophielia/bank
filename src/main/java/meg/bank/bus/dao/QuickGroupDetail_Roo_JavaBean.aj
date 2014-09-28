@@ -32,4 +32,12 @@ privileged aspect QuickGroupDetail_Roo_JavaBean {
         this.quickgroup = quickgroup;
     }
     
+    public String QuickGroupDetail.getCatdisplay() {
+        return this.catdisplay;
+    }
+    
+    public void QuickGroupDetail.setCatdisplay(String catdisplay) {
+        this.catdisplay = catdisplay;
+    }
+    
 }

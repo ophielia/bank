@@ -1,5 +1,6 @@
 package meg.bank.bus.dao;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
@@ -14,4 +15,7 @@ public class QuickGroupDetail {
 	private Double percentage;
 	@ManyToOne
 	private QuickGroup quickgroup;
+	@Transient
+	private String catdisplay;
+	
 }

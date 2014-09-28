@@ -58,6 +58,7 @@ public class BankTransactionServiceTest {
 		// make BankTrans
 		BankTADaoDataOnDemand bDod = new BankTADaoDataOnDemand();
 		withcategorized = bDod.getNewTransientBankTADao(12);
+		withcategorized = bankRepo.saveAndFlush(withcategorized);
 
 
 		// make CategoryDao
@@ -65,10 +66,6 @@ public class BankTransactionServiceTest {
 		cat.setCatid(tCat.getId());
 		cat.setAmount(100D);
 		cat.setCreatedon(new Date());
-		//withcategorized.setCategorizedExp(new ArrayList<CategoryTADao>());
-		//withcategorized.getCategorizedExp().add(cat);
-		//MM fix test
-		bankRepo.saveAndFlush(withcategorized);
 		cat.setBanktrans(withcategorized);
 		cat = catExpRepo.saveAndFlush(cat);
 

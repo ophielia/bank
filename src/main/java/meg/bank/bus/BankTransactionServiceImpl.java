@@ -543,7 +543,11 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 		}
 		List<CategoryTADao> expenses =new ArrayList<CategoryTADao>();
 		for (Long key:squished.keySet()) {
-			expenses.add(squished.get(key));
+			CategoryTADao catexp = squished.get(key);
+			if (catexp.getAmount()!=null && catexp.getAmount()!=0) {
+				expenses.add(catexp);	
+			}
+			
 		}
 		
 		// secondly, make a list of ids in category expenses
