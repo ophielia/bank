@@ -23,6 +23,10 @@ public class QuickGroupModel implements Serializable {
 
 	private HashMap<Long,CategoryDao> catref;
 	private Integer editIdx;
+	private Boolean fromExpensePage=false;
+	private Long transId;
+
+
 
 	// constructor
 	public QuickGroupModel(QuickGroup quickgroup, List<QuickGroupDetail> categoryexps,HashMap<Long,CategoryDao> catref) {
@@ -38,7 +42,7 @@ public class QuickGroupModel implements Serializable {
 		return quickgroup;
 	}
 
-	public void setBankTA(QuickGroup quickgroup) {
+	public void setQuickGroup(QuickGroup quickgroup) {
 		this.quickgroup = quickgroup;
 	}
 
@@ -111,6 +115,27 @@ public class QuickGroupModel implements Serializable {
 		this.editIdx = editIdx;
 	}
 
+	
+
+	public Boolean getFromExpensePage() {
+		return fromExpensePage;
+	}
+
+
+	public void setFromExpensePage(Boolean fromExpensePage) {
+		this.fromExpensePage = fromExpensePage;
+	}
+
+	public void setTransId(Long transid) {
+		this.transId=transid;
+	}
+
+
+	public Long getTransId() {
+		return transId;
+	}
+
+	
 
 	// Utility methods
 	public void copyEntriesIntoCategories() {
@@ -153,7 +178,6 @@ public class QuickGroupModel implements Serializable {
 			}
 		}
 	}
-
 
 
 

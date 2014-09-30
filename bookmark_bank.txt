@@ -16,13 +16,16 @@ future - change to JPA criteria!!?? (SearchService)
 	
 implement QuickGroup
 
-fill in validator - messages, implement
-fill in edit page - messages
-fill in list page - messages
+----> fill in validator - messages, implement
 begin implementing list page - preview and edit and new functions
 make preview 
-make the list page work
-tie into edit expense page
+tie into edit expense page, list expenses page.
+	save as quickgroup
+	add quickgroup (edit expense)
+	replace quickgroup (edit expense)
+	preview in list / expense edit
+	assign quickgroup - expense list page.
+
 
 
 
@@ -42,11 +45,13 @@ think about menu.... make second level for categories, rules, targets
 	
 ---- begin commit changes ----
 
-done - copy page, controller, validator, model from editexpense
-done -   prohibit from saving empty rows - saveFromExpenseEdit
-done - implement QuickGroupService - loadQuickGroupModelForId
-done - implement QuickGroupService - saveFromQuickGroupModel ("borrow heavily" from BankTransService savefrommodel)
-done - test for QuickGroupService - getExpenseDetailsForQuickGroup
+done - make the list page work
+done - wire list page to controller
+done - work on validator
+done - initial run through of pages - list and edit/create
+done -  save referer - go back (after save/cancel) to edit expense page, or quick group list page.  implement this in flag set in model inside frombanktransid ref method??
+done - fill in edit page - messages
+done - fill in list page - messages
 		
 ---- end commit changes ----
 
@@ -208,6 +213,12 @@ done - try row level clear without server submit - working with hidden boxes.  B
 done - need an "unedit" function, to unhide displays, hide input.  Should show empty if cat not set
 done - also, in unedit function, set select index to 0
 done - remove empty constructor in EEM
+done - copy page, controller, validator, model from editexpense
+done -   prohibit from saving empty rows - saveFromExpenseEdit
+done - implement QuickGroupService - loadQuickGroupModelForId
+done - implement QuickGroupService - saveFromQuickGroupModel ("borrow heavily" from BankTransService savefrommodel)
+done - test for QuickGroupService - getExpenseDetailsForQuickGroup
+
 
 ---- end branch changes ----
 

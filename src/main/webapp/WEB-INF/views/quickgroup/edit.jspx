@@ -9,31 +9,22 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     
-    <spring:message code="label_expenseedit" var="expensetitle"/>
-    <h1>${expensetitle}</h1>
-
-<spring:message code="label_expenselist_cat" htmlEscape="false" var="lcat"/>  
 <spring:message code="label_expenselist_amount" htmlEscape="false" var="lamount"/>
-<spring:message code="button_edit" htmlEscape="false" var="button_edit"/>    
-<spring:message code="button_clear" htmlEscape="false" var="button_clear"/>    
-<spring:message code="label_expenseedit_info" htmlEscape="false" var="label_expenseedit_info"/>    
-<spring:message code="label_expenselist_date" htmlEscape="false" var="label_expenselist_date"/>    
-<spring:message code="label_expenseedit_description" htmlEscape="false" var="label_expenseedit_description"/>    
-<spring:message code="label_expenselist_detail" htmlEscape="false" var="label_expenselist_detail"/>    
-<spring:message code="label_expenseedit_importdate" htmlEscape="false" var="label_expenseedit_importdate"/>    
-<spring:message code="label_expenselist_source" htmlEscape="false" var="label_expenselist_source"/>    
-<spring:message code="label_expenselist_amount" htmlEscape="false" var="label_expenselist_amount"/> 
-<spring:message code="button_addparam" arguments="${lcat}" htmlEscape="false" var="addcat"/>   
-<spring:message code="button_reset" htmlEscape="false" var="resetchanges"/>   
-<spring:message code="button_cancel" htmlEscape="false" var="cancel"/>   
-<spring:message code="button_distributeamounts" htmlEscape="false" var="button_distributeamounts"/>   
-<spring:message code="button_distributeremainder" htmlEscape="false" var="button_distributeremainder"/>   
+
+<spring:message code="label_quickgroup_name" htmlEscape="false" var="lname"/>
+<spring:message code="label_quickgroup" var="quickgroup"/>
+ <spring:message code="button_edit_param" arguments="${quickgroup}" var="quickgrouptitle"/>
+<spring:message code="label_quickgroup_cat" htmlEscape="false" var="lcat"/>  
+<spring:message code="label_quickgroup_percent" htmlEscape="false" var="lpct"/>  
+<spring:message code="button_addparam" arguments="${lcat}" htmlEscape="false" var="addcat"/>  
 <spring:message code="button_save" htmlEscape="false" var="button_save"/>   
 <spring:message code="button_remove" htmlEscape="false" var="button_remove"/>   
+<spring:message code="button_edit" htmlEscape="false" var="button_edit"/>    
+<spring:message code="button_clear" htmlEscape="false" var="button_clear"/>    
+<spring:message code="button_reset" htmlEscape="false" var="resetchanges"/>   
+<spring:message code="button_cancel" htmlEscape="false" var="cancel"/>   
 
-
-
-<spring:url value="/expense/edit/${expenseEditModel.transid}" var="actionurl"/>
+<spring:url value="/quickgroup/edit" var="actionurl"/>
 
 <script type="text/javascript">
  require([
@@ -97,7 +88,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			// find corresponding catid
 			// get value of editIdx
 			idx = dojo.byId("editIdx").value;
-			handle = "entryamounts" + idx;
+			handle = "entrypercents" + idx;
 			// get handle on input for entrycats with editIdx
 			toset = dojo.byId(handle);
 			// set it to value of selectbox
@@ -146,7 +137,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 				domStyle.set(displayname, "display", "none");
 
 				// set values in amount and category edits
-				handle = "entryamounts" + clickedidx;
+				handle = "entrypercents" + clickedidx;
 				// get handle on input for entrycats with editIdx
 				togettoset = dojo.byId(handle);	
 				dojo.byId("amountentry").value=togettoset.value;
@@ -213,30 +204,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	});
 </script>
 
+<h1>${quickgrouptitle}</h1>
+<form:form action="${actionurl}" id="expenseedit" method="PUT" modelAttribute="quickGroupModel">
 
-<form:form action="${actionurl}" id="expenseedit" method="PUT" modelAttribute="expenseEditModel">
-
-<table>
-      <tr>
-      <td><h3>${label_expenseedit_info}</h3>
-      ${label_expenselist_date}:<fmt:formatDate value="${expenseEditModel.transdate}" var="dateString" pattern="MM/dd/yyyy" />${dateString}
-      <br />
-      ${label_expenseedit_description}:${expenseEditModel.description}
-      <br />
-      ${label_expenselist_detail}:${expenseEditModel.detail}
-      <br />        
-       ${label_expenselist_source}:${expenseEditModel.source}
-      <br />   
-       ${label_expenseedit_importdate}: <fmt:formatDate value="${expenseEditModel.importdate}" var="importString" pattern="MM/dd/yyyy" />${importString}
-      <br />                 
-      <br />                 
-       ${label_expenselist_amount}: ${expenseEditModel.amount}
-      <br />        
-      
-      </td>
-      <td>Quick Groups</td>
-      </tr>
-      </table>
+ ${lname}:<form:input path="name" type="text"></form:input>
       <br />
       <br />
 <hr />
@@ -246,15 +217,15 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
       <THEAD>
       <tr>
       <td>${lcat}</td>
-      <td>${lamount}</td>
+      <td>${lpct}</td>
       <td></td>
       </tr>
       </THEAD>
       <tbody>
-      <c:forEach var="expcat" items="${expenseEditModel.entrycats}" varStatus="status">
+      <c:forEach var="expcat" items="${quickGroupModel.entrycats}" varStatus="status">
 
 		<c:choose>
-		<c:when test="${status.index==expenseEditModel.editIdx}">
+		<c:when test="${status.index==quickGroupModel.editIdx}">
 			<tr>
 				<td><!--  choose select box or not -->
 				<span id="selecthandle"><select id="categoryentry">
@@ -263,13 +234,13 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 					<option id="${category.id}" label="${category.name}" />
 					</c:forEach>
 				</select></span>
-				<span style="display:none" id="displayhandle${status.index}">${expenseEditModel.entrycatdisplays[status.index]}</span> 
+				<span style="display:none" id="displayhandle${status.index}">${quickGroupModel.entrycatdisplays[status.index]}</span> 
 				<form:input path="entrycats[${status.index}]" type="hidden"></form:input>
 				</td>
 				<td>
-				<span id="amtentryhandle"><input id="amountentry" value="${expenseEditModel.entryamounts[status.index]}"></input></span>
-				<span style="display:none" id="displayamthandle${status.index}">${expenseEditModel.entryamounts[status.index]}</span> 
-				<form:input path="entryamounts[${status.index}]" type="hidden"></form:input>
+				<span id="amtentryhandle"><input id="amountentry" value="${quickGroupModel.entrypercents[status.index]}"></input></span>
+				<span style="display:none" id="displayamthandle${status.index}">${quickGroupModel.entrypercents[status.index]}</span> 
+				<form:input path="entrypercents[${status.index}]" type="hidden"></form:input>
 				</td>
 				<td><input id="editcat${status.index}" name="editcat${status.index}" type="submit" value="${button_edit}" /> 
 				<input id="clearcat${status.index}" name="clearcat${status.index}" type="submit" value="${button_clear}" />
@@ -280,12 +251,12 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		<c:otherwise>
 			<tr>
 			<td><!--  choose select box or not -->
-			<span id="displayhandle${status.index}">${expenseEditModel.entrycatdisplays[status.index]}</span>
+			<span id="displayhandle${status.index}">${quickGroupModel.entrycatdisplays[status.index]}</span>
 			<form:input path="entrycats[${status.index}]" type="hidden"></form:input> 
 			</td>
 			<td>
-			<span id="displayamthandle${status.index}">${expenseEditModel.entryamounts[status.index]}</span> 
-			<form:input path="entryamounts[${status.index}]" type="hidden"></form:input>
+			<span id="displayamthandle${status.index}">${quickGroupModel.entrypercents[status.index]}</span> 
+			<form:input path="entrypercents[${status.index}]" type="hidden"></form:input>
 			</td>
 			<td><input id="editcat${status.index}" name="editcat${status.index}" type="submit" value="${button_edit}"/>   
 			<input id="clearcat${status.index}" name="clearcat${status.index}" type="submit" value="${button_clear}" />
@@ -301,19 +272,17 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
       </table>
 	<input id="resetchanges" name="resetchanges" type="submit" value="${resetchanges}"/> 
 	<input id="cancel" name="cancel" type="submit" value="${cancel}"/> 
-	<input id="distributeall" name="distributeall" type="submit" value="${button_distributeamounts}"/> 
-	<input id="distributeremainder" name="distributeremainder" type="submit" value="${button_distributeremainder}"/> 
 	<input id="save" name="save" type="submit" value="${button_save}"/> 
 	
 	<br /><form:input path="editIdx" type="hidden" ></form:input>
-      <c:if test="${999==expenseEditModel.editIdx}">
+      <c:if test="${999==quickGroupModel.editIdx}">
       <span id="selecthandle"><select id="categoryentry" style="display:none">
       <option id="" label="- - Select - - " />
       <c:forEach var="category" items="${categorylist}">
 <option id="${category.id}" label="${category.name}" />
       </c:forEach>
       </select></span>
-      <span id="amtentryhandle" style="display:none"><input id="amountentry" value="${expenseEditModel.entryamounts[status.index]}"></input></span>
+      <span id="amtentryhandle" style="display:none"><input id="amountentry" value="${quickGroupModel.entrypercents[status.index]}"></input></span>
       </c:if>	
 </form:form>
 

@@ -30,6 +30,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="button_distributeremainder" htmlEscape="false" var="button_distributeremainder"/>   
 <spring:message code="button_save" htmlEscape="false" var="button_save"/>   
 <spring:message code="button_remove" htmlEscape="false" var="button_remove"/>   
+<spring:message code="label_expenseedit_assignquickgroup" htmlEscape="false" var="label_expenseedit_assignquickgroup"/>   
 
 
 
@@ -304,6 +305,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	<input id="distributeall" name="distributeall" type="submit" value="${button_distributeamounts}"/> 
 	<input id="distributeremainder" name="distributeremainder" type="submit" value="${button_distributeremainder}"/> 
 	<input id="save" name="save" type="submit" value="${button_save}"/> 
+	<form:checkbox path="createquickgroup"></form:checkbox>${label_expenseedit_assignquickgroup}
 	
 	<br /><form:input path="editIdx" type="hidden" ></form:input>
       <c:if test="${999==expenseEditModel.editIdx}">

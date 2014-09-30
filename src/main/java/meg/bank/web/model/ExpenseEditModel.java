@@ -23,6 +23,8 @@ public class ExpenseEditModel implements Serializable {
 	
 	private HashMap<Long,CategoryDao> catref;
 	private Integer editIdx;
+	private Long quickgroup;
+	private Boolean createquickgroup;
 	
 	// constructor
 	public ExpenseEditModel(BankTADao bankta, List<CategoryTADao> categoryexps,HashMap<Long,CategoryDao> catref) {
@@ -134,6 +136,28 @@ public class ExpenseEditModel implements Serializable {
 
 	public void setEditIdx(Integer editIdx) {
 		this.editIdx = editIdx;
+	}
+
+	
+	
+
+	public Long getQuickgroup() {
+		return quickgroup;
+	}
+
+
+	public void setQuickgroup(Long quickgroup) {
+		this.quickgroup = quickgroup;
+	}
+
+
+	public Boolean getCreatequickgroup() {
+		return createquickgroup;
+	}
+
+
+	public void setCreatequickgroup(Boolean createquickgroup) {
+		this.createquickgroup = createquickgroup;
 	}
 
 

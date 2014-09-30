@@ -6,9 +6,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import meg.bank.bus.BankTransactionService;
 import meg.bank.bus.CategoryService;
+import meg.bank.bus.QuickGroupService;
 import meg.bank.bus.SearchService;
 import meg.bank.bus.dao.CategoryDao;
 import meg.bank.bus.dao.CategoryTADao;
+import meg.bank.bus.dao.QuickGroup;
 import meg.bank.util.common.ColumnManagerService;
 import meg.bank.web.model.ExpenseEditModel;
 import meg.bank.web.validation.ExpenseEditModelValidator;
@@ -42,6 +44,9 @@ public class ExpenseEditController {
     @Autowired
     CategoryService categoryService;
     
+    @Autowired
+    QuickGroupService quickGroupService;    
+    
 	@Autowired
 	ExpenseEditModelValidator modelValidator;    
     
@@ -53,6 +58,15 @@ public class ExpenseEditController {
 		// return model
 		return list;
 	}	
+	
+	@ModelAttribute("quickgrouplist")
+	protected List<QuickGroup> referenceQuickGroupData(HttpServletRequest request, Object command,
+			Errors errors) throws Exception {
+		List<QuickGroup> list = quickGroupService.getAllQuickGroups();
+		
+		// return model
+		return list;
+	}		
 
     @RequestMapping(value="/{id}", method = RequestMethod.GET, produces = "text/html")
     public String showEditForm(@PathVariable("id") Long id,  Model uiModel,HttpServletRequest httpServletRequest) {
@@ -172,6 +186,15 @@ public class ExpenseEditController {
     	// call to service
 		transService.saveFromExpenseEdit(model);
 		
+		// check whether this should be assigned as a quickgroup
+		if (model.getCreatequickgroup()) {
+			// get bankid 
+			Long bankid = model.getTransid();
+			// construct redirect path
+			String redirect="redirect:/quickgroup/create?transid=" + bankid;
+			// redirect
+			return redirect;
+		}
 		// return to list
 		return "redirect:/expense/list";
     }      

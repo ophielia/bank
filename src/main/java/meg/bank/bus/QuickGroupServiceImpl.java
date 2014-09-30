@@ -63,7 +63,7 @@ public class QuickGroupServiceImpl implements QuickGroupService {
 						double pct = 100.0-totalpct;
 						detail.setPercentage(pct);
 					}else {
-						double unrounded = exp.getAmount().doubleValue()* -1.0 / transtotal   ;
+						double unrounded = exp.getAmount().doubleValue()* -1.0 *10000.0/ transtotal   ;
 						double pct = Math.round(unrounded)/100.0;
 						detail.setPercentage(pct);
 						totalpct+=pct;
@@ -81,6 +81,9 @@ public class QuickGroupServiceImpl implements QuickGroupService {
 
 		// return model with new objects
 		QuickGroupModel model = new QuickGroupModel(new QuickGroup(),new ArrayList<QuickGroupDetail>(),categoryref);
+		
+		// set banktransid in model
+		model.setTransId(transid);
 		return model;
 	}
 
@@ -232,6 +235,11 @@ public class QuickGroupServiceImpl implements QuickGroupService {
 			}
 		}
 		return expensedetails;
+	}
+	
+	@Override
+	public List<QuickGroup> getAllQuickGroups() {
+		return qcRepo.findAll();
 	}
 
 }
