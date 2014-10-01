@@ -13,22 +13,27 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <h1>${expensetitle}</h1>
 
 <spring:message code="label_expenselist_date" htmlEscape="false" var="ldate"/>    
+<spring:message code="label_expenselist_qcinfo" htmlEscape="false" var="lqcinfo"/>    
 <spring:message code="label_expenselist_cattype" htmlEscape="false" var="lcattype"/>    
 <spring:message code="label_expenselist_cat" htmlEscape="false" var="lcat"/>    
+<spring:message code="label_quickgroup" htmlEscape="false" var="lquickgroup"/>    
 <spring:message code="label_expenselist_source" htmlEscape="false" var="lsource"/>    
 <spring:message code="label_expenselist_transtype" htmlEscape="false" var="ltype"/>    
 <spring:message code="label_expenselist_detail" htmlEscape="false" var="ldetail"/>    
 <spring:message code="label_expenselist_amount" htmlEscape="false" var="lamount"/>    
 <spring:message code="label_expenselist_showsubcats" htmlEscape="false" var="lsubcats"/>    
+<spring:message code="label_expenselist_updcategory" htmlEscape="false" var="lupdcat"/>    
+<spring:message code="label_expenselist_updqc" htmlEscape="false" var="lupdqc"/>    
 <spring:message code="field_invalid" arguments="${lcat}" htmlEscape="false" var="missingcat"/>    
+<spring:message code="field_invalid" arguments="${lquickgroup}" htmlEscape="false" var="missingqc"/>    
 
 <spring:url value="/expense/list" var="actionurl"/>
-
+<spring:url value="/quickgroup/preview" var="previewurl"/>
 <script type="text/javascript">
  require([
-          'dojo/dom',"dojo/on",
+          'dojo/dom',"dojo/on","dijit/TooltipDialog", "dijit/popup",
           'dojo/domReady!'
-      ], function (dom,on) {
+      ], function (dom,on,TooltipDialog,popup) {
 	 
 	 	function getIndex(prefix,text) {
 			// gets a substring of the text, starting at the char after the length of the prefix
@@ -62,7 +67,49 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	   		}
 	   	   }
 	   	});
-	
+	   	
+	   	
+	   	form = dojo.byId("expenselist");
+	   	on(form, "input#batchQuickGroup:click", function(event){
+	   	   if (this.id="batchQuickGroup") {
+	   		checkselect = dojo.byId("quickgroupentry");
+	   		if (checkselect.value == "") {
+	   			alert("${missingqc}");
+		   		event.preventDefault();
+		   		event.stopPropagation();	   			
+	   		}
+	   	   }
+	   	});
+	   	
+	   	viewinfolink = dojo.byId("viewinfo");
+        on(viewinfolink , 'click', function(){
+        	checkselect = dojo.byId("quickgroupentry");
+        	idx = checkselect.value;
+        	if(idx != "") {
+              	popup.open({
+                    popup: getDialogForId(idx),
+                    around: dom.byId("quickgroupentry")
+                });
+            }
+        });
+    	
+    	function getDialogForId(id) {
+    		var link = "${previewurl}/" + id;
+    		var dialog = dijit.byId('myTooltipDialog'+ id);
+    		if (dialog!=null) {
+    			dialog.destroyRecursive(true);
+    		}
+    		var myTooltipDialog = new TooltipDialog({
+                id: 'myTooltipDialog'+ id,
+                style: "width: 300px;",
+                href:link,
+                loadingMessage:link,
+                onMouseLeave: function(){
+                    popup.close(myTooltipDialog);
+                }
+            });
+    		return myTooltipDialog;
+    	}    	
 	});
  </script>
 
@@ -118,7 +165,16 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
        <form:select path="batchUpdate">
 				<form:option value="" label="--Please Select" />
 				<form:options items="${categorylist}" itemValue="id" itemLabel="name" />
-			</form:select> 		 <input id="batchupd" type="submit" name="updatecat" value="Update Selected"/>
+			</form:select> 		 <input id="batchupd" type="submit" name="updatecat" value="${lupdcat}"/>
+			<span style="float:right"> 
+			<a id="viewinfo" href="#" >${lqcinfo} </a>
+			<form:select path="batchQuickgroup" id="quickgroupentry">
+				<option id="" label="- - Select - - " />
+					<c:forEach var="quickgroup" items="${quickgrouplist}">
+					<form:option value="${quickgroup.id}" label="${quickgroup.name}" />
+					</c:forEach>
+				</form:select>
+				<input id="batchQuickGroup" name="batchQuickGroup" type="submit" value="${lupdqc}"/>   </span>
 <TABLE>
 		<thead>
 				<tr >

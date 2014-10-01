@@ -2,6 +2,7 @@ package meg.bank.bus.dao;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Size;
 
@@ -17,7 +18,7 @@ public class QuickGroup {
 	@Size(max = 100)
 	private String name;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "quickgroup")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "quickgroup", fetch=FetchType.LAZY)
 	private List<QuickGroupDetail> groupdetails;
 	
 }

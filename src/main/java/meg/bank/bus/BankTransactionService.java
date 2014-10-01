@@ -68,5 +68,6 @@ public interface BankTransactionService {
 
 	public abstract ExpenseEditModel loadExpenseEditModel(Long id);
 	public abstract void saveFromExpenseEdit(ExpenseEditModel model);
+	public abstract void assignQuickGroupToExpenses(Long quickgroupid, List<String> selectedids) ;
 
 }

@@ -26,7 +26,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.ModelAndView;
 
 @SessionAttributes("quickGroupModel")
 @RequestMapping("/quickgroup")
@@ -180,6 +182,26 @@ public class QuickGroupController {
 			redirect = "redirect:/expense/list";
 		}
 		return redirect;
+    }    
+   
+    @RequestMapping(value="/preview/{id}", method=RequestMethod.GET)
+    public @ResponseBody ModelAndView previewQuickGroup( @PathVariable("id") Long id ) {    
+    	// load all categories
+    	HashMap<Long,CategoryDao> catref = categoryService.getCategoriesAsMap();
+    	// load all quickgroup details
+    	QuickGroup quickgroup = quickGroupService.getQuickGroup(id);
+    	List<QuickGroupDetail> details=quickGroupService.getDetailsForQuickGroup(quickgroup);
+    	// fill in categories
+    	for (QuickGroupDetail detail:details) {
+    		if (detail.getCatid()!=null && catref.containsKey(detail.getCatid())) {
+    			CategoryDao cat = catref.get(detail.getCatid());
+    			detail.setCatdisplay(cat.getName());
+    		}
+    	}
+    	// return with model of list, and view quickgroup/preview
+    	ModelAndView mv = new ModelAndView("quickgroup/preview","quickgroupdetails",details);
+    	// return model and view
+    	return mv;
     }    
     
 /*

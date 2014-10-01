@@ -14,6 +14,7 @@ import meg.bank.bus.dao.CategoryDao;
 import meg.bank.bus.dao.CategoryRuleDao;
 import meg.bank.bus.dao.CategoryTADao;
 import meg.bank.bus.dao.ExpenseDao;
+import meg.bank.bus.dao.QuickGroup;
 import meg.bank.bus.repo.BankTARepository;
 import meg.bank.bus.repo.CategoryRepository;
 import meg.bank.bus.repo.CategoryRuleRepository;
@@ -47,6 +48,10 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 	
 	@Autowired
 	private SearchService searchService;
+	
+	
+	@Autowired
+	private QuickGroupService quickGroupService;	
 	
 	/* (non-Javadoc)
 	 * @see meg.bank.bus.BankTransactionService#deleteBankTA(java.lang.Long)
@@ -524,6 +529,7 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 			if (squished.containsKey(catid)) {
 				CategoryTADao hashcat = squished.get(catid);
 				double newamount = catexp.getAmount().doubleValue() + hashcat.getAmount().doubleValue();
+				newamount = Math.round(newamount*100.0)/100.0;
 				if (hashcat.getId()==null && catexp!=null) {
 					// copy hashcat into / add to catexp
 					catexp.setAmount(newamount);
@@ -587,5 +593,44 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 		bankTransRep.saveAndFlush(banktrans);
 		// return
 		return;
+	}
+
+	@Override
+	public void assignQuickGroupToExpenses(Long quickgroupid, List<String> selectedids) {
+		if (selectedids!=null && selectedids.size()>0) {
+			List<ExpenseDao> toupdate = searchService.getExpenseListByIds(selectedids);
+
+			// get quickgroup
+			QuickGroup quickgroup = quickGroupService.getQuickGroup(quickgroupid);
+			// loop through selected list
+			for (ExpenseDao expense:toupdate) {
+				// get bankta
+				BankTADao banktrans = bankTransRep.findOne(expense.getTransid());
+				
+				// get db expense details
+				List<CategoryTADao> expdetails = getCategoryExpForTrans(banktrans.getId());
+				if (expdetails!=null&&expdetails.size()>0) {
+					// delete db expense details
+					catTransRep.delete(expdetails);
+				}
+
+				// update bankta (hascat true)
+				banktrans.setHascat(true);
+				banktrans = bankTransRep.save(banktrans);
+				// get amount for bankta
+				double amount = banktrans.getAmount().doubleValue();
+				// get new expensedetails for quickgroup
+				List<CategoryTADao> newdetails = quickGroupService.getExpDetailsForQuickGroup(amount, quickgroupid);
+				// set bankta in new expensedetails, and save
+				if (newdetails!=null) {
+					for (CategoryTADao exp:newdetails) {
+						exp.setBanktrans(banktrans);
+					}
+					catTransRep.save(newdetails);
+				}
+				
+			}
+		}
+		
 	}
 }

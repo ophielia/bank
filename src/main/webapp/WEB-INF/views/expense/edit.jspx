@@ -13,6 +13,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <h1>${expensetitle}</h1>
 
 <spring:message code="label_expenselist_cat" htmlEscape="false" var="lcat"/>  
+<spring:message code="label_quickgroup_addtoexp" htmlEscape="false" var="addtoexp"/>  
+<spring:message code="label_quickgroup_replaceexp" htmlEscape="false" var="replaceexp"/>  
+<spring:message code="label_quickgroup_assign" htmlEscape="false" var="lassignqc"/>  
 <spring:message code="label_expenselist_amount" htmlEscape="false" var="lamount"/>
 <spring:message code="button_edit" htmlEscape="false" var="button_edit"/>    
 <spring:message code="button_clear" htmlEscape="false" var="button_clear"/>    
@@ -24,6 +27,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_expenselist_source" htmlEscape="false" var="label_expenselist_source"/>    
 <spring:message code="label_expenselist_amount" htmlEscape="false" var="label_expenselist_amount"/> 
 <spring:message code="button_addparam" arguments="${lcat}" htmlEscape="false" var="addcat"/>   
+<spring:message code="button_addparam" arguments="${lcat}" htmlEscape="false" var="addcat"/>   
 <spring:message code="button_reset" htmlEscape="false" var="resetchanges"/>   
 <spring:message code="button_cancel" htmlEscape="false" var="cancel"/>   
 <spring:message code="button_distributeamounts" htmlEscape="false" var="button_distributeamounts"/>   
@@ -31,16 +35,17 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="button_save" htmlEscape="false" var="button_save"/>   
 <spring:message code="button_remove" htmlEscape="false" var="button_remove"/>   
 <spring:message code="label_expenseedit_assignquickgroup" htmlEscape="false" var="label_expenseedit_assignquickgroup"/>   
-
+<spring:message code="label_expenselist_qcinfo" htmlEscape="false" var="lqcinfo"/>
 
 
 <spring:url value="/expense/edit/${expenseEditModel.transid}" var="actionurl"/>
-
+<spring:url value="/quickgroup/preview" var="previewurl"/>
 <script type="text/javascript">
  require([
           'dojo/dom',"dojo/on","dojo/dom-construct","dojo/dom-style",
+          "dijit/TooltipDialog", "dijit/popup",
           'dojo/domReady!'
-      ], function (dom,on,domConstruct,domStyle) {
+      ], function (dom,on,domConstruct,domStyle,TooltipDialog,popup) {
 	 
 	 	function getIndex(prefix,text) {
 			// gets a substring of the text, starting at the char after the length of the prefix
@@ -109,6 +114,36 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			toset.innerHTML = this.value;
 
 		});		
+		
+	   	viewinfolink = dojo.byId("viewinfo");
+        on(viewinfolink , 'click', function(){
+        	checkselect = dojo.byId("quickgroupentry");
+        	idx = checkselect.value;
+        	if(idx != "") {
+              	popup.open({
+                    popup: getDialogForId(idx),
+                    around: dom.byId("quickgroupentry")
+                });
+            }
+        });
+    	
+    	function getDialogForId(id) {
+    		var link = "${previewurl}/" + id;
+    		var dialog = dijit.byId('myTooltipDialog'+ id);
+    		if (dialog!=null) {
+    			dialog.destroyRecursive(true);
+    		}
+    		var myTooltipDialog = new TooltipDialog({
+                id: 'myTooltipDialog'+ id,
+                style: "width: 300px;",
+                href:link,
+                loadingMessage:link,
+                onMouseLeave: function(){
+                    popup.close(myTooltipDialog);
+                }
+            });
+    		return myTooltipDialog;
+    	}  
 
 		<![CDATA[
 		// wire up edit row buttons
@@ -235,7 +270,18 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
       <br />        
       
       </td>
-      <td>Quick Groups</td>
+      <td valign="bottom">
+      ${lassignqc}<br />
+      <form:select path="quickgroup" id="quickgroupentry">
+				<option id="" label="- - Select - - " />
+					<c:forEach var="quickgroup" items="${quickgrouplist}">
+					<form:option value="${quickgroup.id}" label="${quickgroup.name}" />
+					</c:forEach>
+				</form:select><a id="viewinfo" href="#" >${lqcinfo} </a>
+				<br />
+				<input id="addtoexp" name="addtoexp" type="submit" value="${addtoexp}"/>   
+				<input id="replaceexp" name="replaceexp" type="submit" value="${replaceexp}"/>   
+      </td>
       </tr>
       </table>
       <br />

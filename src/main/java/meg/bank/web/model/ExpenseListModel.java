@@ -22,6 +22,7 @@ public class ExpenseListModel implements Serializable {
 	private List<String> idref;
 	private Long batchUpdate;
 	private Boolean showSubcats;
+	private Long batchQuickgroup;
 	
 	
 	private ExpenseCriteria expensecriteria;
@@ -114,6 +115,16 @@ public class ExpenseListModel implements Serializable {
 
 	public void setShowSubcats(Boolean showSubcats) {
 		this.expensecriteria.setShowSubcats(showSubcats);
+	}
+
+	
+	
+	public Long getBatchQuickgroup() {
+		return batchQuickgroup;
+	}
+
+	public void setBatchQuickgroup(Long batchQuickgroup) {
+		this.batchQuickgroup = batchQuickgroup;
 	}
 
 	public List<String> getCheckedExpenseIds() {

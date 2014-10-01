@@ -5,8 +5,6 @@ Bootstrap!
 	new thing - quickgroups
 aggregate puzzle
 
-
-
 check / take care of column manager - still Hib
 
 remove hard copy dojo scripts
@@ -14,19 +12,20 @@ look at failed maven all tests
 make edit link in expenselist polite
 future - change to JPA criteria!!?? (SearchService)
 	
-implement QuickGroup
-
-----> fill in validator - messages, implement
-begin implementing list page - preview and edit and new functions
-make preview 
-tie into edit expense page, list expenses page.
-	save as quickgroup
-	add quickgroup (edit expense)
-	replace quickgroup (edit expense)
-	preview in list / expense edit
-	assign quickgroup - expense list page.
+continue entering categories - start with presents
+next up - assign by rules....	
+	
+list validation - validator - check for present quickgroup id - or in controller
+   javascript validation like with categories	
 
 
+
+discomfort in category entry - 
+	all categories should be shown, regardless of display setting
+	display should be default true.
+	list display in alphabetical order
+	list BOX in alphabetical order
+	error create with no parent id
 
 
 ColumnManagerService displayonly should change sql depending upon true or false
@@ -45,13 +44,19 @@ think about menu.... make second level for categories, rules, targets
 	
 ---- begin commit changes ----
 
-done - make the list page work
-done - wire list page to controller
-done - work on validator
-done - initial run through of pages - list and edit/create
-done -  save referer - go back (after save/cancel) to edit expense page, or quick group list page.  implement this in flag set in model inside frombanktransid ref method??
-done - fill in edit page - messages
-done - fill in list page - messages
+done - implement QuickGroup
+done - fill in validator - messages, implement
+done - begin implementing list page - preview and edit and new functions
+done - make preview 
+done - tie into edit expense page, list expenses page.
+done - save as quickgroup
+done - add quickgroup (edit expense)
+done - replace quickgroup (edit expense)
+done - preview in list
+done - preview expense edit
+done - assign quickgroup - expense list page.
+	
+
 		
 ---- end commit changes ----
 
@@ -218,7 +223,13 @@ done -   prohibit from saving empty rows - saveFromExpenseEdit
 done - implement QuickGroupService - loadQuickGroupModelForId
 done - implement QuickGroupService - saveFromQuickGroupModel ("borrow heavily" from BankTransService savefrommodel)
 done - test for QuickGroupService - getExpenseDetailsForQuickGroup
-
+done - make the list page work
+done - wire list page to controller
+done - work on validator
+done - initial run through of pages - list and edit/create
+done -  save referer - go back (after save/cancel) to edit expense page, or quick group list page.  implement this in flag set in model inside frombanktransid ref method??
+done - fill in edit page - messages
+done - fill in list page - messages
 
 ---- end branch changes ----
 

@@ -12,6 +12,7 @@ import meg.bank.bus.repo.CatRelationshipRepository;
 import meg.bank.bus.repo.CategoryRuleRepository;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,15 @@ CatRelationshipRepository catRelRepo;
 
 @Autowired
 CategoryRuleRepository catRuleRep;	
+
+
+List<CategoryDao> randomcats;
+
+@Before
+public void setup() {
+	randomcats = catService.getCategories(true);
+	
+}
 
     @Test
     public void testAddCategory() throws Exception {
@@ -177,6 +187,21 @@ CategoryRuleRepository catRuleRep;
     	rules = catRuleRep.findCategoryRulesByContaining("tDelete");
     	Assert.assertTrue(rules==null || rules.size()==0);
     }
+    
+    
+    @Test
+    public void testChangeCategoryMembership() {
+    	// get category
+    	CategoryDao cat = randomcats.get(1);
+    	// service call (change category membership to 0)
+    	CatRelationshipDao rel = catService.changeCatMembership(cat.getId(), null);
+
+    	// Assert relationship has a parentid of 0
+    	Assert.assertNotNull(rel);
+    	Assert.assertEquals(0,rel.getParentId().longValue());
+    }
+    
+    
     
     /*
     getCategories(boolean)

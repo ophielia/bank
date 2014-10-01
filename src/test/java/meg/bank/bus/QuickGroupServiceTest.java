@@ -73,21 +73,21 @@ public class QuickGroupServiceTest {
 		// make CategoryDao
 		CategoryTADao cat = new CategoryTADao();
 		cat.setCatid(tCat.getId());
-		cat.setAmount(100D);
+		cat.setAmount(-100D);
 		cat.setCreatedon(new Date());
 		cat.setBanktrans(withcategorized);
 		cat.setBanktrans(withcategorized);
 		cat = catExpRepo.saveAndFlush(cat);
 		cat = new CategoryTADao();
 		cat.setCatid(tCat.getId());
-		cat.setAmount(50D);
+		cat.setAmount(-50D);
 		cat.setCreatedon(new Date());
 		cat.setBanktrans(withcategorized);
 		cat.setBanktrans(withcategorized);
 		cat = catExpRepo.saveAndFlush(cat);
 		cat = new CategoryTADao();
 		cat.setCatid(tCat.getId());
-		cat.setAmount(50D);
+		cat.setAmount(-50D);
 		cat.setCreatedon(new Date());
 		cat.setBanktrans(withcategorized);
 		cat.setBanktrans(withcategorized);
@@ -262,32 +262,32 @@ public class QuickGroupServiceTest {
 		Long groupid=model.getGroupId();
 		
 		// service call with 100
-		List<CategoryTADao> expdetails = quickGroupService.getExpDetailsForQuickGroup(100.0,groupid);
+		List<CategoryTADao> expdetails = quickGroupService.getExpDetailsForQuickGroup(-123.00,groupid);
 		// Assert not null,size 3
 		Assert.assertNotNull(expdetails);
 		Assert.assertEquals(3,expdetails.size());
 		// Assert total of 100
 		double total=0;
 		for (CategoryTADao expdetail:expdetails) {
-			total+=(expdetail.getAmount().doubleValue())*-1.0;
+			total+=(expdetail.getAmount().doubleValue());
 		}
-		Assert.assertTrue(100.0==total);
+		Assert.assertTrue(-123.0==total);
 		
 		HashMap<Long,CategoryTADao> lookupdetails = putExpenseDetailsIntoHash(expdetails);
 		// Assert 1st amount of 50
 		CategoryTADao test = lookupdetails.get(cat1.getId());
-		Assert.assertTrue(50.0==test.getAmount().doubleValue()*-1);
+		Assert.assertTrue(61.50==test.getAmount().doubleValue()*-1);
 		// Assert 2nd amount of 25
 		test = lookupdetails.get(cat2.getId());
-		Assert.assertTrue(25.0==test.getAmount().doubleValue()*-1);
+		Assert.assertTrue(30.75==test.getAmount().doubleValue()*-1);
 		// Assert 3rd amount of 25
 		test = lookupdetails.get(cat3.getId());
-		Assert.assertTrue(25.0==test.getAmount().doubleValue()*-1);
+		Assert.assertTrue(30.75==test.getAmount().doubleValue()*-1);
 		
 
 		
 		// service call with 200
-		expdetails = quickGroupService.getExpDetailsForQuickGroup(200.0,groupid);
+		expdetails = quickGroupService.getExpDetailsForQuickGroup(-200.0,groupid);
 		// Assert not null,size 3
 		Assert.assertNotNull(expdetails);
 		Assert.assertEquals(3,expdetails.size());

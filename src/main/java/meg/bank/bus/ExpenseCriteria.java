@@ -121,7 +121,7 @@ public class ExpenseCriteria implements Serializable {
 	}
 	
 	public void setCategorizedType(Long categorizedType) {
-		if (categorizedType.longValue()>0) {
+		if (categorizedType!=null &&categorizedType.longValue()>0) {
 			categorizedtype = categorizedType;
 		}
 

@@ -8,9 +8,11 @@ import javax.servlet.http.HttpSession;
 import meg.bank.bus.BankTransactionService;
 import meg.bank.bus.CategoryService;
 import meg.bank.bus.ExpenseCriteria;
+import meg.bank.bus.QuickGroupService;
 import meg.bank.bus.SearchService;
 import meg.bank.bus.dao.CategoryDao;
 import meg.bank.bus.dao.ExpenseDao;
+import meg.bank.bus.dao.QuickGroup;
 import meg.bank.bus.imp.ImportManager;
 import meg.bank.util.common.ColumnManagerService;
 import meg.bank.util.common.db.ColumnValueDao;
@@ -51,6 +53,9 @@ public class ExpenseListController {
     
 	@Autowired
 	ExpenseListModelValidator modelValidator;    
+	
+	@Autowired
+	QuickGroupService quickGroupService;
     
 	@RequestMapping(produces = "text/html")
     public String showList(@ModelAttribute("expenseListModel") ExpenseListModel model,Model uiModel,HttpServletRequest request) {
@@ -81,7 +86,7 @@ public class ExpenseListController {
 		session.setAttribute(sessioncriteria,criteria);
 		
 		// error checking here
-		modelValidator.validateUpdate(model, bindingResult);
+		modelValidator.validateUpdateCategory(model, bindingResult);
 		
 		
 		// get expenses to update
@@ -104,7 +109,35 @@ public class ExpenseListController {
 		return "expense/list";
 	}
 	
-	
+	@RequestMapping(method = RequestMethod.PUT, params = "batchQuickGroup",produces = "text/html")
+	public String updateMultiQuickGroups(@ModelAttribute("expenseListModel") ExpenseListModel model,Model uiModel,BindingResult bindingResult,HttpServletRequest request) {
+		ExpenseCriteria criteria = model.getCriteria();
+		HttpSession session = request.getSession();
+		session.setAttribute(sessioncriteria,criteria);
+		
+		// error checking here
+		modelValidator.validateUpdateQuickGroup(model, bindingResult);
+		
+		
+		// get expenses to update
+		List<String> toupdate = model.getCheckedExpenseIds();
+		if (bindingResult.hasErrors()) {
+			// retrieve and set list
+			List<ExpenseDao> list = searchService.getExpenses(criteria);
+			model.setExpenses(list);		
+			// return
+			return "expense/list";
+		}
+		
+		// update expenses
+		transService.assignQuickGroupToExpenses(model.getBatchQuickgroup(), toupdate);
+		
+		// retrieve and set list
+		List<ExpenseDao> list = searchService.getExpenses(criteria);
+		model.setExpenses(list);		
+		// return
+		return "expense/list";
+	}
 	
 	@RequestMapping(method = RequestMethod.PUT,params="sort" ,produces = "text/html")
 	public String sortExpenses(@RequestParam("sort") String sorttype,@ModelAttribute("expenseListModel") ExpenseListModel model,Model uiModel,HttpServletRequest request) {
@@ -159,6 +192,15 @@ public class ExpenseListController {
 		// return model
 		return list;
 	}	
+	
+	@ModelAttribute("quickgrouplist")
+	protected List<QuickGroup> referenceQuickGroupData(HttpServletRequest request, Object command,
+			Errors errors) throws Exception {
+		List<QuickGroup> list = quickGroupService.getAllQuickGroups();
+		
+		// return model
+		return list;
+	}		
 	
 	@ModelAttribute("daterangelist")
 	protected List<ColumnValueDao> referenceDataDateRange(HttpServletRequest request, Object command,

@@ -217,6 +217,7 @@ public class CategoryServiceImpl implements CategoryService {
 		CatRelationshipDao catrel =catRelationRep.findByChild(catId); 
 
 		// update category relationship to new
+		parentId = parentId==null?new Long(0):parentId;
 		catrel.setParentId(parentId);
 
 		// persist changes

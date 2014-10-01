@@ -47,12 +47,23 @@ public class ExpenseListModelValidator implements Validator {
 		// empty method
 	}
 
-	public void validateUpdate(Object target, Errors errors) {
+	public void validateUpdateCategory(Object target, Errors errors) {
 		ExpenseListModel model = (ExpenseListModel) target;
 		
 		// check that the category has been set
 		if (model.getBatchUpdate()==null || model.getBatchUpdate().longValue()==0) {
 			errors.rejectValue("batchUpdate",
+					"field_required");
+		}
+
+	}
+	
+	public void validateUpdateQuickGroup(Object target, Errors errors) {
+		ExpenseListModel model = (ExpenseListModel) target;
+		
+		// check that the category has been set
+		if (model.getBatchQuickgroup()==null || model.getBatchQuickgroup().longValue()==0) {
+			errors.rejectValue("batchQuickgroup",
 					"field_required");
 		}
 

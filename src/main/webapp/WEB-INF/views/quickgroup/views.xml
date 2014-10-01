@@ -7,4 +7,7 @@
     <definition extends="default" name="quickgroup/edit">
         <put-attribute name="body" value="/WEB-INF/views/quickgroup/edit.jspx"/>
     </definition>
+    <definition extends="barebones" name="quickgroup/preview">
+        <put-attribute name="body" value="/WEB-INF/views/quickgroup/preview.jspx"/>
+    </definition>    
 </tiles-definitions>

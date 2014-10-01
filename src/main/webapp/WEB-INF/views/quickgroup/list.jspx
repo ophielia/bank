@@ -20,9 +20,60 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_quickgroup_percent" htmlEscape="false" var="lpct"/>
 <spring:message code="button_edit" htmlEscape="false" var="button_edit"/>    
 <spring:message code="button_save" htmlEscape="false" var="button_save"/>    
-<spring:message code="entity_info" htmlEscape="false" var="entity_info"/>    
+<spring:message code="entity_info" htmlEscape="false" var="button_info"/>    
+
+<script type="text/javascript">
+
+<![CDATA[
+
+//Require the DOM resource
+require(["dojo/ready", "dojo/query","dijit/TooltipDialog", "dijit/popup", "dojo/on", "dojo/dom"], 
+		function(ready,query, TooltipDialog, popup, on, dom){
+    ready(function(){
+    	function getIndex(prefix,text) {
+    		// gets a substring of the text, starting at the char after the length of the prefix
+    		var stripped = text.substr(prefix.length);
+  
+    		return stripped;
+    	}
+
+    	function getDialogForId(id) {
+    		var link = "quickgroup/preview/" + id;
+    		var dialog = dijit.byId('myTooltipDialog'+ id);
+    		if (dialog!=null) {
+    			return dialog;
+    		}
+    		var myTooltipDialog = new TooltipDialog({
+                id: 'myTooltipDialog'+ id,
+                style: "width: 300px;",
+                href:link,
+                loadingMessage:link,
+                onMouseLeave: function(){
+                    popup.close(myTooltipDialog);
+                }
+            });
+    		return myTooltipDialog;
+    	}
+    	
+    	dojo.query("a[id^='viewinfo']").forEach(function(node) {
+    		var id = node.id;
+    		var idx = getIndex('viewinfo',id);
+        	
+            on(dojo.byId(id), 'mouseover', function(){
+                popup.open({
+                    popup: getDialogForId(idx),
+                    around: dom.byId(id)
+                });
+            });
+    		
+    	});
 
 
+    });
+});
+     ]]>
+
+</script>
 
 
       <spring:url value="/quickgroup/create?form" var="newurl"/>
@@ -42,7 +93,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 				<spring:url value="/quickgroup/edit/${quickgroup.id}" var="editurl" />
 				<tr>
 					<td>${quickgroup.name}</td>
-					<td><a href="${editurl}">${button_edit}</a> <a href="#">${button_info}</a>
+					<td><a href="${editurl}">${button_edit}</a>    <a id="viewinfo${quickgroup.id}" style="margin-left:15px" href="#">${button_info}</a>
 					</td>
 				</tr>
 			</c:forEach>

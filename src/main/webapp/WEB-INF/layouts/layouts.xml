@@ -15,5 +15,8 @@
     <put-attribute name="header" value="/WEB-INF/views/header.jspx" />
     <put-attribute name="footer" value="/WEB-INF/views/footer.jspx" />
   </definition>
+  
+  <definition name="barebones" template="/WEB-INF/layouts/barebones.jspx">
+  </definition>  
 
 </tiles-definitions>

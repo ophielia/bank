@@ -105,6 +105,49 @@ public class ExpenseEditController {
     	return "expense/edit";
     }      
     
+    @RequestMapping(value="/{id}", method = RequestMethod.PUT, params = "addtoexp",produces = "text/html")
+    public String addExpensesFromQuickGroup(ExpenseEditModel model,Model uiModel,HttpServletRequest httpServletRequest) {
+    	// write any changes to expenses
+    	model.copyEntriesIntoCategories();
+    	// get Quick Group id
+    	Long quickgroupid = model.getQuickgroup();
+    	// get remainder - not yet assigned
+    	double total = model.getAmount().doubleValue() * -1.0;
+    	double assigned = model.getCategorizedTotal().doubleValue()*-1.0;
+    	double remainder = total-assigned;
+    	// get new expensedetails from QuickGroup service
+    	List<CategoryTADao> newexpenses = quickGroupService.getExpDetailsForQuickGroup(remainder, quickgroupid);
+    	// add expensedetails to model
+    	List<CategoryTADao> modelexpenses = model.getCategoryExpenses();
+    	modelexpenses.addAll(newexpenses);
+    	model.setCategoryExpenses(modelexpenses);
+    	// set editindex to size of list - 1
+    	model.setEditIdx(999);
+    	// return model
+    	uiModel.addAttribute("expenseEditModel", model);
+    	return "expense/edit";
+    }      
+    
+    
+    @RequestMapping(value="/{id}", method = RequestMethod.PUT, params = "replaceexp",produces = "text/html")
+    public String replaceExpensesFromQuickGroup(ExpenseEditModel model,Model uiModel,HttpServletRequest httpServletRequest) {
+    	// write any changes to expenses
+    	model.copyEntriesIntoCategories();
+    	// get Quick Group id
+    	Long quickgroupid = model.getQuickgroup();
+    	// get remainder - not yet assigned
+    	double total = model.getAmount().doubleValue() * -1.0;
+    	// get new expensedetails from QuickGroup service
+    	List<CategoryTADao> newexpenses = quickGroupService.getExpDetailsForQuickGroup(total, quickgroupid);
+    	// add expensedetails to model
+    	model.setCategoryExpenses(newexpenses);
+    	// set editindex to size of list - 1
+    	model.setEditIdx(999);
+    	// return model
+    	uiModel.addAttribute("expenseEditModel", model);
+    	return "expense/edit";
+    }      
+    
     @RequestMapping(value="/{id}", method = RequestMethod.PUT, params = "resetchanges",produces = "text/html")
     public String resetAllChanges(ExpenseEditModel model,Model uiModel,HttpServletRequest httpServletRequest) {
         Long transid = model.getTransid();

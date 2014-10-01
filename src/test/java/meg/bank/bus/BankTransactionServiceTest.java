@@ -10,11 +10,14 @@ import meg.bank.bus.dao.CategoryDao;
 import meg.bank.bus.dao.CategoryDaoDataOnDemand;
 import meg.bank.bus.dao.CategoryTADao;
 import meg.bank.bus.dao.ExpenseDao;
+import meg.bank.bus.dao.QuickGroup;
+import meg.bank.bus.dao.QuickGroupDetail;
 import meg.bank.bus.repo.BankTARepository;
 import meg.bank.bus.repo.CategoryRuleRepository;
 import meg.bank.bus.repo.CategoryTARepository;
 import meg.bank.web.model.ExpenseEditModel;
 
+import org.apache.commons.codec.net.QCodec;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,6 +37,9 @@ public class BankTransactionServiceTest {
 
 	@Autowired
 	CategoryService catService;
+	
+	@Autowired
+	QuickGroupService quickGroupService;	
 
 	@Autowired
 	SearchService searchService;
@@ -112,6 +118,49 @@ public class BankTransactionServiceTest {
 		}
 
 	}
+	
+	@Test
+	public void testAssignQuickGroupToExpenses() {
+		// get category for test
+		List<QuickGroup> allqcs = quickGroupService.getAllQuickGroups();
+		QuickGroup toassign = allqcs.get(1);
+		List<QuickGroupDetail> details = quickGroupService.getDetailsForQuickGroup(toassign);
+		int testsize=details.size();
+
+		// get all transactions
+		List<ExpenseDao> allexpenses = searchService.getAllExpenses();
+
+		// make list of three transactions to update - first, with no categories
+		List<String> updateids = new ArrayList<String>();
+		List<Long> updatetestids = new ArrayList<Long>();
+		for (ExpenseDao exp : allexpenses) {
+			if (!exp.getHascat().booleanValue()) {
+				updateids.add(exp.getId());
+				updatetestids.add(exp.getTransid());
+				if (updateids.size() > 3) {
+					break;
+				}
+			}
+		}
+
+		// call service
+		transService.assignQuickGroupToExpenses(toassign.getId(), updateids);
+
+		// get transactions
+		List<ExpenseDao> testresults = searchService
+				.getExpenseListByIds(updateids);
+		List<BankTADao> testtrans = bankRepo.findAll(updatetestids);
+
+		// test that each has a category now
+		Assert.assertNotNull(testresults);
+		for (BankTADao exp : testtrans) {
+			Assert.assertTrue(exp.getHascat().booleanValue());
+			// test that each has requisite number of categories
+			List<CategoryTADao> expdetails = catExpRepo.findByBankTrans(exp);
+			Assert.assertEquals(testsize,expdetails.size());
+		}
+
+	}	
 
 	@Test
 	public void testLoadExpenseEditModel() {
@@ -145,7 +194,7 @@ public class BankTransactionServiceTest {
 	@Test
 	public void testSaveExpenseEditModel() {
 		// get trans with category as model
-		Long id = withcategorized.getId();
+		Long id = withoutcategorized.getId();
 		ExpenseEditModel model = transService.loadExpenseEditModel(id);
 		// add three more categories
 		List<CategoryTADao> exps = model.getCategoryExpenses();
@@ -165,7 +214,7 @@ public class BankTransactionServiceTest {
 
 		// ensure that model contains 4 expenses
 		Assert.assertNotNull(test);
-		Assert.assertEquals(4, test.getCategoryExpenses().size());
+		Assert.assertEquals(3, test.getCategoryExpenses().size());
 		
 		
 		
@@ -182,7 +231,7 @@ public class BankTransactionServiceTest {
 
 		// ensure that model contains 3 expenses
 		Assert.assertNotNull(test);
-		Assert.assertEquals(3, test.getCategoryExpenses().size());		
+		Assert.assertEquals(2, test.getCategoryExpenses().size());		
 		
 		// now try with lots of same categories
 		id = withoutcategorized.getId();

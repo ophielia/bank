@@ -213,21 +213,22 @@ public class QuickGroupServiceImpl implements QuickGroupService {
 					// create new ExpenseDetail
 					CategoryTADao expdet = new CategoryTADao();
 					// calculate amount
-					double amount = todistribute * detail.getPercentage().doubleValue() * 100.0;
-					amount = Math.round(amount) / 10000.0 * -1.0;
+					double amount = todistribute * detail.getPercentage().doubleValue() / 100.0;
+					amount = Math.round(amount*100.0) / 100.0;
 					// fill in ExpenseDetail amount and catid
 					expdet.setAmount(amount);
 					expdet.setCatid(detail.getCatid());
 					expensedetails.add(expdet);
-					total+=amount*-1.0;
+					total+=amount;
 				}
 				// check for penny off
 				if (total!=todistribute) {
 					double correction = todistribute - total;
 					CategoryTADao corrdet = expensedetails.get(expensedetails.size()-1);
-					double amount = corrdet.getAmount().doubleValue()*-1.0;
+					double amount = corrdet.getAmount().doubleValue();
 					amount+=correction;
-					corrdet.setAmount(new Double(amount*-1.0));
+					amount = Math.round(amount*100.0)/100.0;
+					corrdet.setAmount(new Double(amount));
 				}
 				// return list
 				return expensedetails;
@@ -240,6 +241,16 @@ public class QuickGroupServiceImpl implements QuickGroupService {
 	@Override
 	public List<QuickGroup> getAllQuickGroups() {
 		return qcRepo.findAll();
+	}
+
+	@Override
+	public List<QuickGroupDetail> getDetailsForQuickGroup(QuickGroup quickgroup) {
+		return qcDetRepo.findByQuickGroup(quickgroup);
+	}
+
+	@Override
+	public QuickGroup getQuickGroup(Long quickgroupid) {
+		return qcRepo.findOne(quickgroupid);
 	}
 
 }

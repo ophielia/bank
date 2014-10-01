@@ -223,7 +223,7 @@ public class ExpenseEditModel implements Serializable {
 			}
 		}
 		// return total
-		return totalamount*-1;
+		return Math.round(totalamount*100.0)/-100.0;
 	}
 	
 	public int getEmptyCount() {
