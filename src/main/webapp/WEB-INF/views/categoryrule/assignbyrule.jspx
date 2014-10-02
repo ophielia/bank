@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+    <spring:url value="/ruleassignment" var="actionlink"/>
+    <spring:message code="bank_rules" var="rule"/>
+    <spring:message  code="label_rule_assignbyrule" var="title"/>
+    <spring:message  code="label_rule_doassiggnments" var="savebutton"/>
+    
+    
+    
+    <h1>${title}</h1>
+<form:form action="${actionlink}" id="assignmentlist" method="PUT" modelAttribute="assignmentListModel">
+
+<c:set var="count" value="0" />
+<!-- loop for each ruleassignment -->
+<c:forEach  var="assignment" items="${assignmentListModel.ruleAssignments}">
+	<div>
+	<h2>${assignment.category.name}</h2>
+	<ul style="list-style-type: none;">
+	<!-- loop for each transaction -->
+	<c:forEach  var="transaction" items="${assignment.transactions}">
+	<li style="list-style-type: none;"><form:checkbox path="checked[${count}]"  /> ${transaction.detail}  ${transaction.amount*-1}</li>
+	<c:set var="count" value="${count + 1}" />
+	</c:forEach>
+	<!-- end loop for each transaction -->
+	</ul>
+	</div>
+</c:forEach>
+<!-- end loop for each ruleassignment -->
+
+ <input id="saveassignments" type="submit" value="${savebutton}"/>
+</form:form>
+</div>

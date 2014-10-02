@@ -8,18 +8,18 @@ import java.util.List;
 import meg.bank.bus.dao.BankTADao;
 import meg.bank.bus.dao.CategoryDao;
 
-public class TransToCategory {
+public class RuleAssignment {
 
 	private CategoryDao cat;
 	private List<BankTADao> transactions;
 	
-	public TransToCategory(CategoryDao cat, List<BankTADao> transactions) {
+	public RuleAssignment(CategoryDao cat, List<BankTADao> transactions) {
 		this.cat = cat;
 		this.transactions = transactions;
 	}
 
 
-	public TransToCategory(CategoryDao category) {
+	public RuleAssignment(CategoryDao category) {
 		this.cat=category;
 	}
 
@@ -55,6 +55,19 @@ public class TransToCategory {
 				assigned.put(tr.getId(), new Long(1));	
 			}
 		}
+	}
+
+
+	public void addTransaction(BankTADao exp) {
+		if (transactions == null) {
+			transactions = new ArrayList<BankTADao>();
+		}
+		transactions.add(exp);
+	}
+
+
+	public int getTransactionCount() {
+		return transactions!=null?transactions.size():0;
 	}
 	
 }

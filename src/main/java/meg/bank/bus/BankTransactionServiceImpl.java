@@ -9,6 +9,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
+import meg.bank.bus.ExpenseCriteria.SortDirection;
 import meg.bank.bus.dao.BankTADao;
 import meg.bank.bus.dao.CategoryDao;
 import meg.bank.bus.dao.CategoryRuleDao;
@@ -23,6 +24,8 @@ import meg.bank.bus.report.CategorySummaryDisp;
 import meg.bank.web.model.ExpenseEditModel;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +55,9 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 	
 	@Autowired
 	private QuickGroupService quickGroupService;	
+	
+	@Autowired
+	private CategoryService categoryService;		
 	
 	/* (non-Javadoc)
 	 * @see meg.bank.bus.BankTransactionService#deleteBankTA(java.lang.Long)
@@ -83,50 +89,11 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 		return resultdate;
 	}
 	
-	
+ 
 	/* (non-Javadoc)
 	 * @see meg.bank.bus.BankTransactionService#getAssignedCategoryList()
 	 */
-	@Override
-	public List<TransToCategory> getAssignedCategoryList() {
-		// get Category Rules
-		List<CategoryRuleDao> rules = catRuleRep.findAll();
-		List<TransToCategory> listofassigned = new ArrayList<TransToCategory>();
-		Hashtable<Long,TransToCategory> assigned = new Hashtable<Long,TransToCategory>();
-		
-		if (rules != null) {
-			// loop through Category Rules
-			Hashtable<Long,Long> assignedtransactions = new Hashtable<Long,Long>();
-			for (Iterator<CategoryRuleDao> iter = rules.iterator(); iter.hasNext();) {
-				CategoryRuleDao rule = (CategoryRuleDao) iter.next();
-				// pull category
-				CategoryDao category = catRep.findOne(rule.getCategoryId());
-
-				if (rule.getContaining()!=null) {
-					// pull transactions for Category Rule
-					List<BankTADao> transactions = bankTransRep.findTransWithDetailLike(rule.getContaining().toUpperCase());
-
-					// assemble AssignRuleCategory, and add to list
-					if (transactions!=null && transactions.size()>0 ) {
-						TransToCategory assign = (TransToCategory) assigned.get(category.getId());
-						if (assign==null) {
-							assign=new TransToCategory(category);
-						}
-						assign.addTransactions(transactions, assignedtransactions);
-						assigned.put(category.getId(),assign);
-					}
-					
-				}
-			}
-		}
-
-		// return list
-		for (Iterator<TransToCategory> iter = assigned.values().iterator(); iter.hasNext();) {
-			TransToCategory assign = (TransToCategory) iter.next();
-			listofassigned.add(assign);
-		}
-		return listofassigned;
-	}
+	
 	
 
 	
@@ -378,30 +345,6 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 
 
 
-	/* (non-Javadoc)
-	 * @see meg.bank.bus.BankTransactionService#assignFromCategories(java.util.List)
-	 */
-	@Override
-	public void assignFromCategories(List<TransToCategory> assignedcategories) {
-		if (assignedcategories != null) {
-			// loop through categories
-			for (Iterator iter = assignedcategories.iterator(); iter.hasNext();) {
-				TransToCategory rule = (TransToCategory) iter.next();
-				// for each category group, pull transactions to be assigned
-				List<BankTADao> transactions = rule.getTransactions();
-				Long currentcatid = rule.getCategoryId();
-				if (transactions != null) {
-					// loop through transactions
-					for (Iterator iterator = transactions.iterator(); iterator
-							.hasNext();) {
-						BankTADao trans = (BankTADao) iterator.next();
-						// assign each transaction to the group
-						assignCategory(trans.getId(), currentcatid);
-					}
-				}
-			}
-		}
-	}
 
 	/* (non-Javadoc)
 	 * @see meg.bank.bus.BankTransactionService#assignFromCategories(java.lang.Long, java.util.List)
@@ -410,7 +353,7 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 	public void assignFromCategories(Long catid, List<BankTADao> transtoadd) {
 		// create TransToCategory
 		CategoryDao cat = catRep.findOne(catid);
-		TransToCategory ttc = new TransToCategory(cat, transtoadd);
+		RuleAssignment ttc = new RuleAssignment(cat, transtoadd);
 	
 		// add to "list"
 		List newlist = new ArrayList();
@@ -629,6 +572,126 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 					catTransRep.save(newdetails);
 				}
 				
+			}
+		}
+		
+	}
+
+	@Override
+	public List<RuleAssignment> getAssignedCategoryList() {
+		// get Category Rules
+		List<CategoryRuleDao> rules = catRuleRep.findAll();
+		List<RuleAssignment> listofassigned = new ArrayList<RuleAssignment>();
+		Hashtable<Long,RuleAssignment> assigned = new Hashtable<Long,RuleAssignment>();
+		
+		if (rules != null) {
+			// loop through Category Rules
+			Hashtable<Long,Long> assignedtransactions = new Hashtable<Long,Long>();
+			for (Iterator<CategoryRuleDao> iter = rules.iterator(); iter.hasNext();) {
+				CategoryRuleDao rule = (CategoryRuleDao) iter.next();
+				// pull category
+				CategoryDao category = catRep.findOne(rule.getCategoryId());
+
+				if (rule.getContaining()!=null) {
+					// pull transactions for Category Rule
+					List<BankTADao> transactions = bankTransRep.findTransWithDetailLike(rule.getContaining().toUpperCase());
+
+					// assemble AssignRuleCategory, and add to list
+					if (transactions!=null && transactions.size()>0 ) {
+						RuleAssignment assign = (RuleAssignment) assigned.get(category.getId());
+						if (assign==null) {
+							assign=new RuleAssignment(category);
+						}
+						assign.addTransactions(transactions, assignedtransactions);
+						assigned.put(category.getId(),assign);
+					}
+					
+				}
+			}
+		}
+
+		// return list
+		for (Iterator<RuleAssignment> iter = assigned.values().iterator(); iter.hasNext();) {
+			RuleAssignment assign = (RuleAssignment) iter.next();
+			listofassigned.add(assign);
+		}
+		return listofassigned;
+	}
+	
+	@Override
+	public List<RuleAssignment> getRuleAssignments() {
+		// Assigns Categories to Uncategorized expenses according to the text in the Expense Detail.
+		// does work within program rather than through repeated calls on database
+		
+		// load rules in order
+		List<CategoryRuleDao> rules = catRuleRep.findAll(new Sort(Direction.ASC, "lineorder"));
+		// load all uncategorized expenses
+		List<BankTADao> expenses = bankTransRep.findNoCategoryExpenses();
+		// load category reference
+		HashMap<Long,CategoryDao> catref = categoryService.getCategoriesAsMap();
+		
+		// prepare holders
+		HashMap<Long,RuleAssignment> assigned = new HashMap<Long,RuleAssignment>();
+		List<Long> assignedexpenses = new ArrayList<Long>();
+		
+		// loop through all rules, assigning categories
+		for (CategoryRuleDao rule:rules) {
+			String searchfor = rule.getContaining().toLowerCase();
+			Long rulecatid=rule.getCategoryId();
+			CategoryDao cat = catref.containsKey(rulecatid)?catref.get(rulecatid):null;
+			for (BankTADao exp:expenses) {
+				if (assignedexpenses.contains(exp.getId())) {
+					continue;
+				}
+				// check in detail
+				String searchin = exp.getDetail().toLowerCase();
+				if (searchin.indexOf(searchfor)>=0) {
+					// string found
+					// retrieve or create RuleAssignment
+					RuleAssignment ruleassign=null;
+					if (assigned.containsKey(rulecatid)) {
+						ruleassign = assigned.get(rulecatid);
+					} else {
+						ruleassign = new RuleAssignment(cat);
+					}
+					// add transaction to RuleAssignment
+					ruleassign.addTransaction(exp);
+					// reset RuleAssignment in holder
+					assigned.put(rulecatid, ruleassign);
+					// add expenseid to assignedidlist
+					assignedexpenses.add(exp.getId());
+				}
+			}
+		}
+		// return list of ruleassignment objects
+		List<RuleAssignment> results = new ArrayList<RuleAssignment>();
+		for (Long catid:assigned.keySet()) {
+			RuleAssignment check = assigned.get(catid);
+			if (check.getTransactionCount()>0) {
+				results.add(check);
+			}
+		}
+		return results;
+	}
+
+	@Override
+	public void updateExpenseByRuleAssignments(List<RuleAssignment> assignedcategories) {
+		if (assignedcategories != null) {
+			// loop through categories
+			for (Iterator iter = assignedcategories.iterator(); iter.hasNext();) {
+				RuleAssignment rule = (RuleAssignment) iter.next();
+				// for each category group, pull transactions to be assigned
+				List<BankTADao> transactions = rule.getTransactions();
+				Long currentcatid = rule.getCategoryId();
+				if (transactions != null) {
+					// loop through transactions
+					for (Iterator iterator = transactions.iterator(); iterator
+							.hasNext();) {
+						BankTADao trans = (BankTADao) iterator.next();
+						// assign each transaction to the group
+						assignCategory(trans.getId(), currentcatid);
+					}
+				}
 			}
 		}
 		

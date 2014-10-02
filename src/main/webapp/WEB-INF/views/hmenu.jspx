@@ -28,6 +28,7 @@
 	</li>
 	<li><moo:menulink label="bank_rules" url="/" />
 	<ul>
+		<li><moo:menulink label="bank_assign_rules" url="/ruleassignment" /></li>
 		<li><moo:menulink label="bank_all_rules" url="/categoryrule" /></li>
 		<li><moo:menulink label="bank_new_rule" url="/categoryrule?form" /></li>
 	</ul>

@@ -13,4 +13,7 @@
 <definition extends="default" name="categoryrule/update">
         <put-attribute name="body" value="/WEB-INF/views/categoryrule/updaterule.jspx"/>
     </definition>
+<definition extends="default" name="rule/assignbyrule">
+        <put-attribute name="body" value="/WEB-INF/views/categoryrule/assignbyrule.jspx"/>
+    </definition>    
 </tiles-definitions>

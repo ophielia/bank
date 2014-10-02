@@ -55,8 +55,10 @@ public class UploadController {
 	   // import the file here....
 	   importManager.importTransactions(mediaUpload.getImportClient().intValue(), filestr);
 	   
-	   return "redirect:/import/" + encodeUrlPathSegment(mediaUpload.getId().toString(),
-	      httpServletRequest);
+	   return "redirect:/ruleassignment";
+	   
+	   //return "redirect:/import/" + encodeUrlPathSegment(mediaUpload.getId().toString(),
+	    //  httpServletRequest);
 	}
 	
 	@ModelAttribute("clientkeys")

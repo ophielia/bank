@@ -12,11 +12,12 @@ look at failed maven all tests
 make edit link in expenselist polite
 future - change to JPA criteria!!?? (SearchService)
 	
-continue entering categories - start with presents
-next up - assign by rules....	
+----> continue entering categories - start with presents
+
+
 	
-list validation - validator - check for present quickgroup id - or in controller
-   javascript validation like with categories	
+done - list validation - validator - check for present quickgroup id - or in controller
+done -    javascript validation like with categories	
 
 
 
@@ -26,6 +27,7 @@ discomfort in category entry -
 	list display in alphabetical order
 	list BOX in alphabetical order
 	error create with no parent id
+	select box in create and edit should be display all, not display only 
 
 
 ColumnManagerService displayonly should change sql depending upon true or false
@@ -44,17 +46,19 @@ think about menu.... make second level for categories, rules, targets
 	
 ---- begin commit changes ----
 
-done - implement QuickGroup
-done - fill in validator - messages, implement
-done - begin implementing list page - preview and edit and new functions
-done - make preview 
-done - tie into edit expense page, list expenses page.
-done - save as quickgroup
-done - add quickgroup (edit expense)
-done - replace quickgroup (edit expense)
-done - preview in list
-done - preview expense edit
-done - assign quickgroup - expense list page.
+done - next up - assign by rules....	
+done - skeleton back to backend, testing and implementing my way forward
+done - BTS.getRuleAssignments() test and implement
+done - AssignmentListModel - getCheckedRuleAssignments 
+done - test AssignmentListModel - getCheckedRuleAssignments
+done - make it green AssignmentListModel - getCheckedRuleAssignments
+done - check that bankta isn't assigned twice (getRuleAssignments)
+done - BTS.updateExpenseByRuleAssignments() test
+done - make it green
+done - model.getCheckedRuleAssignments() test
+done - make it green
+done - wire to page - make page work
+
 	
 
 		
@@ -230,6 +234,18 @@ done - initial run through of pages - list and edit/create
 done -  save referer - go back (after save/cancel) to edit expense page, or quick group list page.  implement this in flag set in model inside frombanktransid ref method??
 done - fill in edit page - messages
 done - fill in list page - messages
+done - implement QuickGroup
+done - fill in validator - messages, implement
+done - begin implementing list page - preview and edit and new functions
+done - make preview 
+done - tie into edit expense page, list expenses page.
+done - save as quickgroup
+done - add quickgroup (edit expense)
+done - replace quickgroup (edit expense)
+done - preview in list
+done - preview expense edit
+done - assign quickgroup - expense list page.
+
 
 ---- end branch changes ----
 

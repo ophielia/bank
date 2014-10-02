@@ -2,12 +2,13 @@ package meg.bank.bus;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import meg.bank.bus.dao.BankTADao;
 import meg.bank.bus.dao.BankTADaoDataOnDemand;
 import meg.bank.bus.dao.CategoryDao;
-import meg.bank.bus.dao.CategoryDaoDataOnDemand;
+import meg.bank.bus.dao.CategoryRuleDao;
 import meg.bank.bus.dao.CategoryTADao;
 import meg.bank.bus.dao.ExpenseDao;
 import meg.bank.bus.dao.QuickGroup;
@@ -15,9 +16,9 @@ import meg.bank.bus.dao.QuickGroupDetail;
 import meg.bank.bus.repo.BankTARepository;
 import meg.bank.bus.repo.CategoryRuleRepository;
 import meg.bank.bus.repo.CategoryTARepository;
+import meg.bank.web.model.AssignmentListModel;
 import meg.bank.web.model.ExpenseEditModel;
 
-import org.apache.commons.codec.net.QCodec;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,15 +51,23 @@ public class BankTransactionServiceTest {
 	@Autowired
 	CategoryTARepository catExpRepo;
 
+	@Autowired
+	CategoryRuleRepository catRuleRepo;
+
+	
 	CategoryDao tCat;
+	CategoryDao tCat2;
 	BankTADao withcategorized;
 	BankTADao withoutcategorized;
 
 	List<CategoryDao> randomcats;
+	CategoryRuleDao tCatRule;
+	List<Long> banktas;
 	
 	@Before
 	public void setup() {
 		tCat = catService.addCategory("tCat", "", false, true);
+		tCat2 = catService.addCategory("tCat2", "", false, true);
 
 		// trans with category
 		// make BankTrans
@@ -78,10 +87,31 @@ public class BankTransactionServiceTest {
 		// trans without category
 		bDod = new BankTADaoDataOnDemand();
 		withoutcategorized = bDod.getNewTransientBankTADao(12);
+		withoutcategorized.setDetail("x x x tTest Text x x x");
+		withoutcategorized.setHascat(false);
+		withoutcategorized.setAmount(-100.0D);
 		bankRepo.saveAndFlush(withoutcategorized);
 		
 		randomcats=catService.getCategories(true);
 		
+		// make list of 5 bank transaction ids
+		banktas = new ArrayList<Long>();
+		for (int i=0;i<5;i++) {
+			BankTADao test1 = bDod.getNewTransientBankTADao(10+i);
+			test1.setDetail("x x x tBeep Bop"+i+" x x x");
+			test1.setHascat(false);
+			test1.setAmount(-100.0D);
+			test1 = bankRepo.saveAndFlush(test1);
+			banktas.add(test1.getId());
+		}
+		
+		
+		// CategoryRule
+		tCatRule = new CategoryRuleDao();
+		tCatRule.setCategoryId(tCat.getId());
+		tCatRule.setContaining("tTest Text");
+		tCatRule.setLineorder(199L);
+		tCatRule = catRuleRepo.saveAndFlush(tCatRule);
 	}
 
 	@Test
@@ -259,6 +289,166 @@ public class BankTransactionServiceTest {
 		
 	}
 	
+	@Test
+	public void testGetRuleAssignments() {
+		// get ids to look for, transid (withoutcategorized) and tCatId
+		Long transid = withoutcategorized.getId();
+		Long catid = tCat.getId();
+		
+		// service call
+		List<RuleAssignment> assignments = transService.getRuleAssignments();
+		
+		// something returned
+		Assert.assertNotNull(assignments);
+		
+		RuleAssignment test = null;
+		for (RuleAssignment assignm:assignments) {
+			if (assignm.getCategoryId().longValue()==catid.longValue()) {
+				test = assignm;
+				break;
+			}
+		}
+		
+		// Assert not null
+		Assert.assertNotNull(test);
+		// Assert contains one trans
+		Assert.assertNotNull(test.getTransactions());
+		Assert.assertEquals(1,test.getTransactions().size());
+		// Assert Trans has transid
+		BankTADao testbt = test.getTransactions().get(0);
+		Assert.assertEquals(transid,testbt.getId());
+		 // Assert test has Category
+		Assert.assertNotNull(test.getCategory());
+	}
+	
+	@Test
+	public void testUpdateExpenseByRuleAssignments() {
+		Long catid1 = tCat.getId();
+		Long catid2 = tCat2.getId();
+		
+		// set up RuleAssignmentList
+		List<RuleAssignment> assignments = new ArrayList<RuleAssignment>();
+		RuleAssignment rass = new RuleAssignment(tCat);
+		List<Long> transids = banktas.subList(0, 3);
+		List<BankTADao> trans = bankRepo.findAll(transids);
+		for (BankTADao tr : trans) {
+			rass.addTransaction(tr);
+		}
+		assignments.add(rass);
+		rass = new RuleAssignment(tCat2);
+		transids = banktas.subList(3, 5);
+		trans = bankRepo.findAll(transids);
+		for (BankTADao tr : trans) {
+			rass.addTransaction(tr);
+		}
+		assignments.add(rass);		
+
+		// service call
+		transService.updateExpenseByRuleAssignments(assignments);
+		
+		// loop through list of ids (banktas), testing each
+		for (int i=0;i<5;i++) {
+			// get banktadao - assert hascat is true
+			BankTADao bankta = bankRepo.findOne(banktas.get(i));
+			Assert.assertTrue(bankta.getHascat());
+			// get expensedetails for banktadao
+			List<CategoryTADao> expdetails = transService.getCategoryExpForTrans(banktas.get(i));
+			// assert list has 1
+			Assert.assertNotNull(expdetails);
+			Assert.assertEquals(1, expdetails.size());
+			// assert category is correct
+			CategoryTADao detail = expdetails.get(0);
+			Long testcatid = i<3?catid1:catid2;
+			Assert.assertEquals(testcatid, detail.getCatid());
+		}
+	}
+	
+	
+	@Test
+	public void testGetCheckedRuleAssignments() {
+		// actually testing the model, but this is crucial
+		// to the BTS rule assignment methods
+
+		Long catid1 = tCat.getId();
+		Long catid2 = tCat2.getId();
+
+		// make a list of checked
+		List<Boolean> checked = new ArrayList<Boolean>();
+		checked.add(true);
+		checked.add(false);
+		checked.add(true);
+		checked.add(false);
+		checked.add(true);
+		// make List of RuleAssignments
+		List<RuleAssignment> assignments = new ArrayList<RuleAssignment>();
+		RuleAssignment rass = new RuleAssignment(tCat);
+		List<Long> transids = banktas.subList(0, 3);
+		List<BankTADao> trans = bankRepo.findAll(transids);
+		for (BankTADao tr : trans) {
+			rass.addTransaction(tr);
+		}
+		assignments.add(rass);
+		rass = new RuleAssignment(tCat2);
+		transids = banktas.subList(3, 5);
+		trans = bankRepo.findAll(transids);
+		for (BankTADao tr : trans) {
+			rass.addTransaction(tr);
+		}
+		assignments.add(rass);
+
+		// create model, and set checked
+		AssignmentListModel model = new AssignmentListModel(assignments);
+		model.setChecked(checked);
+
+		// model call
+		List<RuleAssignment> testresults = model.getCheckedRuleAssignments();
+
+		// test that correct transactions are there
+		Assert.assertNotNull(testresults);
+		// rule assignment for cat1
+		RuleAssignment test = null;
+		for (RuleAssignment assignm : testresults) {
+			if (assignm.getCategoryId().longValue() == catid1.longValue()) {
+				test = assignm;
+				break;
+			}
+		}
+		// should have 2 transactions
+		Assert.assertEquals(2, test.getTransactionCount());
+		// put transactions in Hash
+		HashMap<Long, BankTADao> hash = new HashMap<Long, BankTADao>();
+		for (BankTADao ta : test.getTransactions()) {
+			hash.put(ta.getId(), ta);
+		}
+		// check for existence of banktas idx 0
+		Assert.assertTrue(hash.containsKey(banktas.get(0)));
+		// check for existence of banktas idx 2
+		Assert.assertTrue(hash.containsKey(banktas.get(2)));
+
+		// rule assignment for cat2
+		test = null;
+		for (RuleAssignment assignm : testresults) {
+			if (assignm.getCategoryId().longValue() == catid2.longValue()) {
+				test = assignm;
+				break;
+			}
+		}
+		Assert.assertNotNull(test);
+		// should have 2 transactions
+		Assert.assertEquals(1, test.getTransactionCount());
+		// put transactions in Hash
+		hash = new HashMap<Long, BankTADao>();
+		for (BankTADao ta : test.getTransactions()) {
+			hash.put(ta.getId(), ta);
+		}
+		// check for existence of banktas idx 4
+		Assert.assertTrue(hash.containsKey(banktas.get(4)));
+	}
+	
+
+	
+	
+
 	/**
 	 * 
 	 addTransaction(BankTADao) assignCategory(Long, Long)
