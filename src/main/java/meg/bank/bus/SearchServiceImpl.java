@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import meg.bank.bus.dao.CategoryDao;
 import meg.bank.bus.dao.ExpenseDao;
 import meg.bank.bus.imp.ImportManager;
+import meg.bank.bus.repo.BankTARepository;
 import meg.bank.bus.report.CategorySummaryDisp;
 import meg.bank.bus.ExpenseCriteria;
 
@@ -37,21 +38,9 @@ public class SearchServiceImpl implements SearchService {
     
     @Autowired
     private CategoryService catService;
-    
-	private List<ExpenseDao> getExpenseByCatType(ExpenseCriteria criteria,Long catType) {
-		// calls searchService.getExpenseByCatType(ExpenseCriteria criteria,Long catType) 
-		// base statement
-		StringBuffer sql = new StringBuffer("from ExpenseDao as exp ");
-		criteria.setCategorizedType(catType);
-		sql.append(getWhereClauseForCriteria(criteria, true));
-		sql.append(" order by transDate desc, transid");
 
-		// get expenses
-		Query query = entityManager.createNativeQuery(sql.toString(),"ExpenseResult");
-		@SuppressWarnings("unchecked")
-		List<ExpenseDao> expenses = query.getResultList();
-		return expenses;
-	}
+    @Autowired
+    private BankTARepository bankTransRep;
 
 	/* (non-Javadoc)
 	 * @see meg.bank.bus.SearchService#getExpenses(meg.bank.bus.ExpenseCriteria)
@@ -79,12 +68,12 @@ public class SearchServiceImpl implements SearchService {
 		
 		if (origcattype==null || origcattype.longValue()==ExpenseCriteria.CategorizedType.ALL) {
 			// all
-			expenses = newGetExpenseByCatType(criteria,new Long(ExpenseCriteria.CategorizedType.NOCATS));
-			List<ExpenseDao> expensescats = newGetExpenseByCatType(criteria,new Long(ExpenseCriteria.CategorizedType.ONLYCATS));
+			expenses = getExpenseByCatType(criteria,new Long(ExpenseCriteria.CategorizedType.NOCATS));
+			List<ExpenseDao> expensescats = getExpenseByCatType(criteria,new Long(ExpenseCriteria.CategorizedType.ONLYCATS));
 			expenses.addAll(expensescats);
 			criteria.setCategorizedType(origcattype);
 		} else {
-			expenses = newGetExpenseByCatType(criteria,origcattype);
+			expenses = getExpenseByCatType(criteria,origcattype);
 		} 
 		
 		
@@ -98,6 +87,34 @@ public class SearchServiceImpl implements SearchService {
 	@Override
 	public List<CategorySummaryDisp> getExpenseTotalByMonth(ExpenseCriteria criteria) {
 		List<CategorySummaryDisp> displays = new ArrayList<CategorySummaryDisp>();
+		
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<CategorySummaryDisp> c = cb.createQuery(CategorySummaryDisp.class);
+		Root<ExpenseDao> exp = c.from(ExpenseDao.class);
+		Expression maxExpression = cb.sum(exp.<Number>get("catamount"));
+		c.multiselect(exp.get("monthyear"),maxExpression.alias("sum"))
+		.groupBy(exp.get("monthyear"));
+		
+		if (criteria != null) {
+
+			// get where clause
+			List<Predicate> whereclause = getPredicatesForCriteria(criteria,cb,exp);
+			
+			// creating the query
+			c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
+			TypedQuery<CategorySummaryDisp> q = entityManager.createQuery(c);
+
+			// setting the parameters
+			setParametersInQuery(criteria,q);
+			
+			return q.getResultList();
+
+		}
+
+		return null;
+/*
+ * 
+ * 		
 		// create sql
 		String summedcol = "catamount";
 		StringBuffer sql = new StringBuffer("select month,year, sum(").append(
@@ -126,6 +143,7 @@ public class SearchServiceImpl implements SearchService {
 
 		// return list of CategorySummaryDisp objects
 		return displays;
+ */
 	}
 	
 	/* (non-Javadoc)
@@ -133,6 +151,39 @@ public class SearchServiceImpl implements SearchService {
 	 */
 	@Override
 	public List<CategorySummaryDisp> getExpenseTotalByYear(ExpenseCriteria criteria) {
+		
+		List<CategorySummaryDisp> displays = new ArrayList<CategorySummaryDisp>();
+		
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<CategorySummaryDisp> c = cb.createQuery(CategorySummaryDisp.class);
+		Root<ExpenseDao> exp = c.from(ExpenseDao.class);
+		Expression maxExpression = cb.sum(exp.<Number>get("catamount"));
+		c.multiselect(exp.get("year"),maxExpression.alias("sum"))
+		.groupBy(exp.get("year"));
+		
+		if (criteria != null) {
+
+			// get where clause
+			List<Predicate> whereclause = getPredicatesForCriteria(criteria,cb,exp);
+			
+			// creating the query
+			c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
+			TypedQuery<CategorySummaryDisp> q = entityManager.createQuery(c);
+
+			// setting the parameters
+			setParametersInQuery(criteria,q);
+			
+			return q.getResultList();
+
+		}
+
+		return null;
+		
+	/*
+	 * 
+	 * 	
+		
+		
 		
 		List<CategorySummaryDisp> displays = new ArrayList<CategorySummaryDisp>();
 		// create sql
@@ -163,11 +214,282 @@ public class SearchServiceImpl implements SearchService {
 		// return list of CategorySummaryDisp objects
 		return displays;
 		
+	 */
 	}	
 	
+
+	
+	public List<ExpenseDao> getExpenseListByIds(List<String> idlist) {
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<ExpenseDao> c = cb.createQuery(ExpenseDao.class);
+		Root<ExpenseDao> exp = c.from(ExpenseDao.class);
+		c.select(exp);
+
+		if (idlist != null) {
+			// making space for parameters
+			ParameterExpression<Collection> ids = cb.parameter(Collection.class);
+			c.where(exp.get("id").in(ids));
+			Collection<String> idsParameter = new ArrayList<String> ();
+			for (String param:idlist) {
+				idsParameter.add(param);
+			}
+					
+			// creating the query
+			TypedQuery<ExpenseDao> q = entityManager.createQuery(c);
+
+			// setting the parameters
+			q.setParameter(ids, idsParameter);
+
+			
+			return q.getResultList();
+
+		}
+
+		return null;
+	}
+	
+	
+
+	
+	@Override
+	public List<ExpenseDao> getAllExpenses() {
+	
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<ExpenseDao> c = cb.createQuery(ExpenseDao.class);
+		Root<ExpenseDao> exp = c.from(ExpenseDao.class);
+		c.select(exp);
+		c.orderBy(cb.desc(exp.get("transdate")), cb.asc(exp.get("transid")));
+	
+		// creating the query
+		TypedQuery<ExpenseDao> q = entityManager.createQuery(c);
+	
+		return q.getResultList();
+	
+	}
+
 	/* (non-Javadoc)
-	 * @see meg.bank.bus.SearchService#getExpenseTotal(meg.bank.bus.ExpenseCriteria)
+	 * @see meg.bank.bus.BankTransactionService#getMostRecentTransDate()
 	 */
+	@Override
+	public Date getMostRecentTransDate() {
+		// call banktransservice.getMostRecentTransDate();
+		Date resultdate = bankTransRep.getMostRecentTransDate();
+
+		// check for null
+		if (resultdate == null) {
+			Calendar cal = Calendar.getInstance();
+			cal.set(1970, 10, 1);
+			resultdate = cal.getTime();
+		}
+
+		return resultdate;
+	}
+	
+
+	@Override
+	public Date getFirstTransDate() {
+		return bankTransRep.getFirstTransDate();
+	}	
+
+	private List<ExpenseDao> getExpenseByCatType(ExpenseCriteria criteria,
+			Long catType) {
+
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<ExpenseDao> c = cb.createQuery(ExpenseDao.class);
+		Root<ExpenseDao> exp = c.from(ExpenseDao.class);
+		c.select(exp);
+		setOrderBy(criteria,cb,c,exp);
+		
+		
+		if (criteria != null) {
+			
+			// set the cattype in the criteria
+			criteria.setCategorizedType(catType);
+			// get where clause
+			List<Predicate> whereclause = getPredicatesForCriteria(criteria,cb,exp);
+			
+			
+			// creating the query
+			c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
+			TypedQuery<ExpenseDao> q = entityManager.createQuery(c);
+
+			// setting the parameters
+			setParametersInQuery(criteria,q);
+			
+			return q.getResultList();
+
+		}
+
+		return null;
+	}
+
+	private void setParametersInQuery(ExpenseCriteria criteria,
+			TypedQuery q) {
+		// date start
+					if (criteria.getDateStart() != null) {
+						q.setParameter("transdate", criteria.getDateStart());
+					}
+					// categorized type
+					if (criteria.getCategorizedType() != null && criteria.getCategorizedType()!=ExpenseCriteria.CategorizedType.ALL) {
+						if (criteria.getCategorizedType().longValue() == ExpenseCriteria.CategorizedType.NOCATS) {
+							q.setParameter("hascat", false);
+						} else if (criteria.getCategorizedType().longValue() == ExpenseCriteria.CategorizedType.ONLYCATS) {
+							q.setParameter("hascat", true);
+						}
+					}
+					// set category or categories
+					if (criteria.showSingleCategory()) {
+						q.setParameter("catid", criteria.getCategory());
+					}			
+					// non-expense handling
+					if (criteria.getExcludeNonExpense() != null) {
+						if (criteria.getExcludeNonExpense().booleanValue()) {
+							q.setParameter("nonexpense", false);
+						}
+					}			
+					// source
+					if (criteria.showBySource()) {
+						Integer source=new Integer(criteria.getSource().intValue());
+						q.setParameter("source", source);
+					} 	
+					// transactiontype 			
+					if (criteria.getTransactionType()!=null) {
+						if (criteria.getTransactionType().longValue()==
+							ExpenseCriteria.TransactionType.CREDITS) {
+							q.setParameter("transtotal", new Double(0));
+						} else if (criteria.getTransactionType().longValue()==ExpenseCriteria.TransactionType.DEBITS) {
+							q.setParameter("transtotal", new Double(0));
+						}
+					}		
+		
+	}
+
+	private List<Predicate> getPredicatesForCriteria(ExpenseCriteria criteria,CriteriaBuilder cb, Root<ExpenseDao> exp) {
+		// put together where clause
+					List<Predicate> whereclause = new ArrayList<Predicate>();
+					
+
+					// making space for parameters
+					// date start
+					if (criteria.getDateStart() != null) {
+						ParameterExpression<Date> param = cb.parameter(Date.class,
+								"transdate");
+						whereclause.add(cb.greaterThanOrEqualTo(
+								exp.<Date> get("transdate"), param));
+						
+					}
+					// categorized type
+					if (criteria.getCategorizedType() != null &&  criteria.getCategorizedType()!=ExpenseCriteria.CategorizedType.ALL) {
+						// categorized type exists - add to sql
+						ParameterExpression<Boolean> param = cb.parameter(Boolean.class,
+								"hascat");
+						whereclause.add(cb.equal(exp.get("hascat"), param));
+					}			
+					// set category or categories
+					if (criteria.showSingleCategory()) {
+						ParameterExpression<Long> param = cb.parameter(Long.class,
+								"catid");
+						whereclause.add(cb.equal(exp.get("catid"), param));
+					} else if (criteria.showListOfCategories()) {
+						List<Long> catids = new ArrayList<Long>();
+						for (CategoryLevel catlvl:criteria.getCategoryLevelList()) {
+							CategoryDao cat = catlvl.getCategory();
+							catids.add(cat.getId());
+						}
+
+						Expression<Long> param = exp.<Long>get("catid");
+						whereclause.add(exp.get("catid").in(catids));
+					}	
+					// non-expense handling
+					if (criteria.getExcludeNonExpense() != null) {
+						if (criteria.getExcludeNonExpense().booleanValue()) {
+							ParameterExpression<Boolean> param = cb.parameter(Boolean.class,
+									"nonexpense");
+							whereclause.add(cb.equal(exp.get("nonexpense"), param));
+						}
+					}	
+					// source
+					if (criteria.showBySource()) {
+						ParameterExpression<Integer> param = cb.parameter(Integer.class,
+								"source");
+						whereclause.add(cb.equal(exp.get("source"), param));
+					} 		
+					// transactiontype 			
+					if (criteria.getTransactionType()!=null) {
+						if (criteria.getTransactionType().longValue()==
+							ExpenseCriteria.TransactionType.CREDITS) {
+							ParameterExpression<Double> param = cb.parameter(Double.class,
+									"transtotal");
+							whereclause.add(cb.gt(exp.<Double>get("transtotal"), param));
+						} else if (criteria.getTransactionType().longValue()==
+							ExpenseCriteria.TransactionType.DEBITS) {
+							ParameterExpression<Double> param = cb.parameter(Double.class,
+									"transtotal");
+							whereclause.add(cb.lt(exp.<Double>get("transtotal"), param));
+						}
+					}
+					
+					return whereclause;
+	}
+
+	private void setOrderBy(ExpenseCriteria criteria, CriteriaBuilder cb,
+			CriteriaQuery<ExpenseDao> query, Root<ExpenseDao> root) {
+		
+		List<String> sortstrings=new ArrayList<String>();
+		// set sort string
+		if (criteria.getSorttype() != null) {
+			if (criteria.getSorttype().equals(ExpenseCriteria.SortType.Amount)) {
+				sortstrings.add("displayamount");
+			} else if (criteria.getSorttype().equals(
+					ExpenseCriteria.SortType.Category)) {
+				sortstrings.add("catName");
+			} else if (criteria.getSorttype().equals(
+					ExpenseCriteria.SortType.Date)) {
+				sortstrings.add("transdate");
+				sortstrings.add("transid");
+			} else if (criteria.getSorttype().equals(
+					ExpenseCriteria.SortType.Detail)) {
+				sortstrings.add("detail");
+			}
+		} else {
+			sortstrings.add("transdate");
+			sortstrings.add("transid");
+		}
+		
+		// now, put into list of order objects with direction
+		List<Order> orderstatements = new ArrayList<Order>();
+		for (String sortparam:sortstrings) {
+			if (criteria.getSortdir()!=null && criteria.getSortdir().longValue()==ExpenseCriteria.SortDirection.Asc) {
+				 Order neworder = cb.asc(root.get(sortparam));
+				 orderstatements.add(neworder);
+			} else {
+				Order neworder = cb.desc(root.get(sortparam));
+				 orderstatements.add(neworder);
+			}
+		}
+		query.orderBy(orderstatements);
+		
+	}
+
+	
+	
+	
+   /* 
+	private List<ExpenseDao> getExpenseByCatType(ExpenseCriteria criteria,Long catType) {
+		// calls searchService.getExpenseByCatType(ExpenseCriteria criteria,Long catType) 
+		// base statement
+		StringBuffer sql = new StringBuffer("from ExpenseDao as exp ");
+		criteria.setCategorizedType(catType);
+		sql.append(getWhereClauseForCriteria(criteria, true));
+		sql.append(" order by transDate desc, transid");
+
+		// get expenses
+		Query query = entityManager.createNativeQuery(sql.toString(),"ExpenseResult");
+		@SuppressWarnings("unchecked")
+		List<ExpenseDao> expenses = query.getResultList();
+		return expenses;
+	}
+
 	@Override
 	public List<CategorySummaryDisp> getExpenseTotal(ExpenseCriteria criteria) {
 		List<CategorySummaryDisp> displays = new ArrayList<CategorySummaryDisp>();
@@ -200,37 +522,12 @@ public class SearchServiceImpl implements SearchService {
 		return displays;
 	}
 	
-	
-	public List<ExpenseDao> getExpenseListByIds(List<String> idlist) {
-		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-		CriteriaQuery<ExpenseDao> c = cb.createQuery(ExpenseDao.class);
-		Root<ExpenseDao> exp = c.from(ExpenseDao.class);
-		c.select(exp);
-
-		if (idlist != null) {
-			// making space for parameters
-			ParameterExpression<Collection> ids = cb.parameter(Collection.class);
-			c.where(exp.get("id").in(ids));
-			Collection<String> idsParameter = new ArrayList<String> ();
-			for (String param:idlist) {
-				idsParameter.add(param);
-			}
-					
-			// creating the query
-			TypedQuery<ExpenseDao> q = entityManager.createQuery(c);
-
-			// setting the parameters
-			q.setParameter(ids, idsParameter);
-
-			
-			return q.getResultList();
-
-		}
-
-		return null;
+		private List executeAggregateQuery(final String sql) {
+		 return entityManager.createNativeQuery(sql).getResultList();
 	}
 	
-	private StringBuffer getWhereClauseForCriteria(ExpenseCriteria criteria,
+	
+		private StringBuffer getWhereClauseForCriteria(ExpenseCriteria criteria,
 			boolean hibernatereplace) {
 		// base statement
 		StringBuffer sql = new StringBuffer("where bdeleted = false ");
@@ -290,193 +587,7 @@ public class SearchServiceImpl implements SearchService {
 
 		return sql;
 	}
-	
-	private List executeAggregateQuery(final String sql) {
-		 return entityManager.createNativeQuery(sql).getResultList();
-	}
-	
-	private List<ExpenseDao> newGetExpenseByCatType(ExpenseCriteria criteria,
-			Long catType) {
 
-		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-		CriteriaQuery<ExpenseDao> c = cb.createQuery(ExpenseDao.class);
-		Root<ExpenseDao> exp = c.from(ExpenseDao.class);
-		c.select(exp);
-		setOrderBy(criteria,cb,c,exp);
-		
-		
-		if (criteria != null) {
-			// put together where clause
-			List<Predicate> whereclause = new ArrayList<Predicate>();
-			// set the cattype in the criteria
-			criteria.setCategorizedType(catType);
-
-			// making space for parameters
-			// date start
-			if (criteria.getDateStart() != null) {
-				ParameterExpression<Date> param = cb.parameter(Date.class,
-						"transdate");
-				whereclause.add(cb.greaterThanOrEqualTo(
-						exp.<Date> get("transdate"), param));
-				
-			}
-			// categorized type
-			if (criteria.getCategorizedType() != null &&  criteria.getCategorizedType()!=ExpenseCriteria.CategorizedType.ALL) {
-				// categorized type exists - add to sql
-				ParameterExpression<Boolean> param = cb.parameter(Boolean.class,
-						"hascat");
-				whereclause.add(cb.equal(exp.get("hascat"), param));
-			}			
-			// set category or categories
-			if (criteria.showSingleCategory()) {
-				ParameterExpression<Long> param = cb.parameter(Long.class,
-						"catid");
-				whereclause.add(cb.equal(exp.get("catid"), param));
-			} else if (criteria.showListOfCategories()) {
-				List<Long> catids = new ArrayList<Long>();
-				for (Iterator iter = criteria.getCategoryLevelList().iterator(); iter
-						.hasNext();) {
-					CategoryLevel catlvl = (CategoryLevel) iter.next();
-					CategoryDao cat = catlvl.getCategory();
-					catids.add(cat.getId());
-				}
-
-				Expression<Long> param = exp.<Long>get("catid");
-				whereclause.add(exp.get("catid").in(catids));
-			}	
-			// non-expense handling
-			if (criteria.getExcludeNonExpense() != null) {
-				if (criteria.getExcludeNonExpense().booleanValue()) {
-					ParameterExpression<Boolean> param = cb.parameter(Boolean.class,
-							"nonexpense");
-					whereclause.add(cb.equal(exp.get("nonexpense"), param));
-				}
-			}	
-			// source
-			if (criteria.showBySource()) {
-				ParameterExpression<Integer> param = cb.parameter(Integer.class,
-						"source");
-				whereclause.add(cb.equal(exp.get("source"), param));
-			} 		
-			// transactiontype 			
-			if (criteria.getTransactionType()!=null) {
-				if (criteria.getTransactionType().longValue()==
-					ExpenseCriteria.TransactionType.CREDITS) {
-					ParameterExpression<Double> param = cb.parameter(Double.class,
-							"transtotal");
-					whereclause.add(cb.gt(exp.<Double>get("transtotal"), param));
-				} else if (criteria.getTransactionType().longValue()==
-					ExpenseCriteria.TransactionType.DEBITS) {
-					ParameterExpression<Double> param = cb.parameter(Double.class,
-							"transtotal");
-					whereclause.add(cb.lt(exp.<Double>get("transtotal"), param));
-				}
-			}
-			
-			
-			// creating the query
-			c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
-			TypedQuery<ExpenseDao> q = entityManager.createQuery(c);
-
-			// setting the parameters
-			// date start
-			if (criteria.getDateStart() != null) {
-				q.setParameter("transdate", criteria.getDateStart());
-			}
-			// categorized type
-			if (criteria.getCategorizedType() != null && criteria.getCategorizedType()!=ExpenseCriteria.CategorizedType.ALL) {
-				if (criteria.getCategorizedType().longValue() == ExpenseCriteria.CategorizedType.NOCATS) {
-					q.setParameter("hascat", false);
-				} else if (criteria.getCategorizedType().longValue() == ExpenseCriteria.CategorizedType.ONLYCATS) {
-					q.setParameter("hascat", true);
-				}
-			}
-			// set category or categories
-			if (criteria.showSingleCategory()) {
-				q.setParameter("catid", criteria.getCategory());
-			}			
-			// non-expense handling
-			if (criteria.getExcludeNonExpense() != null) {
-				if (criteria.getExcludeNonExpense().booleanValue()) {
-					q.setParameter("nonexpense", false);
-				}
-			}			
-			// source
-			if (criteria.showBySource()) {
-				Integer source=new Integer(criteria.getSource().intValue());
-				q.setParameter("source", source);
-			} 	
-			// transactiontype 			
-			if (criteria.getTransactionType()!=null) {
-				if (criteria.getTransactionType().longValue()==
-					ExpenseCriteria.TransactionType.CREDITS) {
-					q.setParameter("transtotal", new Double(0));
-				} else if (criteria.getTransactionType().longValue()==ExpenseCriteria.TransactionType.DEBITS) {
-					q.setParameter("transtotal", new Double(0));
-				}
-			}			
-			
-			return q.getResultList();
-
-		}
-
-		return null;
-	}
-
-	private void setOrderBy(ExpenseCriteria criteria, CriteriaBuilder cb,
-			CriteriaQuery<ExpenseDao> query, Root<ExpenseDao> root) {
-		
-		List<String> sortstrings=new ArrayList<String>();
-		// set sort string
-		if (criteria.getSorttype() != null) {
-			if (criteria.getSorttype().equals(ExpenseCriteria.SortType.Amount)) {
-				sortstrings.add("displayamount");
-			} else if (criteria.getSorttype().equals(
-					ExpenseCriteria.SortType.Category)) {
-				sortstrings.add("catName");
-			} else if (criteria.getSorttype().equals(
-					ExpenseCriteria.SortType.Date)) {
-				sortstrings.add("transdate");
-				sortstrings.add("transid");
-			} else if (criteria.getSorttype().equals(
-					ExpenseCriteria.SortType.Detail)) {
-				sortstrings.add("detail");
-			}
-		} else {
-			sortstrings.add("transdate");
-			sortstrings.add("transid");
-		}
-		
-		// now, put into list of order objects with direction
-		List<Order> orderstatements = new ArrayList<Order>();
-		for (String sortparam:sortstrings) {
-			if (criteria.getSortdir()!=null && criteria.getSortdir().longValue()==ExpenseCriteria.SortDirection.Asc) {
-				 Order neworder = cb.asc(root.get(sortparam));
-				 orderstatements.add(neworder);
-			} else {
-				Order neworder = cb.desc(root.get(sortparam));
-				 orderstatements.add(neworder);
-			}
-		}
-		query.orderBy(orderstatements);
-		
-	}
-
-	@Override
-	public List<ExpenseDao> getAllExpenses() {
-
-		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-		CriteriaQuery<ExpenseDao> c = cb.createQuery(ExpenseDao.class);
-		Root<ExpenseDao> exp = c.from(ExpenseDao.class);
-		c.select(exp);
-		c.orderBy(cb.desc(exp.get("transdate")), cb.asc(exp.get("transid")));
-
-		// creating the query
-		TypedQuery<ExpenseDao> q = entityManager.createQuery(c);
-
-		return q.getResultList();
-
-	}
-
+	*/
 }	
 

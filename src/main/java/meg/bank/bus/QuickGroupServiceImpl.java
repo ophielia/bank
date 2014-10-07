@@ -116,6 +116,7 @@ public class QuickGroupServiceImpl implements QuickGroupService {
 				QuickGroup quickgroup = null;
 				if (model.getGroupId()!=null && model.getGroupId()>0) {
 					quickgroup = qcRepo.findOne(model.getGroupId());
+					quickgroup.setName(model.getName());
 				} else {
 					quickgroup = model.getQuickGroup();
 				}

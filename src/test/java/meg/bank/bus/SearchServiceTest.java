@@ -9,6 +9,7 @@ import meg.bank.bus.dao.BankTADaoDataOnDemand;
 import meg.bank.bus.dao.CategoryDao;
 import meg.bank.bus.dao.ExpenseDao;
 import meg.bank.bus.imp.ImportManager;
+import meg.bank.bus.report.CategorySummaryDisp;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -97,6 +98,14 @@ public class SearchServiceTest {
 		// Assert that the list isn't null
 		Assert.assertNotNull(results);
 
+	}
+	
+	@Test
+	public void testGetExpenseTotalByMonth() {
+		// just test that it doesn't blow up
+		ExpenseCriteria criteria = new ExpenseCriteria();
+		List<CategorySummaryDisp> results = searchService.getExpenseTotalByMonth(criteria);
+		Assert.assertNotNull(results);
 	}
 
 }

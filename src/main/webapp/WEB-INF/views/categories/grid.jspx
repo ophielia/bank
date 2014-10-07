@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:form="http://www.springframework.org/tags/form"
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+<spring:message code="label_category" htmlEscape="false" var="page_title"/>
+<spring:message code="label_category_nonexp_abbr" htmlEscape="false" var="nonexpense"/>
+<spring:message code="label_category_hidden" htmlEscape="false" var="notshown"/>
+<spring:message code="label_category_display" htmlEscape="false" var="displayinlist"/>
+<spring:message code="label_category_showlist" htmlEscape="false" var="showlist"/>
+<spring:url value="/categories?form" var="new_url"/>
+<spring:url value="/categories?display=1" var="listurl"/>
+
+
+<style>
+.ul {
+    margin-left: 2px;
+    margin-right: 2px;
+    padding: 1px 2px;
+    
+}
+
+.lvl1 {
+margin-left: 0px;
+}
+
+.lvl2 {list-style-type: none;
+margin-left: 15px;
+}
+
+.lvl3 {list-style-type: none;
+margin-left: 30px;
+}
+
+.lvl4 {list-style-type: none;
+margin-left: 45px;
+}
+
+.lvl5 {list-style-type: none;
+margin-left: 60px;
+}
+
+
+.lvl6 {list-style-type: none;
+margin-left: 75px;
+}
+
+.lvl7 {list-style-type: none;
+margin-left: 90px;
+}
+
+.lvl8 {list-style-type: none;
+margin-left: 105px;
+}
+
+</style>
+
+
+<h1><spring:message arguments="${page_title}" code="entity_list_all" htmlEscape="false" /></h1>
+
+<a href="${new_url}" ><spring:message arguments="${page_title}" code="entity_create" htmlEscape="false" /></a>
+<span style="float:right"><a href="${listurl}" >${showlist}</a></span>
+ 
+ <ul>
+ <c:forEach var="level" items="${categorylvllist}" >
+ <spring:url value="/categories/edit/${level.category.id}?form" var="editlink"></spring:url>
+ <li class="lvl${level.level}"><a href="${editlink}"> ${level.category.name }
+ <c:if test="${level.category.nonexpense}" >(${nonexpense})</c:if> 
+ <c:if test="${!level.category.displayinlist}" >(${notshown})</c:if> 
+ </a></li>
+ </c:forEach>
+ </ul>
+ </div>

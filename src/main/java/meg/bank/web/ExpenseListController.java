@@ -156,7 +156,7 @@ public class ExpenseListController {
 	
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
-	    binder.setAutoGrowCollectionLimit(1024);
+	    binder.setAutoGrowCollectionLimit(100024);
 	}
 	
 	private ExpenseCriteria getDefaultCriteria() {

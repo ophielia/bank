@@ -14,10 +14,14 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_category_display" htmlEscape="false" var="displayinlist"/>
 <spring:url value="/categories?form" var="new_url"/>
 
+<spring:message code="label_category_showgrid" htmlEscape="false" var="showgrid"/>
+<spring:url value="/categories?display=0" var="listurl"/>
+
+
 <h1><spring:message arguments="${page_title}" code="entity_list_all" htmlEscape="false" /></h1>
 
 <a href="${new_url}" ><spring:message arguments="${page_title}" code="entity_create" htmlEscape="false" /></a>
-    <form:form  id="categorylist" method="POST"  modelAttribute="catList">
+<span style="float:right"><a href="${listurl}" >${showgrid}</a></span>
 <table id="reviewedtable">
     <tr>
 		<th><c:out value="${name}"/></th>
@@ -26,7 +30,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		<th><c:out value="${displayinlist}"/></th>
 		<th></th>
     </tr>
-    <c:forEach var="cat" items="${catList}" varStatus="status">
+    <c:forEach var="cat" items="${categorylist}" varStatus="status">
         <tr>
 			<td>${cat.name}</td>
 	        <td>${cat.description}</td>
@@ -39,5 +43,4 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     </c:forEach>
     </table>
     
-</form:form>
 </div>

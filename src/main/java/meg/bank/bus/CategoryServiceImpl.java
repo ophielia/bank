@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import meg.bank.bus.dao.CatRelationshipDao;
@@ -35,9 +36,9 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public List<CategoryDao> getCategories(boolean showall) {
 		if (showall) {
-			return catRepository.findAll();
+			return catRepository.findAll(new Sort( Direction.ASC,"name"));
 		} else {
-			return catRepository.findByDisplayinlistTrue();
+			return catRepository.findByDisplayinlistTrue(new Sort( Direction.ASC,"name"));
 		}
 	}
 	

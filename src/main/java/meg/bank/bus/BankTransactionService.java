@@ -12,7 +12,7 @@ import meg.bank.web.model.ExpenseEditModel;
 public interface BankTransactionService {
 
 	public abstract void deleteBankTA(Long todelete);
-	public abstract Date getFirstTransDate();
+	
 	public abstract List<RuleAssignment> getAssignedCategoryList();
 	public abstract List<BankTADao> getAllBankTransactions();
 	public abstract void clearCategoryAssignment(Long toclear);
@@ -30,8 +30,7 @@ public interface BankTransactionService {
 			ExpenseCriteria criteria, String dispname);
 	public abstract List<CategorySummaryDisp> getExpenseTotalByYear(
 			ExpenseCriteria criteria, String dispname);
-	public abstract List<CategorySummaryDisp> getExpenseTotal(
-			ExpenseCriteria criteria, String dispname);
+
 	
 
 	
@@ -43,7 +42,7 @@ public interface BankTransactionService {
 	public abstract void deleteCategoryExpense(Long deleteid);
 	public abstract void deleteCategoryExpenseByTransaction(Long transid);
 	public abstract boolean doesDuplicateExist(BankTADao trans);
-	public abstract Date getMostRecentTransDate();
+
 	public abstract BankTADao addTransaction(BankTADao trans);
 	public abstract void assignCategory(Long transid, Long catid);
 	public abstract ExpenseEditModel loadExpenseEditModel(Long id);
@@ -52,6 +51,7 @@ public interface BankTransactionService {
 	public abstract List<RuleAssignment> getRuleAssignments();	
 	public abstract void updateExpenseByRuleAssignments(List<RuleAssignment> toupdate);
 	public abstract void assignCategoriesToExpenses(Long catid, List<String>  selectedids);
+
 
 	
 

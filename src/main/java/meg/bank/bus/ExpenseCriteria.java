@@ -41,11 +41,7 @@ public class ExpenseCriteria implements Serializable {
 		
 	}
 
-	public final class CompareType {
-		public static final int LASTMONTHS = 1;
-		public static final int CALYEAR = 2;
-		public static final int ALL = 3;
-	}
+
 	
 	public final class SortType {
 		public static final String Date = "Date";
@@ -309,6 +305,9 @@ this.excludeNonExpense=excludeNonExpense;
 		}
 		// return if "ALL"
 		if (dateRangeType.longValue() == DateRange.ALL) {
+			// clear start date and end date
+			setDateStart(null);
+			setDateEnd(null);
 			return;
 		}		
 		// set start and end dates

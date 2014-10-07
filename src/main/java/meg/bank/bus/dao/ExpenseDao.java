@@ -39,7 +39,9 @@ entities={
         @FieldResult(name="month", column="month"),
         @FieldResult(name="year", column="year"),
         @FieldResult(name="source", column="source"),
-        @FieldResult(name="displayamount", column="displayamount")})},
+        @FieldResult(name="displayamount", column="displayamount"),
+        @FieldResult(name="monthyear", column="monthyear"),
+        })},
 columns={}
 )
 public class ExpenseDao {
@@ -63,9 +65,10 @@ public class ExpenseDao {
 	private Boolean deleted;
 	private String comment;
 	private String month;
-	private String year;
+	private Long year;
 	private Integer source;
 	private Double displayamount;
+	private String monthyear;
 
 
 	
@@ -141,7 +144,7 @@ public class ExpenseDao {
         return this.transtotal;
     }
 
-	public String getYear() {
+	public Long getYear() {
         return this.year;
     }
 
@@ -209,7 +212,7 @@ public class ExpenseDao {
         this.transtotal = transtotal;
     }
 
-	public void setYear(String year) {
+	public void setYear(Long year) {
         this.year = year;
     }
 
@@ -219,6 +222,14 @@ public class ExpenseDao {
 
 	public void setDisplayamount(Double displayamount) {
 		this.displayamount = displayamount;
+	}
+
+	public String getMonthyear() {
+		return monthyear;
+	}
+
+	public void setMonthyear(String monthyear) {
+		this.monthyear = monthyear;
 	}
 
 	

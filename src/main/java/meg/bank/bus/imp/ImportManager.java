@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import meg.bank.bus.BankTransactionService;
+import meg.bank.bus.SearchService;
 import meg.bank.bus.dao.BankTADao;
 import meg.bank.util.FileUtils;
 import meg.bank.util.imp.FileConfig;
@@ -33,7 +34,11 @@ public class ImportManager {
 	//private TransactionManager transman ;
 	
 	@Autowired
-	BankTransactionService bankTrans;
+	SearchService searchService;
+	
+	
+	@Autowired
+	BankTransactionService transService;
 
 	private String archivedir="C:/Users/Margaret/bankfiles/";
 
@@ -82,7 +87,7 @@ public class ImportManager {
 		// Begin persisting objects
 		// ---- search for date of most recently entered banktrans for
 		//      comparison
-		Date mostrecent = bankTrans.getMostRecentTransDate();
+		Date mostrecent = searchService.getMostRecentTransDate();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(mostrecent);
 		// ---- set calendar to latest possible time in date
@@ -99,14 +104,14 @@ public class ImportManager {
 			} else {
 				// ------ if date is on or before the most recent db banktrans date,
 				// check for duplicate in db (on amount, desc, and date)
-				boolean duplicate = bankTrans.doesDuplicateExist(trans);
+				boolean duplicate = transService.doesDuplicateExist(trans);
 				if (!duplicate) nondups.add(trans);
 			}
 		}
 
 		// ---- persist non duplicates
 		for (BankTADao trans: nondups) {
-			bankTrans.addTransaction(trans);
+			transService.addTransaction(trans);
 		}
 		// returned List is a list of error / log messages (although
 		// this isn't yet really implemented - currently just returns the list of new objects

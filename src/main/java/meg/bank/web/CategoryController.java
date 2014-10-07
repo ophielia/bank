@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import meg.bank.bus.CategoryLevel;
 import meg.bank.bus.CategoryService;
 import meg.bank.bus.dao.CatRelationshipDao;
 import meg.bank.bus.dao.CategoryDao;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
@@ -41,25 +44,64 @@ public class CategoryController {
 	@Autowired
 	CategoryModelValidator catValidator;
 	
+	private String categorydisptype="categorydisptype";
+	
+	public final class DispType {
+		public final static int GRID=0;
+		public final static int LIST=1;
+	}
+	
 	private void populateCategoryList(Model uiModel) {
-		uiModel.addAttribute("catList",catRepo.findAll());
+		uiModel.addAttribute("catList",categoryService.getCategories(true));
 	}
 	
 	@ModelAttribute("categorylist")
 	protected List<CategoryDao> referenceCategoryData(HttpServletRequest request, Object command,
 			Errors errors) throws Exception {
-		List<CategoryDao> list = categoryService.getCategories(false);
+		List<CategoryDao> list = categoryService.getCategories(true);
 		
 		
 		// return model
 		return list;
 	}	
 	
+	@ModelAttribute("categorylvllist")
+	protected List<CategoryLevel> referenceCategoryLevelData(HttpServletRequest request, Object command,
+			Errors errors) throws Exception {
+		List<CategoryLevel> list = categoryService.getCategoriesUpToLevel(999);
+		// return model
+		return list;
+	}		
+	
 	@RequestMapping(produces = "text/html")
-    public String showList(Model uiModel) {
-    	populateCategoryList(uiModel);
-    	return "categories/list";
-    }
+    public String showCategories(Model uiModel, HttpServletRequest httpServletRequest) {
+		HttpSession session = httpServletRequest.getSession();
+		if (session.getAttribute(categorydisptype)!=null) {
+			int display = (int) session.getAttribute(categorydisptype);
+			if (display==DispType.GRID) {
+				return "categories/grid";
+			} else {
+				return "categories/list";
+			}
+		}
+		session.setAttribute(categorydisptype, DispType.LIST);
+		return "categories/list";
+	}
+	
+
+    
+    @RequestMapping(params="display", method = RequestMethod.GET, produces = "text/html")
+    public String setDisplayType(@RequestParam("display") int display, Model uiModel,HttpServletRequest httpServletRequest) {
+		HttpSession session = httpServletRequest.getSession();
+		session.setAttribute(categorydisptype,display);
+		if (display==DispType.GRID) {
+			return "categories/grid";
+		} else {
+			return "categories/list";
+		}
+    }       
+    
+    
 	
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(CategoryModel model,  Model uiModel,BindingResult bindingResult, HttpServletRequest httpServletRequest) {
@@ -107,7 +149,7 @@ public class CategoryController {
         return "redirect:/categories";
         //return "redirect:/categories/" + encodeUrlPathSegment(cat.getId().toString(), httpServletRequest);
     }
-    
+
 
     
     

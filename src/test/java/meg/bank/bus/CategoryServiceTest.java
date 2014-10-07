@@ -201,7 +201,11 @@ public void setup() {
     	Assert.assertEquals(0,rel.getParentId().longValue());
     }
     
-    
+    @Test
+    public void testCategoryLevels() {
+    	List<CategoryLevel> list =catService.getCategoriesUpToLevel(999);
+    	Assert.assertNotNull(list);
+    }
     
     /*
     getCategories(boolean)

@@ -71,23 +71,7 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 
 	}
 	
-	/* (non-Javadoc)
-	 * @see meg.bank.bus.BankTransactionService#getFirstTransDate()
-	 */
-	@Override
-	public Date getFirstTransDate() {
 
-		Date resultdate = bankTransRep.getFirstTransDate();
-
-		// check for null
-		if (resultdate == null) {
-			Calendar cal = Calendar.getInstance();
-			cal.set(1970, 10, 1);
-			resultdate = cal.getTime();
-		}
-
-		return resultdate;
-	}
 	
  
 	/* (non-Javadoc)
@@ -145,23 +129,6 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 		return exists;
 	}
 	
-	/* (non-Javadoc)
-	 * @see meg.bank.bus.BankTransactionService#getMostRecentTransDate()
-	 */
-	@Override
-	public Date getMostRecentTransDate() {
-		// call banktransservice.getMostRecentTransDate();
-		Date resultdate = bankTransRep.getMostRecentTransDate();
-
-		// check for null
-		if (resultdate == null) {
-			Calendar cal = Calendar.getInstance();
-			cal.set(1970, 10, 1);
-			resultdate = cal.getTime();
-		}
-
-		return resultdate;
-	}
 
 	/* (non-Javadoc)
 	 * @see meg.bank.bus.BankTransactionService#addTransaction(meg.bank.bus.dao.BankTADao)
@@ -360,7 +327,7 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 		newlist.add(ttc);
 	
 		// assign transactions
-		assignFromCategories(newlist);
+		//assignFromCategories(newlist);
 	}
 
 	/* (non-Javadoc)
@@ -430,18 +397,7 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 		return displays;
 	}
 
-	/* (non-Javadoc)
-	 * @see meg.bank.bus.BankTransactionService#getExpenseTotal(meg.bank.bus.ExpenseCriteria, java.lang.String)
-	 */
-	@Override
-	public List<CategorySummaryDisp> getExpenseTotal(ExpenseCriteria criteria,
-			String dispname) {
-		List<CategorySummaryDisp> displays = searchService.getExpenseTotal(criteria);
-		for (CategorySummaryDisp catsum:displays) {
-			catsum.setCatName(dispname);
-		}
-		return displays;
-	}
+
 
 	@Override
 	public ExpenseEditModel loadExpenseEditModel(Long id) {

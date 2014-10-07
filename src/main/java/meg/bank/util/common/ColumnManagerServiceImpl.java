@@ -1,9 +1,12 @@
 package meg.bank.util.common;
 
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
+import meg.bank.bus.BankTransactionService;
+import meg.bank.util.DateUtils;
 import meg.bank.util.common.db.ColumnValueDao;
 import meg.bank.util.common.repo.ColumnValueRepository;
 
@@ -16,6 +19,9 @@ public class ColumnManagerServiceImpl implements ColumnManagerService {
 	@Autowired
 	private ColumnValueRepository cvmd;
 
+	@Autowired
+	private BankTransactionService transMan;
+	
 	@Override
 	public Hashtable getColumnHash(String lookup) {
 		return getColumnHash(lookup, true);
@@ -52,6 +58,8 @@ public class ColumnManagerServiceImpl implements ColumnManagerService {
 		ColumnValueDao cv = cvmd.getColumnValuesForKeyAndValue(lookup, value);
 		return cv.getDisplay();
 	}
+
+
 	
 
 }

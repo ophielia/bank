@@ -1,5 +1,7 @@
 package meg.bank.bus.report;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class CategorySummaryDisp {
@@ -19,12 +21,29 @@ public class CategorySummaryDisp {
 	private Date summaryDate;
 
 	private double percentageTotal;
+	
+	private String monthyear;
+	
+	private Long year;
+	
+	 private SimpleDateFormat monthyearfmt = new SimpleDateFormat("MM-yyyy");
+	
 
 	public CategorySummaryDisp(String catname, int daycount) {
 		this.catName = catname;
 		this.averageDivisor = daycount;
 	}
 
+	public CategorySummaryDisp(String monthyear, double sum) {
+		setMonthyear(monthyear);
+		this.sum = sum;
+	}
+	
+	public CategorySummaryDisp(Long year, double sum) {
+		setYear(year);
+		this.sum = sum;
+	}	
+	
 	public CategorySummaryDisp() {
 
 	}
@@ -93,4 +112,30 @@ public class CategorySummaryDisp {
 	public double getPercentageOfTotal() {
 		return (this.sum/this.percentageTotal)*100.0;
 	}
+
+	public String getMonthyear() {
+		return monthyear;
+	}
+
+	public void setMonthyear(String monthyear) {
+		this.monthyear = monthyear;
+		try {
+			Date date = monthyearfmt.parse(monthyear);
+			setSummaryDate(date);
+		} catch (ParseException e) {
+			setSummaryDate(new Date());
+		}
+	}
+
+	public Long getYear() {
+		return year;
+	}
+
+	public void setYear(Long year) {
+		this.year = year;
+	}
+	
+	
+	
+	
 }
