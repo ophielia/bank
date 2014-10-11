@@ -18,6 +18,9 @@ public class ReportServiceImpl implements ReportService {
 
     @Value("${document.tmp.path}")
     private String tmpdir;
+    
+    @Value("${document.image.weblinkbase}")
+    private String imageweblink;
 
 	@Autowired
 	private SearchService searchService;
@@ -67,6 +70,8 @@ public class ReportServiceImpl implements ReportService {
 		Long reporttype = reportCriteria.getReportType();
 		// set image directory (to tmpdir)
 		reportCriteria.setImageDir(tmpdir);
+		// set weblinkbase
+		reportCriteria.setImageLink(imageweblink);
 		// get appropriate report
 		if (reporttype!=null) {
 			// get appropriate report for reporttype

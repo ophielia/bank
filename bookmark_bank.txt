@@ -18,11 +18,16 @@ done - graphical representation of categorylevels - to check!!
 starting reports
  misc.  validation for different reports
 
------->  make input and output pages for monthlytargetreport
-done - input page
---> error loading targets - MonthlyTargetsReport.java:110 LazyInitialization
-make output page
-	
+at least make notes for validation	
+make test for YearlyTargetStatus
+make it green
+make input page for yearlystatusreport
+make messages for input page
+make output page for yearlystatusreport
+make messages for output page
+insert archive data
+work on pdf
+
 	
 
 
@@ -57,7 +62,13 @@ done -   implement setYear and setMonthYear in ReportCriteria
 done -  make testRunReports complete - a good, real test
 done - make testRunReports green.
 done - numbers wonky MonthlyTargetsReport   problem with multicategories - show subcats in criteria .... differing use between list and reports
-	
+done -  make input and output pages for monthlytargetreport
+done - input page
+done - error loading targets - MonthlyTargetsReport.java:110 LazyInitialization
+done - make output page
+done - working on image directory 
+done - image directory	- needs to be setup within properties - and linkable from webapp to display
+		
 
 		
 ---- end commit changes ----

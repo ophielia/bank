@@ -45,6 +45,7 @@ public class ReportCriteria implements Serializable {
 	private String year;
 	
 	private Long reporttype;
+	private String imageweblink;
 
 	public Long getBreakoutLevel() {
 		return breakoutLevel;
@@ -119,7 +120,7 @@ public class ReportCriteria implements Serializable {
 	}
 
 	public String getYear() {
-		return year;
+		return year; 
 	}
 
 	public void setYear(String year) {
@@ -135,6 +136,13 @@ public class ReportCriteria implements Serializable {
 		return this.reporttype;
 	}
 
+	public void setImageLink(String imageweblink) {
+		this.imageweblink = imageweblink;
+	}
+
+	public String getImageLink() {
+		return this.imageweblink;
+	}
 	
 
 	

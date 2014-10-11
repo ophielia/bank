@@ -207,16 +207,23 @@ public class TargetServiceImpl implements TargetService {
 	 */
 	@Override
 	public TargetGroupDao loadTargetForMonth(String month) {
+		TargetGroupDao tg = null;
+		
 		// look for target by month
 		List<TargetGroupDao> list = targetGrpRep.findTargetsByTypeAndMonthTag(TargetService.TargetType.Month,month);
 		if (list!=null&& list.size()>0) {
-			TargetGroupDao tg = list.get(0);
-			tg.getTargetdetails();
-			return tg;
+			tg = list.get(0);
 		}
-		// if no target is available for the month, load the default
-		TargetGroupDao tg = getDefaultTargetGroup(TargetService.TargetType.Month);
-		tg.getTargetdetails();
+		if (tg==null) {
+			// if no target is available for the month, load the default
+			tg = getDefaultTargetGroup(TargetService.TargetType.Month);
+		}
+		
+		// load details for target
+		if (tg!=null) {
+			List<TargetDetailDao> details = targetDetRep.findByTargetGroup(tg);
+			tg.setTargetdetails(details);
+		}
 		return tg;
 	}
 

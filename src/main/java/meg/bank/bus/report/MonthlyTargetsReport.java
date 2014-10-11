@@ -46,9 +46,7 @@ public class MonthlyTargetsReport extends AbstractReport{
 		super(reportCriteria, searchService, categoryService, targetService);
 	}
 
-	public String getReportname() {
-		return "Monthly Targets Report";
-	}
+
 
 	public Map<String,Object> crunchNumbers() {
 		// fill criteria object
@@ -167,6 +165,7 @@ public class MonthlyTargetsReport extends AbstractReport{
 		
 		// get all expenses
 		criteria.clearCategoryLists();
+		criteria.setShowSubcats(false);
 		List<ExpenseDao> expenses = searchService.getExpenses(criteria);
 		// sort and categorize expenses
 		sortAndCategorizeExpenses(expenses);
@@ -307,7 +306,7 @@ public class MonthlyTargetsReport extends AbstractReport{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "images/" + filename;
+		return reportCriteria.getImageLink() + filename;
 
 	}
 
@@ -318,18 +317,6 @@ public class MonthlyTargetsReport extends AbstractReport{
 		return "targetstatusreport";
 	}
 
-	public Hashtable getRequiredParameters() {
-		Hashtable req = new Hashtable();
-		req.put(new Integer(ReportCriteria.Parameters.excludenonexp),
-				new Boolean(false));
-		req.put(new Integer(ReportCriteria.Parameters.daterange), new Boolean(false));
-		req.put(new Integer(ReportCriteria.Parameters.breakoutlvl), new Boolean(false));
-		req.put(new Integer(ReportCriteria.Parameters.category), new Boolean(false));
-		req.put(new Integer(ReportCriteria.Parameters.monthlist), new Boolean(true));
-		req.put(new Integer(ReportCriteria.Parameters.yearlist), new Boolean(false));
-		req.put(new Integer(ReportCriteria.Parameters.comparetype), new Boolean(false));
-		return req;
-	}
 
 
 

@@ -8,203 +8,99 @@ xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    
-    <spring:message code="label_expenselist" var="expensetitle"/>
-    <h1>${expensetitle}</h1>
+   
+  	<spring:message code="bank_rpt_monthlytarget" htmlEscape="false" var="reporttitle"/>    
+	<spring:message code="label_rpt_category" var="lcat"/>
+	<spring:message code="label_rpt_spent" var="lspent"/>
+	<spring:message code="label_rpt_targeted" var="ltargeted"/>
+	<spring:message code="label_rpt_status" var="lstatus"/>
+	<spring:message code="label_rpt_total" var="ltotal"/>
+	<spring:message code="label_rpt_expdetail" var="lexpdetail"/>
+	<spring:message code="label_rpt_date" var="ldate"/>
+	<spring:message code="label_rpt_subcat" var="lsubcat"/>
+	<spring:message code="label_rpt_detail" var="ldetail"/>
+	<spring:message code="label_rpt_amount" var="lamount"/>
+	<spring:message code="label_rpt_formonth" var="formonth"/>
+	<spring:message code="label_rpt_pctinmonth" var="pctinmonth"/>
+	<spring:message code="label_rpt_reportresults" var="pagetitle"/>
+	<spring:message code="button_back" var="bckbutton"/>
 
-<spring:message code="label_expenselist_date" htmlEscape="false" var="ldate"/>    
-<spring:message code="label_expenselist_qcinfo" htmlEscape="false" var="lqcinfo"/>    
-<spring:message code="label_expenselist_cattype" htmlEscape="false" var="lcattype"/>    
-<spring:message code="label_expenselist_cat" htmlEscape="false" var="lcat"/>    
-<spring:message code="label_quickgroup" htmlEscape="false" var="lquickgroup"/>    
-<spring:message code="label_expenselist_source" htmlEscape="false" var="lsource"/>    
-<spring:message code="label_expenselist_transtype" htmlEscape="false" var="ltype"/>    
-<spring:message code="label_expenselist_detail" htmlEscape="false" var="ldetail"/>    
-<spring:message code="label_expenselist_amount" htmlEscape="false" var="lamount"/>    
-<spring:message code="label_expenselist_showsubcats" htmlEscape="false" var="lsubcats"/>    
-<spring:message code="label_expenselist_updcategory" htmlEscape="false" var="lupdcat"/>    
-<spring:message code="label_expenselist_updqc" htmlEscape="false" var="lupdqc"/>    
-<spring:message code="field_invalid" arguments="${lcat}" htmlEscape="false" var="missingcat"/>    
-<spring:message code="field_invalid" arguments="${lquickgroup}" htmlEscape="false" var="missingqc"/>    
+    <h1>${pagetitle}</h1>
+<h2>${reporttitle}</h2>
 
-<spring:url value="/expense/list" var="actionurl"/>
-<spring:url value="/quickgroup/preview" var="previewurl"/>
-<script type="text/javascript">
- require([
-          'dojo/dom',"dojo/on","dijit/TooltipDialog", "dijit/popup",
-          'dojo/domReady!'
-      ], function (dom,on,TooltipDialog,popup) {
-	 
-	 	function getIndex(prefix,text) {
-			// gets a substring of the text, starting at the char after the length of the prefix
-			var stripped = text.substr(prefix.length);
-			return stripped;
-		} 
-		 
+<spring:url value="/reports?reporttype=1" var="backurl"/>
 
 
-	// wire up sort buttons
-	   	dojo.query("th[id^='aSort']").forEach(function(node) {
-	  		var id = node.id;
+<h3>${formonth}:  <c:out value="${results.month}"/></h3>
+<h3>${pctinmonth}:<c:out value="${results.percentageofmonth}"/></h3>
 
-	          on(dojo.byId(id), 'click', function(event){
-	        	  clickedid = event.currentTarget.id;
-	      		  sortaction = getIndex('aSort',clickedid);
-	      		  var form = dojo.byId('expenselist');
-	      		  form.action = "${actionurl}?sort=" + sortaction;
-	      		  form.submit();
-	          });
-	  	});
-
-	   	form = dojo.byId("expenselist");
-	   	on(form, "input#batchupd:click", function(event){
-	   	   if (this.id="batchupd") {
-	   		checkselect = dojo.byId("batchUpdate");
-	   		if (checkselect.value == "") {
-	   			alert("${missingcat}");
-		   		event.preventDefault();
-		   		event.stopPropagation();	   			
-	   		}
-	   	   }
-	   	});
-	   	
-	   	
-	   	form = dojo.byId("expenselist");
-	   	on(form, "input#batchQuickGroup:click", function(event){
-	   	   if (this.id="batchQuickGroup") {
-	   		checkselect = dojo.byId("quickgroupentry");
-	   		if (checkselect.value == "") {
-	   			alert("${missingqc}");
-		   		event.preventDefault();
-		   		event.stopPropagation();	   			
-	   		}
-	   	   }
-	   	});
-	   	
-	   	viewinfolink = dojo.byId("viewinfo");
-        on(viewinfolink , 'click', function(){
-        	checkselect = dojo.byId("quickgroupentry");
-        	idx = checkselect.value;
-        	if(idx != "") {
-              	popup.open({
-                    popup: getDialogForId(idx),
-                    around: dom.byId("quickgroupentry")
-                });
-            }
-        });
-    	
-    	function getDialogForId(id) {
-    		var link = "${previewurl}/" + id;
-    		var dialog = dijit.byId('myTooltipDialog'+ id);
-    		if (dialog!=null) {
-    			dialog.destroyRecursive(true);
-    		}
-    		var myTooltipDialog = new TooltipDialog({
-                id: 'myTooltipDialog'+ id,
-                style: "width: 300px;",
-                href:link,
-                loadingMessage:link,
-                onMouseLeave: function(){
-                    popup.close(myTooltipDialog);
-                }
-            });
-    		return myTooltipDialog;
-    	}    	
-	});
- </script>
+<p><a href="${backurl}">${bckbutton}</a></p>
 
 
-<form:form action="${actionurl}" id="expenselist" method="PUT" modelAttribute="expenseListModel">
-
-<table>
-<THEAD>
-<tr>
-<td>${ldate}</td>
-<td>${lcattype}</td>
-<td>${lcat}</td>
-<td>${lsource}</td>
-<td>${ltype}</td>
-<td>${lsubcats}</td>
-</tr>
-</THEAD>
-<tbody>
-				<tr>
-					<td><form:select path="dateRangeByType">
-							<form:options items="${daterangelist}" itemValue="value"
-								itemLabel="display" />
-						</form:select></td>
-					<td><form:select path="categorizedType">
-
-							<form:options items="${cattypelist}" itemValue="value"
-								itemLabel="display" />
-						</form:select></td>
-					<td><form:select path="category">
-							<form:option value="" label="- - Select - - " />
-							<c:forEach items="${categorylist}" var="cat">
-								<form:option label="${cat.name}" value="${cat.id}" />
-							</c:forEach>
-						</form:select></td>
-					<td><form:select path="source">
-							<form:options items="${sourcelist}" itemValue="value"
-								itemLabel="display" />
-						</form:select></td>
-					<td><form:select path="transactionType">
-							<form:options items="${transtypelist}" itemValue="value"
-								itemLabel="display" />
-						</form:select></td>
-						<td><form:checkbox path="showSubcats"/></td>
-				</tr>
-			</tbody>
-</table>
-		<spring:message code="button_search" htmlEscape="false" var="search_button"/>
-        <input id="searchbutton" type="submit" value="${search_button}"/>
-       <br />
-       <hr />
-       <br />
-        <form:errors cssClass="errors" path="batchUpdate" />
-       <form:select path="batchUpdate">
-				<form:option value="" label="--Please Select" />
-				<form:options items="${categorylist}" itemValue="id" itemLabel="name" />
-			</form:select> 		 <input id="batchupd" type="submit" name="updatecat" value="${lupdcat}"/>
-			<span style="float:right"> 
-			<a id="viewinfo" href="#" >${lqcinfo} </a>
-			<form:select path="batchQuickgroup" id="quickgroupentry">
-				<option id="" label="- - Select - - " />
-					<c:forEach var="quickgroup" items="${quickgrouplist}">
-					<form:option value="${quickgroup.id}" label="${quickgroup.name}" />
-					</c:forEach>
-				</form:select>
-				<input id="batchQuickGroup" name="batchQuickGroup" type="submit" value="${lupdqc}"/>   </span>
-<TABLE>
-		<thead>
-				<tr >
-			<th></th>
-			<th id="aSortDate">${ldate}</th>
-			<th id="aSortCat">${lcat}</th>
-			<th id="aSortDetail">${ldetail}</th>
-			<th id="aSortAmount">${lamount}</th>
-			<th></th>
+	<table  class="clear"><tr><td><img src="${results.graphpath}"/>
+	</td>
+	</tr><tr>
+	<td>	<table class="lined">
+		<tr>
+			<td>${lcat}</td>
+			<td>${lspent}</td>
+			<td>${ltargeted}</td>
+			<td>${lstatus}</td>
 		</tr>
-		</thead>
-		<tbody>
-		
- <c:forEach var="exp" items="${expenseListModel.expenses}" varStatus="expstatus">
- 			<tr>
- 			<td><form:checkbox path="checked[${expstatus.index}]"  />
- 			<form:input path="idref[${expstatus.index}]" value="${exp.id}" type="hidden"></form:input>
- 			</td>
-			<td><fmt:formatDate value="${exp.transdate}" var="dateString" pattern="MM/dd/yyyy" />${dateString}</td>
-			<td>${exp.catName}</td>
-			<td>${exp.detail}</td>
-			<td>${exp.displayamount}</td>
-			<td>
-			<spring:url value="/expense/edit/${exp.transid}" var="editurl"/>
-			<a href="${editurl}">Edit</a>
-			</td>
- 			</tr>
- </c:forEach>		
-		</tbody>
-		</TABLE>        
-</form:form>
+<fmt:setLocale value="fr_FR"/>
+		<c:forEach items="${results.totallist}" var="summary">
 
+			<tr>
+				<td><c:out value="${summary.catName}" /></td>
+				<td><fmt:formatNumber value="${summary.amountSpent}"
+    type="number" maxFractionDigits="2"/></td>
+				<td>
+				<fmt:formatNumber value="${summary.amountTargeted}"
+    type="number" maxFractionDigits="2"/></td>
+				<td>
+				<c:out value="${summary.statusMessage}" /></td>
+			</tr>
+		</c:forEach>
+	<tr>
+				<td><b>${ltotal}</b></td>
+				<td><b><fmt:formatNumber value="${results.totalspent}"
+    type="number" maxFractionDigits="2"/></b></td>
+				<td><b>
+				<fmt:formatNumber value="${results.totaltargeted}"
+    type="number" maxFractionDigits="2"/></b></td>
+				<td><b><c:out value="${results.summary}"/></b></td>
+			</tr>
+
+	</table>
+	</td>
+	</tr></table>
+
+
+	<hr />
+	<h3>${lexpdetail}</h3>
+	<table >
+		<tr>
+			<td>${ldate}</td>
+			<td>${lcat}</td>
+			<td>${lsubcat }</td>
+			<td>${ldetail}</td>
+			<td>${lamount}</td>
+		</tr>
+
+		<c:forEach items="${results.expenses}" var="exp">
+
+			<tr>
+				<td><c:out value="${exp.transdate}" /></td>
+				<td><c:out value="${exp.dispCat}" /></td>
+				<td><c:out value="${exp.catName}" /></td>
+				<td><c:out value="${exp.detail}" /></td>
+				<td>
+				<c:choose><c:when test="${exp.hascat}"><c:out value="${exp.catamount}" /></c:when><c:otherwise><c:out value="${exp.transtotal}" /></c:otherwise></c:choose>
+				
+				</td>
+			</tr>
+		</c:forEach>
+
+
+	</table>
 </div>

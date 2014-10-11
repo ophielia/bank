@@ -42,6 +42,16 @@ public class ReportController {
     CategoryService categoryService;
     
   
+	@RequestMapping(produces = "text/html")
+    public String showAllReports(@ModelAttribute("reportCriteria") ReportCriteria reportCriteria,@RequestParam("reporttype") Long reporttype,Model uiModel,HttpServletRequest request) {
+		
+		String view = "reports/monthlytargetinput";
+		if (reporttype.longValue()==ReportService.ReportType.MonthlyTarget) {
+			view = "reports/reportlist";	
+		}
+		return view;
+    }    
+    
 	@RequestMapping(params="reporttype" ,produces = "text/html")
     public String showInput(@ModelAttribute("reportCriteria") ReportCriteria reportCriteria,@RequestParam("reporttype") Long reporttype,Model uiModel,HttpServletRequest request) {
 		if (reporttype!=null) {
@@ -58,7 +68,6 @@ public class ReportController {
 	public String showOutput(@ModelAttribute("reportCriteria") ReportCriteria reportCriteria,Model uiModel,HttpServletRequest request) {
 		Long reporttype = reportCriteria.getReportType();
 		// validate....
-		
 
 		// call report service
 		Map<String,Object> results = reportService.runReport(reportCriteria);

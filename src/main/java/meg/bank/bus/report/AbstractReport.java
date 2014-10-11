@@ -399,7 +399,7 @@ public abstract class AbstractReport implements Report {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "images/" + filename;
+		return reportCriteria.getImageLink()  + filename;
 
 	}
 
@@ -1160,7 +1160,7 @@ public abstract class AbstractReport implements Report {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "images/" + filename;
+		return reportCriteria.getImageLink()  + filename;
 	}
 
 	protected ChartRow processCategories(ExpenseCriteria criteria,
@@ -1233,7 +1233,7 @@ public abstract class AbstractReport implements Report {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "images/" + filename;
+		return reportCriteria.getImageLink() + filename;
 
 	}
 
@@ -1382,7 +1382,7 @@ public abstract class AbstractReport implements Report {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "images/" + filename;
+		return reportCriteria.getImageLink()  + filename;
 	
 	}
 

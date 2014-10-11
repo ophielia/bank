@@ -33,7 +33,7 @@
 		<li><moo:menulink label="bank_new_rule" url="/categoryrule?form" /></li>
 	</ul>
 	</li>
-	<li><moo:menulink label="bank_reports" url="/" />
+	<li><moo:menulink label="bank_reports" url="/reports" />
 	<ul>
 		<li><moo:menulink label="bank_rpt_monthlytarget" url="/reports?reporttype=1" /></li>
 	</ul>
