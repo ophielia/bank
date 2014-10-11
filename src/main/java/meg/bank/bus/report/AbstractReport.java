@@ -58,20 +58,25 @@ public abstract class AbstractReport implements Report {
 	protected static SimpleDateFormat daydateformat = new SimpleDateFormat(
 			"MM-dd-yyyy");
 	
-	@Autowired
 	protected SearchService searchService;	
 
-	@Autowired
 	protected CategoryService categoryService;
 	
-	@Autowired
 	protected TargetService targetService;	
 
-	@Autowired
-	protected ColumnManagerService columnValueManager;
-
-
 	protected ReportCriteria reportCriteria;
+	
+	public AbstractReport(ReportCriteria reportCriteria,
+			SearchService searchService, CategoryService categoryService,
+			TargetService targetService) {
+		this.reportCriteria = reportCriteria;
+		this.searchService = searchService;
+		this.categoryService=categoryService;
+		this.targetService=targetService;
+	}
+	
+
+
 	
 	
 
@@ -171,6 +176,183 @@ public abstract class AbstractReport implements Report {
 		}
 
 		return tags;
+	}
+
+	public ReportElements crunchNumbersSummary(ExpenseCriteria criteria,
+			boolean avgbymonth) {
+		ReportElements re = new ReportElements();
+	
+		// initialize ChartData
+		ChartData chart = new ChartData();
+		ChartRow headers = new ChartRow();
+		headers.addColumn("Catagory");
+		headers.addColumn("Spent");
+		headers.addColumn("Percentage");
+		chart.setHeaders(headers);
+	
+		// retrieve categories for level
+		long breakoutlvl = reportCriteria.getBreakoutLevel().longValue();
+		List categories = categoryService.getCategoriesUpToLevel(
+				(int) breakoutlvl);
+	
+		Double charttotal = 0D;
+		if (categories != null) {
+			// loop through categories
+			for (Iterator iter = categories.iterator(); iter.hasNext();) {
+				CategoryLevel catlvl = (CategoryLevel) iter.next();
+				CategoryDao category = catlvl.getCategory();
+	
+				// create list to be retrieved (depends upon categorylevel
+				// and relationship to breakout level)
+				List<CategoryLevel> subcategories = null;
+				if (catlvl.getLevel() < breakoutlvl) {
+					// retrieve expenses belonging directly to this category
+					// only
+					subcategories = new ArrayList<CategoryLevel>();
+					subcategories.add(catlvl);
+				} else {
+					// retrieve expenses belonging to this and all subcategories
+					// get all subcategories for category
+					subcategories = categoryService.getAllSubcategories(
+							category);
+					subcategories.add(catlvl); // add the category itself
+				}
+				// process categories
+				ChartRow categoryRow = processCategories(criteria,
+						category.getName(), subcategories);
+				if (categoryRow.getColumnCount() > 0) {
+					chart.addRow(categoryRow);
+					// add to total
+					String amountstr = categoryRow.getColumn(1);
+					Number amount;
+					try {
+						amount = nf.parse(amountstr);
+						charttotal += amount.doubleValue();
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	
+				}
+			}
+			// end category loop
+		}
+	
+		// pull all expenses without category
+		Long origcattype = criteria.getCategorizedType();
+		criteria.clearCategoryLists();
+		criteria.setCategorizedType(new Long(
+				ExpenseCriteria.CategorizedType.NOCATS));
+		List expenses = searchService.getExpenses(criteria);
+		// loop through expenses, adding to no cat category summary
+		if (expenses != null && expenses.size() > 0) {
+			ChartRow row = new ChartRow();
+			double total = 0;
+			for (Iterator iter = expenses.iterator(); iter.hasNext();) {
+				ExpenseDao expense = (ExpenseDao) iter.next();
+				Double amount = expense.getTranstotal();
+				total += amount;
+			}
+			row.addColumn("No Category");
+			row.addColumn(nf.format(total * -1));
+			chart.addRow(row);
+			// add to total
+			charttotal += (total * -1);
+		}
+		// reset cattype
+		criteria.setCategorizedType(origcattype);
+	
+		// add percentage info for chart
+		List<ChartRow> rows = chart.getRows();
+		for (ChartRow row : rows) {
+			String amountstr = row.getColumn(1);
+			Number amount;
+			try {
+				amount = nf.parse(amountstr);
+				double percentage = amount.doubleValue() / charttotal * 100.0;
+				row.addColumn(nf.format(percentage) + "%");
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	
+		}
+	
+		String url = generateSummaryGraph(rows);
+	
+		// add total to list
+		ChartRow totalrow = new ChartRow();
+		totalrow.addColumn("TOTAL");
+		totalrow.addColumn(nf.format(charttotal));
+		totalrow.addColumn("100%");
+		chart.addRow(totalrow);
+		re.setChartData(chart);
+		re.setUrl(url);
+	
+		return re;
+	}
+
+	public ReportElements crunchNumbersCategory(ExpenseCriteria criteria,
+			CategoryDao cat, boolean numbymonth) {
+		int daycount = getDayCount(criteria);
+	
+		// get subcategories
+		List<CategoryLevel> catlevels = categoryService
+				.getAllSubcategories(cat);
+		CategorySummaryDisp totalsum = new CategorySummaryDisp("TOTAL",
+				daycount);
+	
+		// pull totals for each subcategory
+		List<CategorySummaryDisp> results = new ArrayList<CategorySummaryDisp>();
+		for (CategoryLevel catlvl : catlevels) {
+			// update criteria
+			criteria.setCategory(catlvl.getCategory().getId());
+			// retrieve info from database
+			List<CategorySummaryDisp> displays = new ArrayList<CategorySummaryDisp>();
+			if (numbymonth) {
+				displays = getExpenseTotalByMonth(
+						criteria, catlvl.getCategory().getName()); // should
+																	// only
+			} else {
+				displays = getExpenseTotalByYear(criteria,
+						catlvl.getCategory().getName()); // should only
+			}
+			// be one
+			for (CategorySummaryDisp catsum : displays) {
+				catsum.setAverageDivisor(daycount);
+				totalsum.addExpenseAmt(new Double(catsum.getSum()));
+				results.add(catsum);
+			}
+	
+		}
+	
+		// retrieve info for base category (in case of direct assignment
+		// update criteria
+		criteria.setCategory(cat.getId());
+		// retrieve info from database
+		List displays = getExpenseTotalByYear(criteria,
+				cat.getName()); // should only be one
+		for (Iterator iterator = displays.iterator(); iterator.hasNext();) {
+			CategorySummaryDisp catsum = (CategorySummaryDisp) iterator.next();
+			catsum.setAverageDivisor(daycount);
+			totalsum.addExpenseAmt(new Double(catsum.getSum()));
+			results.add(catsum);
+		}
+		if (totalsum.getSum() == 0) {
+			// no use going on - this category doesn't have anything
+			return null;
+		}
+	
+		// generate graph
+		String graphurl = generateCategoryGraph(results, cat.getName(),
+				totalsum.getSum());
+	
+		// populate ReportElements
+		ReportElements re = new ReportElements();
+		re.setSummaries(results);
+		re.setUrl(graphurl);
+	
+		return re;
 	}
 
 	protected String generateCategoryGraph(
@@ -906,304 +1088,6 @@ public abstract class AbstractReport implements Report {
 		}
 	}
 
-	private String generateTargetGraph(List<TargetProgressDisp> results) {
-		final String exclabel = "Exceeded Target";
-		final String tarlabel = "Target";
-		final String spentlabel = "Spent";
-		// row keys... are target, spent and exceeded
-		// column keys... categories
-
-		// fill in dataset
-		List<Double> exc = new ArrayList<Double>();
-		List<Double> targ = new ArrayList<Double>();
-		List<Double> spe = new ArrayList<Double>();
-		List<Double> notarget = new ArrayList<Double>();
-		List<String> categories = new ArrayList<String>();
-
-		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-		int i = 0;
-		for (TargetProgressDisp target : results) {
-			String catname = target.getCatName();
-			categories.add(i, catname);
-
-			double exceeded = 0;
-			double targeted = 0;
-			double spent = 0;
-			double notarg = 0;
-			// breakout according to relationship of target to spent
-			if (target.spendingExceedsTarget()) {
-				// we'll need two values - exceeded and Target
-				exceeded = target.getExceededAmount();
-				targeted = target.getAmountTargeted();
-			} else if (target.targetDoesntExist()) {
-				// we'll only need one value - spent
-				notarg = target.getAmountSpent();
-			} else if (target.spendingEqualsTarget()) {
-				// we'll only need one value - spent
-				spent = target.getAmountSpent();
-			} else {
-				// we'll need two values - spent and Target
-				spent = target.getAmountSpent();
-				targeted = target.getAmountTargeted() - target.getAmountSpent();
-			}
-
-			// add to dataset
-			exc.add(i, new Double(exceeded));
-			targ.add(i, new Double(targeted));
-			spe.add(i, new Double(spent));
-			targ.add(i, new Double(targeted));
-			notarget.add(i, new Double(notarg));
-			i++;
-		}
-
-		// fill in dataset
-		for (int j = 0; j < categories.size(); j++) {
-			String catname = categories.get(j);
-			// add spent
-			Double spent = spe.get(j);
-			double val = spent != null ? spent.doubleValue() : 0;
-			dataset.addValue(val, spentlabel, catname);
-			// add targeted
-			Double targeted = targ.get(j);
-			val = targeted != null ? targeted.doubleValue() : 0;
-			dataset.addValue(val, tarlabel, catname);
-			// add exceeded
-			Double excval = exc.get(j);
-			val = excval != null ? excval.doubleValue() : 0;
-			dataset.addValue(val, exclabel, catname);
-			// add no target
-			Double notargval = notarget.get(j);
-			val = notargval != null ? notargval.doubleValue() : 0;
-			dataset.addValue(val, "No Target", catname);
-		}
-
-		// create the chart...
-		JFreeChart chart = ChartFactory.createStackedBarChart("Target Status", // chart
-				// title
-				"Category", // domain axis label
-				"Status", // range axis label
-				dataset, // data
-				PlotOrientation.HORIZONTAL, // orientation
-				true, // include legend
-				false, // tooltips?
-				false // URLs?
-				);
-
-		// set the background color for the chart...
-		chart.setBackgroundPaint(Color.white);
-
-		// get a reference to the plot for further customisation...
-		CategoryPlot plot = (CategoryPlot) chart.getPlot();
-		plot.setBackgroundPaint(Color.lightGray);
-		plot.setDomainGridlinePaint(Color.white);
-		plot.setDomainGridlinesVisible(true);
-		plot.setRangeGridlinePaint(Color.white);
-
-		// set the range axis to display integers only...
-		final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-
-		// set colors
-		StackedBarRenderer renderer = (StackedBarRenderer) plot.getRenderer();
-		renderer.setSeriesPaint(0, Color.BLUE);
-		renderer.setSeriesPaint(1, Color.YELLOW);
-		renderer.setSeriesPaint(2, Color.RED);
-		renderer.setSeriesPaint(3, ChartColor.LIGHT_CYAN);
-
-		CategoryAxis domainAxis = plot.getDomainAxis();
-		domainAxis.setCategoryLabelPositions(CategoryLabelPositions
-				.createUpRotationLabelPositions(Math.PI / 6.0));
-
-		// save graph and return url
-		String filename = "monthlytargets_" + (new Date()).getTime() + ".png";
-		File imagefile = new File(reportCriteria.getImageDir() + filename);
-		try {
-			ChartUtilities.saveChartAsPNG(imagefile, chart, 550, 550);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return "images/" + filename;
-
-	}
-
-	public ReportElements crunchNumbersSummary(ExpenseCriteria criteria,
-			boolean avgbymonth) {
-		ReportElements re = new ReportElements();
-
-		// initialize ChartData
-		ChartData chart = new ChartData();
-		ChartRow headers = new ChartRow();
-		headers.addColumn("Catagory");
-		headers.addColumn("Spent");
-		headers.addColumn("Percentage");
-		chart.setHeaders(headers);
-
-		// retrieve categories for level
-		long breakoutlvl = reportCriteria.getBreakoutLevel().longValue();
-		List categories = categoryService.getCategoriesUpToLevel(
-				(int) breakoutlvl);
-
-		Double charttotal = 0D;
-		if (categories != null) {
-			// loop through categories
-			for (Iterator iter = categories.iterator(); iter.hasNext();) {
-				CategoryLevel catlvl = (CategoryLevel) iter.next();
-				CategoryDao category = catlvl.getCategory();
-
-				// create list to be retrieved (depends upon categorylevel
-				// and relationship to breakout level)
-				List<CategoryLevel> subcategories = null;
-				if (catlvl.getLevel() < breakoutlvl) {
-					// retrieve expenses belonging directly to this category
-					// only
-					subcategories = new ArrayList<CategoryLevel>();
-					subcategories.add(catlvl);
-				} else {
-					// retrieve expenses belonging to this and all subcategories
-					// get all subcategories for category
-					subcategories = categoryService.getAllSubcategories(
-							category);
-					subcategories.add(catlvl); // add the category itself
-				}
-				// process categories
-				ChartRow categoryRow = processCategories(criteria,
-						category.getName(), subcategories);
-				if (categoryRow.getColumnCount() > 0) {
-					chart.addRow(categoryRow);
-					// add to total
-					String amountstr = categoryRow.getColumn(1);
-					Number amount;
-					try {
-						amount = nf.parse(amountstr);
-						charttotal += amount.doubleValue();
-					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
-				}
-			}
-			// end category loop
-		}
-
-		// pull all expenses without category
-		Long origcattype = criteria.getCategorizedType();
-		criteria.clearCategoryLists();
-		criteria.setCategorizedType(new Long(
-				ExpenseCriteria.CategorizedType.NOCATS));
-		List expenses = searchService.getExpenses(criteria);
-		// loop through expenses, adding to no cat category summary
-		if (expenses != null && expenses.size() > 0) {
-			ChartRow row = new ChartRow();
-			double total = 0;
-			for (Iterator iter = expenses.iterator(); iter.hasNext();) {
-				ExpenseDao expense = (ExpenseDao) iter.next();
-				Double amount = expense.getTranstotal();
-				total += amount;
-			}
-			row.addColumn("No Category");
-			row.addColumn(nf.format(total * -1));
-			chart.addRow(row);
-			// add to total
-			charttotal += (total * -1);
-		}
-		// reset cattype
-		criteria.setCategorizedType(origcattype);
-
-		// add percentage info for chart
-		List<ChartRow> rows = chart.getRows();
-		for (ChartRow row : rows) {
-			String amountstr = row.getColumn(1);
-			Number amount;
-			try {
-				amount = nf.parse(amountstr);
-				double percentage = amount.doubleValue() / charttotal * 100.0;
-				row.addColumn(nf.format(percentage) + "%");
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		}
-
-		String url = generateSummaryGraph(rows);
-
-		// add total to list
-		ChartRow totalrow = new ChartRow();
-		totalrow.addColumn("TOTAL");
-		totalrow.addColumn(nf.format(charttotal));
-		totalrow.addColumn("100%");
-		chart.addRow(totalrow);
-		re.setChartData(chart);
-		re.setUrl(url);
-
-		return re;
-	}
-
-	public ReportElements crunchNumbersCategory(ExpenseCriteria criteria,
-			CategoryDao cat, boolean numbymonth) {
-		int daycount = getDayCount(criteria);
-
-		// get subcategories
-		List<CategoryLevel> catlevels = categoryService
-				.getAllSubcategories(cat);
-		CategorySummaryDisp totalsum = new CategorySummaryDisp("TOTAL",
-				daycount);
-
-		// pull totals for each subcategory
-		List<CategorySummaryDisp> results = new ArrayList<CategorySummaryDisp>();
-		for (CategoryLevel catlvl : catlevels) {
-			// update criteria
-			criteria.setCategory(catlvl.getCategory().getId());
-			// retrieve info from database
-			List<CategorySummaryDisp> displays = new ArrayList<CategorySummaryDisp>();
-			if (numbymonth) {
-				displays = getExpenseTotalByMonth(
-						criteria, catlvl.getCategory().getName()); // should
-																	// only
-			} else {
-				displays = getExpenseTotalByYear(criteria,
-						catlvl.getCategory().getName()); // should only
-			}
-			// be one
-			for (CategorySummaryDisp catsum : displays) {
-				catsum.setAverageDivisor(daycount);
-				totalsum.addExpenseAmt(new Double(catsum.getSum()));
-				results.add(catsum);
-			}
-
-		}
-
-		// retrieve info for base category (in case of direct assignment
-		// update criteria
-		criteria.setCategory(cat.getId());
-		// retrieve info from database
-		List displays = getExpenseTotalByYear(criteria,
-				cat.getName()); // should only be one
-		for (Iterator iterator = displays.iterator(); iterator.hasNext();) {
-			CategorySummaryDisp catsum = (CategorySummaryDisp) iterator.next();
-			catsum.setAverageDivisor(daycount);
-			totalsum.addExpenseAmt(new Double(catsum.getSum()));
-			results.add(catsum);
-		}
-		if (totalsum.getSum() == 0) {
-			// no use going on - this category doesn't have anything
-			return null;
-		}
-
-		// generate graph
-		String graphurl = generateCategoryGraph(results, cat.getName(),
-				totalsum.getSum());
-
-		// populate ReportElements
-		ReportElements re = new ReportElements();
-		re.setSummaries(results);
-		re.setUrl(graphurl);
-
-		return re;
-	}
-
 	protected String generateYearToDateGraph(String title,
 			Hashtable<String, List<CategorySummaryDisp>> results, int sorttype) {
 		// row keys... are categories
@@ -1381,6 +1265,127 @@ public abstract class AbstractReport implements Report {
 
 	}
 	
+	private String generateTargetGraph(List<TargetProgressDisp> results) {
+		final String exclabel = "Exceeded Target";
+		final String tarlabel = "Target";
+		final String spentlabel = "Spent";
+		// row keys... are target, spent and exceeded
+		// column keys... categories
+	
+		// fill in dataset
+		List<Double> exc = new ArrayList<Double>();
+		List<Double> targ = new ArrayList<Double>();
+		List<Double> spe = new ArrayList<Double>();
+		List<Double> notarget = new ArrayList<Double>();
+		List<String> categories = new ArrayList<String>();
+	
+		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+		int i = 0;
+		for (TargetProgressDisp target : results) {
+			String catname = target.getCatName();
+			categories.add(i, catname);
+	
+			double exceeded = 0;
+			double targeted = 0;
+			double spent = 0;
+			double notarg = 0;
+			// breakout according to relationship of target to spent
+			if (target.spendingExceedsTarget()) {
+				// we'll need two values - exceeded and Target
+				exceeded = target.getExceededAmount();
+				targeted = target.getAmountTargeted();
+			} else if (target.targetDoesntExist()) {
+				// we'll only need one value - spent
+				notarg = target.getAmountSpent();
+			} else if (target.spendingEqualsTarget()) {
+				// we'll only need one value - spent
+				spent = target.getAmountSpent();
+			} else {
+				// we'll need two values - spent and Target
+				spent = target.getAmountSpent();
+				targeted = target.getAmountTargeted() - target.getAmountSpent();
+			}
+	
+			// add to dataset
+			exc.add(i, new Double(exceeded));
+			targ.add(i, new Double(targeted));
+			spe.add(i, new Double(spent));
+			targ.add(i, new Double(targeted));
+			notarget.add(i, new Double(notarg));
+			i++;
+		}
+	
+		// fill in dataset
+		for (int j = 0; j < categories.size(); j++) {
+			String catname = categories.get(j);
+			// add spent
+			Double spent = spe.get(j);
+			double val = spent != null ? spent.doubleValue() : 0;
+			dataset.addValue(val, spentlabel, catname);
+			// add targeted
+			Double targeted = targ.get(j);
+			val = targeted != null ? targeted.doubleValue() : 0;
+			dataset.addValue(val, tarlabel, catname);
+			// add exceeded
+			Double excval = exc.get(j);
+			val = excval != null ? excval.doubleValue() : 0;
+			dataset.addValue(val, exclabel, catname);
+			// add no target
+			Double notargval = notarget.get(j);
+			val = notargval != null ? notargval.doubleValue() : 0;
+			dataset.addValue(val, "No Target", catname);
+		}
+	
+		// create the chart...
+		JFreeChart chart = ChartFactory.createStackedBarChart("Target Status", // chart
+				// title
+				"Category", // domain axis label
+				"Status", // range axis label
+				dataset, // data
+				PlotOrientation.HORIZONTAL, // orientation
+				true, // include legend
+				false, // tooltips?
+				false // URLs?
+				);
+	
+		// set the background color for the chart...
+		chart.setBackgroundPaint(Color.white);
+	
+		// get a reference to the plot for further customisation...
+		CategoryPlot plot = (CategoryPlot) chart.getPlot();
+		plot.setBackgroundPaint(Color.lightGray);
+		plot.setDomainGridlinePaint(Color.white);
+		plot.setDomainGridlinesVisible(true);
+		plot.setRangeGridlinePaint(Color.white);
+	
+		// set the range axis to display integers only...
+		final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+	
+		// set colors
+		StackedBarRenderer renderer = (StackedBarRenderer) plot.getRenderer();
+		renderer.setSeriesPaint(0, Color.BLUE);
+		renderer.setSeriesPaint(1, Color.YELLOW);
+		renderer.setSeriesPaint(2, Color.RED);
+		renderer.setSeriesPaint(3, ChartColor.LIGHT_CYAN);
+	
+		CategoryAxis domainAxis = plot.getDomainAxis();
+		domainAxis.setCategoryLabelPositions(CategoryLabelPositions
+				.createUpRotationLabelPositions(Math.PI / 6.0));
+	
+		// save graph and return url
+		String filename = "monthlytargets_" + (new Date()).getTime() + ".png";
+		File imagefile = new File(reportCriteria.getImageDir() + filename);
+		try {
+			ChartUtilities.saveChartAsPNG(imagefile, chart, 550, 550);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "images/" + filename;
+	
+	}
+
 	protected List<CategorySummaryDisp> getExpenseTotalByYear(ExpenseCriteria criteria,String dispname) {
 		List<CategorySummaryDisp> displays = searchService.getExpenseTotalByYear(criteria);
 		for (CategorySummaryDisp catsum:displays) {

@@ -15,7 +15,10 @@ import java.util.List;
 import java.util.Map;
 
 import meg.bank.bus.CategoryLevel;
+import meg.bank.bus.CategoryService;
 import meg.bank.bus.ExpenseCriteria;
+import meg.bank.bus.SearchService;
+import meg.bank.bus.TargetService;
 import meg.bank.bus.dao.ExpenseDao;
 import meg.bank.bus.dao.TargetDetailDao;
 import meg.bank.bus.dao.TargetGroupDao;
@@ -35,6 +38,14 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 public class MonthlyTargetsReport extends AbstractReport{
 
+
+
+	public MonthlyTargetsReport(ReportCriteria reportCriteria,
+			SearchService searchService, CategoryService categoryService,
+			TargetService targetService) {
+		super(reportCriteria, searchService, categoryService, targetService);
+	}
+
 	public String getReportname() {
 		return "Monthly Targets Report";
 	}
@@ -52,9 +63,9 @@ public class MonthlyTargetsReport extends AbstractReport{
 			start = dateformat.parse(month);
 			Calendar cal = Calendar.getInstance();
 			Calendar comp = Calendar.getInstance();
+			cal.setTime(start);
 			iscurrentmonth = cal.get(Calendar.MONTH)==comp.get(Calendar.MONTH);
 			// get first of month, first of next month
-			cal.setTime(start);
 			cal.set(Calendar.DAY_OF_MONTH, 1);
 			Date startdate = cal.getTime();
 			cal.roll(Calendar.MONTH, 1);
@@ -90,12 +101,12 @@ public class MonthlyTargetsReport extends AbstractReport{
 		
 		// Storage lists
 		List<TargetProgressDisp> displays = new ArrayList<TargetProgressDisp>();
-		Hashtable targethash = new Hashtable();
+		Hashtable<Long,TargetDetailDao> targethash = new Hashtable<Long,TargetDetailDao>();
 
 		// get Targets for month
 		TargetGroupDao target = targetService.loadTargetForMonth(month);
 		// place targets in Hashtable by categoryid
-		List details = target.getTargetdetails();
+		List<TargetDetailDao> details = target.getTargetdetails();
 		for (Iterator iter = details.iterator(); iter.hasNext();) {
 			TargetDetailDao det = (TargetDetailDao) iter.next();
 			Long catid = det.getCatid();
@@ -107,12 +118,14 @@ public class MonthlyTargetsReport extends AbstractReport{
 		List<CategoryLevel> categories = categoryService.getCategoriesUpToLevel(1);
 
 		// loop through categories
+		criteria.setShowSubcats(true);
 		for (CategoryLevel catlvl:categories) {
 			List<CategoryLevel> subcats = categoryService.getAllSubcategories(
 					catlvl.getCategory());
 			// set categories in criteria
 			subcats.add(catlvl);
 			criteria.setCategoryLevelList(subcats);
+			
 
 			// retrieve totals
 			List<CategorySummaryDisp> results = getExpenseTotalByMonth(
@@ -159,7 +172,7 @@ public class MonthlyTargetsReport extends AbstractReport{
 		sortAndCategorizeExpenses(expenses);
 		
 		// put together return objects
-		HashMap model = new HashMap();
+		HashMap<String,Object> model = new HashMap<String,Object>();
 		// summary info and graph
 		model.put("totallist", displays);
 		model.put("month", month);

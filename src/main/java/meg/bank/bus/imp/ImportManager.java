@@ -21,6 +21,7 @@ import meg.bank.util.imp.MapperFactory;
 import meg.bank.util.imp.Placeholder;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -40,7 +41,9 @@ public class ImportManager {
 	@Autowired
 	BankTransactionService transService;
 
-	private String archivedir="C:/Users/Margaret/bankfiles/";
+    @Value("${document.import.archivepath}")
+    private String archivedir;
+	
 
 	public final class ImportClient {
 		public final static int SocGen = 1;

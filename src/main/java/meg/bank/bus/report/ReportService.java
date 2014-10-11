@@ -15,7 +15,8 @@ public interface ReportService {
 
 	public abstract List<String> getAllYearsAsList();
 
-	public abstract Map<String, Object> runReport(Long reporttype,
+
+	public abstract Map<String, Object> runReport(
 			ReportCriteria reportCriteria);
 
 

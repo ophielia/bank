@@ -27,6 +27,7 @@ public class CategorySummaryDisp {
 	private Long year;
 	
 	 private SimpleDateFormat monthyearfmt = new SimpleDateFormat("MM-yyyy");
+	 private SimpleDateFormat yearfmt = new SimpleDateFormat("yyyy");
 	
 
 	public CategorySummaryDisp(String catname, int daycount) {
@@ -133,6 +134,12 @@ public class CategorySummaryDisp {
 
 	public void setYear(Long year) {
 		this.year = year;
+		try {
+			Date date = yearfmt.parse(year + "");
+			setSummaryDate(date);
+		} catch (ParseException e) {
+			setSummaryDate(new Date());
+		}		
 	}
 	
 	

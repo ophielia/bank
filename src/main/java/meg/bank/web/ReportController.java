@@ -1,9 +1,12 @@
 package meg.bank.web;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import meg.bank.bus.CategoryService;
 import meg.bank.bus.ExpenseCriteria;
@@ -23,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-@RequestMapping("/expense/list")
+@RequestMapping("/reports")
 @Controller
 public class ReportController {
 
@@ -56,8 +59,9 @@ public class ReportController {
 		Long reporttype = reportCriteria.getReportType();
 		// validate....
 		
+
 		// call report service
-		Map<String,Object> results = reportService.runReport(reporttype,reportCriteria);
+		Map<String,Object> results = reportService.runReport(reportCriteria);
 		
 		// set results in model
 		uiModel.addAttribute("results",results);

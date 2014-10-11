@@ -16,12 +16,12 @@ done - continue entering categories - start with other subcategories
 done - graphical representation of categorylevels - to check!!
 
 starting reports
- misc.  implement setYear and setMonthYear in ReportCriteria
  misc.  validation for different reports
-make test complete
-make testRunReports green.
- 
 
+------>  make input and output pages for monthlytargetreport
+done - input page
+--> error loading targets - MonthlyTargetsReport.java:110 LazyInitialization
+make output page
 	
 	
 
@@ -53,6 +53,10 @@ think about menu.... make second level for categories, rules, targets
 ---- begin commit changes ----
 
 
+done -   implement setYear and setMonthYear in ReportCriteria
+done -  make testRunReports complete - a good, real test
+done - make testRunReports green.
+done - numbers wonky MonthlyTargetsReport   problem with multicategories - show subcats in criteria .... differing use between list and reports
 	
 
 		
@@ -263,6 +267,9 @@ Notes:
 
 Later Development
 
-1. separate different target types into different pages
+1. separate different target types into different pages - monthly and yearly.
 2. TargetGroup - put monthtag and yeartag into same field.
 3. fuzziness with importclient in importmanager.  Would need to be handled much differently in a multiuserenvironment
+4. keyword search in expenselist
+5. bug in create target - when adding detail....
+6. copy target group
