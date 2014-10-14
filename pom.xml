@@ -311,6 +311,12 @@
 			<artifactId>jfreechart</artifactId>
 			<version>1.0.13</version>
 		</dependency>
+		<dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>itext</artifactId>
+			<version>4.2.1</version>
+		</dependency>
+		
     </dependencies>
     <build>
         <plugins>

@@ -12,10 +12,29 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 	<spring:message code="label_rpt_reportlist" var="pagetitle"/>
 	<spring:message code="bank_rpt_monthlytarget" var="lmonthlytarget"/>
+	<spring:message code="bank_rpt_yearlytargetstatus" var="lyearlytarget"/>
 	
     <spring:url value="/reports?reporttype=1" var="monthlytargeturl"/>
+    <spring:url value="/reports?reporttype=2" var="yearlytargeturl"/>
     <h1>${pagetitle}</h1>
 <br />
-<a href="${monthlytargeturl}">${lmonthlytarget}</a> 
+<a href="${monthlytargeturl}">${lmonthlytarget}</a> <br /> 
+<a href="${yearlytargeturl}">${lyearlytarget}</a> <br /> 
+
+
+<hr />
+
+<br />
+<br />
+<br />
+
+<a href="#">Summary</a><br />
+<a  href="#">Total By Month</a><br />
+<a  href="#">Yearly Report</a><br />
+<a  href="#">Categories By Month</a><br />
+<a  href="#">Category Over Time</a><br />
+<a  href="#">Category Breakout</a><br />
+<a  href="#">Full Month Report</a><br />
+<a  href="#">New Yearly Report</a><br />
 
 </div>

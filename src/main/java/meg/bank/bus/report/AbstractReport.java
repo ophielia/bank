@@ -1403,5 +1403,55 @@ public abstract class AbstractReport implements Report {
 		return displays;
 	}
 	
-
+	public ReportElements newCrunchNumbersCategory(ExpenseCriteria criteria,
+			CategoryLevel cat, boolean numbymonth) {
+		ExpenseCriteria catcriteria = criteria.clone();
+		int daycount = getDayCount(criteria);
+	
+		// get subcategories
+		List<CategoryLevel> catlevels = categoryService
+				.getAllSubcategories(cat.getCategory());
+		CategorySummaryDisp totalsum = new CategorySummaryDisp("TOTAL",
+				daycount);
+	
+		// do one query to grab all subcategories
+		catlevels.add(cat);
+		catcriteria.setCategoryLevelList(catlevels);
+		catcriteria.setShowSubcats(true);
+		
+		List<CategorySummaryDisp> displays = new ArrayList<CategorySummaryDisp>();
+		if (numbymonth) {
+			displays = searchService.getExpenseTotalByMonth(
+					catcriteria); 
+		} else {
+			displays = searchService.getExpenseTotalByYearAndCategory(catcriteria); 
+		}
+		
+		// go through displays, adding daycount, and summing total
+		List<CategorySummaryDisp> results = new ArrayList<CategorySummaryDisp>();
+		for (CategorySummaryDisp catsum : displays) {
+			catsum.setAverageDivisor(daycount);
+			totalsum.addExpenseAmt(new Double(catsum.getSum()));
+			results.add(catsum);
+		}
+		
+		// generate graph
+		if (totalsum.getSum() == 0) {
+			// no use going on - this category doesn't have anything
+			return null;
+		}
+		double catsum = Math.round(totalsum.getSum()*100.0)/100.0;
+		String graphurl = generateCategoryGraph(results, cat.getCategory().getName(),
+				catsum);
+	
+		// add total to results
+		results.add(totalsum);
+		
+		// populate ReportElements
+		ReportElements re = new ReportElements();
+		re.setSummaries(results);
+		re.setUrl(graphurl);
+	
+		return re;
+	}
 }

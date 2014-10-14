@@ -62,6 +62,8 @@ public class YearlyTargetStatus extends AbstractReport{
 		SimpleDateFormat dateformat = new SimpleDateFormat("yyyy");
 		Date start;
 		boolean iscurrentyear = false;
+		String lastdatetag =null;
+		Date calyearend = null;
 		try {
 			start = dateformat.parse(year);
 			Calendar cal = Calendar.getInstance();
@@ -74,22 +76,28 @@ public class YearlyTargetStatus extends AbstractReport{
 			cal.set(Calendar.MONTH, Calendar.JANUARY);
 			Date startdate = cal.getTime();
 			cal.roll(Calendar.YEAR, 1);
-			Date enddate = cal.getTime();
+			calyearend = cal.getTime();
+			criteria.setDateEnd(calyearend);
+			lastdatetag = determineLastDateTag(criteria, iscurrentyear);
+			Date end = daydateformat.parse(lastdatetag);
 			// set in criteria
 			criteria.setDateStart(startdate);
-			criteria.setDateEnd(enddate);
+			criteria.setDateEnd(end);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		criteria.setExcludeNonExpense(getReportCriteria().getExcludeNonExpense());
+		criteria.setExcludeNonExpense(true);
 
 		// calculate progress in year (how many days into the year)
 		// only makes sense, if we're looking at the current year
 		double percentageofyear = 100.0;
 		if (iscurrentyear) {
+			ExpenseCriteria fullyearc = new ExpenseCriteria();
+			fullyearc.setDateStart(criteria.getDateStart());
+			fullyearc.setDateEnd(calyearend);
 			// current criteria contains full year - so use current criteria
 			// to get full year day count (will be 365 or 366)
-			int fullyear = getDayCount(criteria);
+			int fullyear = getDayCount(fullyearc);
 			// now, how many days are we into the year?
 			ExpenseCriteria intomonth = new ExpenseCriteria();
 			intomonth.setDateStart(criteria.getDateStart());
@@ -104,16 +112,15 @@ public class YearlyTargetStatus extends AbstractReport{
 		}
 
 		// Storage lists
-		List displayspoint = new ArrayList();
-		List displays = new ArrayList();
-		Hashtable targethash = new Hashtable();
+		List<TargetProgressDisp> displayspoint = new ArrayList<TargetProgressDisp>();
+		List<TargetProgressDisp> displays = new ArrayList<TargetProgressDisp>();
+		Hashtable<Long,TargetDetailDao> targethash = new Hashtable<Long,TargetDetailDao> ();
 
 		// get Targets for year
 		TargetGroupDao target = targetService.loadTargetForYear(year);
 		// place targets in Hashtable by categoryid
-		List details = target.getTargetdetails();
-		for (Iterator iter = details.iterator(); iter.hasNext();) {
-			TargetDetailDao det = (TargetDetailDao) iter.next();
+		List<TargetDetailDao> details = target.getTargetdetails();
+		for (TargetDetailDao det:details) {
 			Long catid = det.getCatid();
 			targethash.put(catid, det);
 		}
@@ -125,23 +132,24 @@ public class YearlyTargetStatus extends AbstractReport{
 
 		// prepare month hashtable (monthkey as key, and TargetProgressDisp as
 		// value
-		String lastdatetag = determineLastDateTag(criteria, iscurrentyear);
+		
 		Hashtable<String, ArrayList<TargetProgressDisp>> runningTotals = prepareComparisonTable(
 				criteria, lastdatetag);
 
 		// loop through categories
-		for (Iterator iter = categories.iterator(); iter.hasNext();) {
+		for (CategoryLevel catlvl:categories) {
 
-			CategoryLevel catlvl = (CategoryLevel) iter.next();
-			List subcats = categoryService.getAllSubcategories(
+			
+			List<CategoryLevel> subcats = categoryService.getAllSubcategories(
 					catlvl.getCategory());
 
 			// set categories in criteria
 			subcats.add(catlvl);
 			criteria.setCategoryLevelList(subcats);
+			criteria.setShowSubcats(true);
 
 			// retrieve totals
-			List results = getExpenseTotalByYear(criteria,
+			List<CategorySummaryDisp> results = getExpenseTotalByYear(criteria,
 					catlvl.getCategory().getName());
 
 			// loop through results
@@ -188,13 +196,11 @@ public class YearlyTargetStatus extends AbstractReport{
 		double totaltargeted = 0;
 		double totalspent = 0;
 		double pointtargeted = 0;
-		for (Iterator iter = displays.iterator(); iter.hasNext();) {
-			TargetProgressDisp targ = (TargetProgressDisp) iter.next();
+		for (TargetProgressDisp targ :displays) {
 			totaltargeted += targ.getAmountTargeted();
 			totalspent += targ.getAmountSpent();
 		}
-		for (Iterator iter = displayspoint.iterator(); iter.hasNext();) {
-			TargetProgressDisp targ = (TargetProgressDisp) iter.next();
+		for (TargetProgressDisp targ :displayspoint) {
 			pointtargeted += targ.getAmountTargeted();
 		}
 		double statusamt = totalspent > totaltargeted ? totalspent
@@ -218,12 +224,14 @@ public class YearlyTargetStatus extends AbstractReport{
 		// run category breakouts for all main categories
 		criteria.setCategorizedType(new Long(
 				ExpenseCriteria.CategorizedType.ALL));
+		criteria.clearCategoryLists();
 		List<ReportElements> allcategory = new ArrayList<ReportElements>();
 
+		
 		if (categories != null) {
 			for (CategoryLevel catlvl : categories) {
-				ReportElements catre = crunchNumbersCategory(criteria,
-						catlvl.getCategory(), false);
+				ReportElements catre = newCrunchNumbersCategory(criteria,
+						catlvl, false);
 				if (catre != null) {
 					catre.setName(catlvl.getCategory().getName());
 					allcategory.add(catre);
@@ -232,7 +240,7 @@ public class YearlyTargetStatus extends AbstractReport{
 		}
 
 		// put together return objects
-		HashMap model = new HashMap();
+		HashMap<String,Object> model = new HashMap<String,Object>();
 		// summary info and graph
 		model.put("pointlist", displayspoint);
 		model.put("totallist", displays);
@@ -270,7 +278,7 @@ public class YearlyTargetStatus extends AbstractReport{
 		return req;
 	}
 
-	protected String generateGraph(String graphname, List results,
+	protected String generateGraph(String graphname, List<TargetProgressDisp> results,
 			boolean ishoriz) {
 		final String exclabel = "Exceeded Target";
 		final String tarlabel = "Target";
@@ -279,16 +287,15 @@ public class YearlyTargetStatus extends AbstractReport{
 		// column keys... categories
 
 		// fill in dataset
-		List exc = new ArrayList();
-		List targ = new ArrayList();
-		List spe = new ArrayList();
-		List notarget = new ArrayList();
-		List categories = new ArrayList();
+		List<Double> exc = new ArrayList<Double>();
+		List<Double> targ = new ArrayList<Double>();
+		List<Double> spe = new ArrayList<Double>();
+		List<Double> notarget = new ArrayList<Double>();
+		List<String> categories = new ArrayList<String>();
 
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		int i = 0;
-		for (Iterator iter = results.iterator(); iter.hasNext();) {
-			TargetProgressDisp target = (TargetProgressDisp) iter.next();
+		for (TargetProgressDisp target:results) {
 			String catname = target.getCatName();
 			categories.add(i, catname);
 

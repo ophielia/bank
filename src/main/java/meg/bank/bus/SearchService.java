@@ -25,4 +25,7 @@ public interface SearchService {
 	
 	public abstract Date getMostRecentTransDate();
 
+	public abstract List<CategorySummaryDisp> getExpenseTotalByYearAndCategory(
+			ExpenseCriteria criteria);
+
 }

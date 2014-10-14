@@ -43,13 +43,10 @@ public class ReportController {
     
   
 	@RequestMapping(produces = "text/html")
-    public String showAllReports(@ModelAttribute("reportCriteria") ReportCriteria reportCriteria,@RequestParam("reporttype") Long reporttype,Model uiModel,HttpServletRequest request) {
+    public String showAllReports(@ModelAttribute("reportCriteria") ReportCriteria reportCriteria,Model uiModel,HttpServletRequest request) {
 		
-		String view = "reports/monthlytargetinput";
-		if (reporttype.longValue()==ReportService.ReportType.MonthlyTarget) {
-			view = "reports/reportlist";	
-		}
-		return view;
+		
+		return "reports/reportlist";
     }    
     
 	@RequestMapping(params="reporttype" ,produces = "text/html")
@@ -60,6 +57,8 @@ public class ReportController {
 		String view = "reports/monthlytargetinput";
 		if (reporttype.longValue()==ReportService.ReportType.MonthlyTarget) {
 			view = "reports/monthlytargetinput";	
+		} else if (reporttype.longValue()==ReportService.ReportType.YearlyTargetStatus) {
+			view = "reports/yearlytargetinput";	
 		}
 		return view;
     }
@@ -68,7 +67,9 @@ public class ReportController {
 	public String showOutput(@ModelAttribute("reportCriteria") ReportCriteria reportCriteria,Model uiModel,HttpServletRequest request) {
 		Long reporttype = reportCriteria.getReportType();
 		// validate....
-
+// monthlystatus - month set
+// yearlystatus - year set
+		
 		// call report service
 		Map<String,Object> results = reportService.runReport(reportCriteria);
 		
@@ -79,6 +80,8 @@ public class ReportController {
 		String view = "reports/monthlytargetoutput";
 		if (reporttype.longValue()==ReportService.ReportType.MonthlyTarget) {
 			view = "reports/monthlytargetoutput";	
+		}  else if (reporttype.longValue()==ReportService.ReportType.YearlyTargetStatus) {
+			view = "reports/yearlytargetoutput";	
 		}
 		return view;		
 		

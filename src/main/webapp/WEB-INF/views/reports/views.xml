@@ -10,4 +10,10 @@
     <definition extends="default" name="reports/monthlytargetoutput">
         <put-attribute name="body" value="/WEB-INF/views/reports/monthlytargetoutput.jspx"/>
     </definition>
+    <definition extends="default" name="reports/yearlytargetinput">
+        <put-attribute name="body" value="/WEB-INF/views/reports/yearlytargetinput.jspx"/>
+    </definition>
+    <definition extends="default" name="reports/yearlytargetoutput">
+        <put-attribute name="body" value="/WEB-INF/views/reports/yearlytargetoutput.jspx"/>
+    </definition>    
 </tiles-definitions>

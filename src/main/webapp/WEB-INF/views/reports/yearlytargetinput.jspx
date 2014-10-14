@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+   
+   <spring:message code="bank_rpt_yearlytargetstatus" htmlEscape="false" var="reporttitle"/>    
+   <spring:message code="field_invalid" arguments="${lcat}" htmlEscape="false" var="missingcat"/>    
+    <spring:message code="label_rpt_runreports" var="pagetitle"/>
+    <spring:message code="label_rpt_year" var="lyear"/>
+    <spring:message code="label_rpt_runreport" var="lrunreport"/>
+
+    <h1>${pagetitle}</h1>
+<h2>${reporttitle}</h2>
+
+<spring:url value="/reports" var="actionurl"/>
+<spring:url value="/quickgroup/preview" var="previewurl"/>
+
+<form:form action="${actionurl}" id="monthlytargetreport" method="POST" modelAttribute="reportCriteria">
+
+${lyear}: <form:select path="year">
+				<form:option value="" label="--Please Select" />
+				<form:options items="${yearselect}" />
+			</form:select> 
+
+			<br />
+			<br />
+<form:hidden path="reportType"></form:hidden>
+<input id="runreport" name="runreport" type="submit" value="${lrunreport}"/>
+</form:form>
+
+</div>

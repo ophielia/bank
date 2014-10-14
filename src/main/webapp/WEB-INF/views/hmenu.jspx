@@ -36,6 +36,7 @@
 	<li><moo:menulink label="bank_reports" url="/reports" />
 	<ul>
 		<li><moo:menulink label="bank_rpt_monthlytarget" url="/reports?reporttype=1" /></li>
+		<li><moo:menulink label="bank_rpt_yearlytargetstatus" url="/reports?reporttype=2" /></li>
 	</ul>
 	</li>
 </ul>    

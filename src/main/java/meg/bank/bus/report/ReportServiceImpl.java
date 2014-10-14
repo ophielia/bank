@@ -77,6 +77,8 @@ public class ReportServiceImpl implements ReportService {
 			// get appropriate report for reporttype
 			if (reporttype.longValue()==ReportService.ReportType.MonthlyTarget.longValue()) {
 				report = new MonthlyTargetsReport(reportCriteria,searchService,categoryService,targetService);
+			} else if (reporttype.longValue()==ReportService.ReportType.YearlyTargetStatus.longValue()) {
+				report = new YearlyTargetStatus(reportCriteria,searchService,categoryService,targetService);
 			}
 			
 			return report;
