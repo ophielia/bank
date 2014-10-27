@@ -370,20 +370,6 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 	}
 
 	/* (non-Javadoc)
-	 * @see meg.bank.bus.BankTransactionService#getExpenseTotalByMonth(meg.bank.bus.ExpenseCriteria, java.lang.String)
-	 */
-	@Override
-	public List<CategorySummaryDisp> getExpenseTotalByMonth(ExpenseCriteria criteria,String dispname) {
-// MM move to search Service
-		List displays = searchService.getExpenseTotalByMonth(criteria);
-		for (Iterator iter = displays.iterator(); iter.hasNext();) {
-			CategorySummaryDisp catsum = (CategorySummaryDisp) iter.next();
-			catsum.setCatName(dispname);
-		}
-		return displays;
-	}
-
-	/* (non-Javadoc)
 	 * @see meg.bank.bus.BankTransactionService#getExpenseTotalByYear(meg.bank.bus.ExpenseCriteria, java.lang.String)
 	 */
 	@Override

@@ -104,7 +104,7 @@ public class SearchServiceTest {
 	public void testGetExpenseTotalByMonth() {
 		// just test that it doesn't blow up
 		ExpenseCriteria criteria = new ExpenseCriteria();
-		List<CategorySummaryDisp> results = searchService.getExpenseTotalByMonth(criteria);
+		List<CategorySummaryDisp> results = searchService.getExpenseTotalByMonthAndCategory(criteria);
 		Assert.assertNotNull(results);
 	}
 

@@ -3,34 +3,22 @@ Bootstrap!
 	old pages - transactions, edit transaction, category, edit category, 
 	target & target details, category rules, import, category rules
 	new thing - quickgroups
-aggregate puzzle
+
 
 check / take care of column manager - still Hib
-
 remove hard copy dojo scripts
 look at failed maven all tests
 make edit link in expenselist polite
-future - change to JPA criteria!!?? (SearchService)
-	
-done - continue entering categories - start with other subcategories
-done - graphical representation of categorylevels - to check!!
+
 
 starting reports
  misc.  validation for different reports
 
-at least make notes for validation	
-make test for YearlyTargetStatus
-make it green
-make input page for yearlystatusreport
-make messages for input page
-make output page for yearlystatusreport
-make messages for output page
+
 insert archive data
-work on pdf
 
-	
-
-
+data - archive data, add health reimbursement, 
+	check monoprix (some to house, presents - other),cash - subtract babysitting, distribute to other, snack, lent, groceries
 
 discomfort in category entry - 
 	all categories should be shown, regardless of display setting
@@ -57,18 +45,10 @@ think about menu.... make second level for categories, rules, targets
 	
 ---- begin commit changes ----
 
-
-done -   implement setYear and setMonthYear in ReportCriteria
-done -  make testRunReports complete - a good, real test
-done - make testRunReports green.
-done - numbers wonky MonthlyTargetsReport   problem with multicategories - show subcats in criteria .... differing use between list and reports
-done -  make input and output pages for monthlytargetreport
-done - input page
-done - error loading targets - MonthlyTargetsReport.java:110 LazyInitialization
-done - make output page
-done - working on image directory 
-done - image directory	- needs to be setup within properties - and linkable from webapp to display
-		
+done - future - change to JPA criteria!!?? (SearchService)
+done - problem - getExpenseTotalByMonth seen in running test report service - swap to two methods in search service - one for total by month,  and one total month category
+done - next up - FullMonthReport - also in PDF
+done - work on pdf
 
 		
 ---- end commit changes ----
@@ -268,6 +248,28 @@ done - make it green
 done - wire to page - make page work
 done - list validation - validator - check for present quickgroup id - or in controller
 done -    javascript validation like with categories
+done -   implement setYear and setMonthYear in ReportCriteria
+done -  make testRunReports complete - a good, real test
+done - make testRunReports green.
+done - numbers wonky MonthlyTargetsReport   problem with multicategories - show subcats in criteria .... differing use between list and reports
+done -  make input and output pages for monthlytargetreport
+done - input page
+done - error loading targets - MonthlyTargetsReport.java:110 LazyInitialization
+done - make output page
+done - working on image directory 
+done - image directory	- needs to be setup within properties - and linkable from webapp to display
+done - at least make notes for validation	
+done - make test for YearlyTargetStatus
+done - make it green
+done - make input page for yearlystatusreport
+done - make messages for input page
+done - make output page for yearlystatusreport
+done - make messages for output page
+done - wonky numbers - yearlystatusreport
+done - 	target development graph is off.		
+done - continue entering categories - start with other subcategories
+done - graphical representation of categorylevels - to check!!
+done - aggregate puzzle
 
 ---- end branch changes ----
 

@@ -230,7 +230,7 @@ public class YearlyTargetStatus extends AbstractReport{
 		
 		if (categories != null) {
 			for (CategoryLevel catlvl : categories) {
-				ReportElements catre = newCrunchNumbersCategory(criteria,
+				ReportElements catre = crunchNumbersCategory(criteria,
 						catlvl, false);
 				if (catre != null) {
 					catre.setName(catlvl.getCategory().getName());

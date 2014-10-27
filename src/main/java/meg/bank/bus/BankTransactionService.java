@@ -26,8 +26,7 @@ public interface BankTransactionService {
 	public abstract void assignFromCategories(Long catid,
 			List<BankTADao> transtoadd);
 	public abstract List<ExpenseDao> getExpenses(ExpenseCriteria criteria);
-	public abstract List<CategorySummaryDisp> getExpenseTotalByMonth(
-			ExpenseCriteria criteria, String dispname);
+
 	public abstract List<CategorySummaryDisp> getExpenseTotalByYear(
 			ExpenseCriteria criteria, String dispname);
 

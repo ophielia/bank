@@ -58,6 +58,8 @@ public class ReportServiceImpl implements ReportService {
 			// run crunch numbers
 			Map<String,Object> results = report.crunchNumbers();
 			
+			// put criteria in results
+			results.put("rCriteria",reportCriteria);
 			// return result
 			return results;
 		}
@@ -79,6 +81,8 @@ public class ReportServiceImpl implements ReportService {
 				report = new MonthlyTargetsReport(reportCriteria,searchService,categoryService,targetService);
 			} else if (reporttype.longValue()==ReportService.ReportType.YearlyTargetStatus.longValue()) {
 				report = new YearlyTargetStatus(reportCriteria,searchService,categoryService,targetService);
+			} else if (reporttype.longValue()==ReportService.ReportType.FullMonth.longValue()) {
+				report = new FullMonthReport(reportCriteria,searchService,categoryService,targetService);
 			}
 			
 			return report;

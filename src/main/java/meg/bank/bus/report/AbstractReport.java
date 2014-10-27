@@ -292,7 +292,7 @@ public abstract class AbstractReport implements Report {
 		return re;
 	}
 
-	public ReportElements crunchNumbersCategory(ExpenseCriteria criteria,
+	public ReportElements oldCrunchNumbersCategory(ExpenseCriteria criteria,
 			CategoryDao cat, boolean numbymonth) {
 		int daycount = getDayCount(criteria);
 	
@@ -354,6 +354,63 @@ public abstract class AbstractReport implements Report {
 	
 		return re;
 	}
+
+	public ReportElements crunchNumbersCategory(ExpenseCriteria criteria,
+			CategoryLevel cat, boolean numbymonth) {
+		ExpenseCriteria catcriteria = criteria.clone();
+		int daycount = getDayCount(criteria);
+	
+		// get subcategories
+		List<CategoryLevel> catlevels = categoryService
+				.getAllSubcategories(cat.getCategory());
+		CategorySummaryDisp totalsum = new CategorySummaryDisp("TOTAL",
+				daycount);
+	
+		// do one query to grab all subcategories
+		catlevels.add(cat);
+		catcriteria.setCategoryLevelList(catlevels);
+		catcriteria.setShowSubcats(true);
+		
+		List<CategorySummaryDisp> displays = new ArrayList<CategorySummaryDisp>();
+		if (numbymonth) {
+			displays = searchService.getExpenseTotalByMonthAndCategory(
+					catcriteria); 
+		} else {
+			displays = searchService.getExpenseTotalByYearAndCategory(catcriteria); 
+		}
+		
+		// go through displays, adding daycount, and summing total
+		List<CategorySummaryDisp> results = new ArrayList<CategorySummaryDisp>();
+		for (CategorySummaryDisp catsum : displays) {
+			catsum.setAverageDivisor(daycount);
+			totalsum.addExpenseAmt(new Double(catsum.getSum()));
+			results.add(catsum);
+		}
+		
+		// generate graph
+		if (totalsum.getSum() == 0) {
+			// no use going on - this category doesn't have anything
+			return null;
+		}
+		double catsum = Math.round(totalsum.getSum()*100.0)/100.0;
+		String graphurl = generateCategoryGraph(results, cat.getCategory().getName(),
+				catsum);
+	
+		// add total to results
+		results.add(totalsum);
+		
+		// populate ReportElements
+		ReportElements re = new ReportElements();
+		re.setSummaries(results);
+		re.setUrl(graphurl);
+	
+		return re;
+	}
+
+
+
+
+
 
 	protected String generateCategoryGraph(
 			List<CategorySummaryDisp> catsumdisps, String catname, double sum) {
@@ -448,7 +505,7 @@ public abstract class AbstractReport implements Report {
 			// set categories in criteria
 			subcats.add(catlvl);
 			criteria.setCategoryLevelList(subcats);
-
+			criteria.setShowSubcats(true);
 			// retrieve totals
 			List results = getExpenseTotalByMonth(
 					criteria, catlvl.getCategory().getName());
@@ -934,6 +991,7 @@ public abstract class AbstractReport implements Report {
 			// get all level 1 categories
 			List<CategoryLevel> categories = categoryService
 					.getCategoriesUpToLevel(1);
+			criteria.setShowSubcats(true);
 			int monthcount = 0;
 			for (CategoryLevel catlvl : categories) {
 				List<CategoryLevel> subcats = categoryService
@@ -941,7 +999,7 @@ public abstract class AbstractReport implements Report {
 				// set categories in criteria
 				subcats.add(catlvl);
 				criteria.setCategoryLevelList(subcats);
-
+				criteria.setShowSubcats(true);
 				// retrieve totals
 				List<CategorySummaryDisp> totals = getExpenseTotalByMonth(criteria,
 								catlvl.getCategory().getName());
@@ -1170,7 +1228,26 @@ public abstract class AbstractReport implements Report {
 
 		// pull expenses for categories
 		criteria.setCategoryLevelList(subcategories);
-		List<ExpenseDao> expenses = searchService.getExpenses(
+		criteria.setShowSubcats(true);
+		List<CategorySummaryDisp> expenses = searchService.getExpenseTotal(
+				criteria);
+		if (expenses != null && expenses.size() > 0) {
+			double total = 0;
+			// loop through category expenses
+			for (CategorySummaryDisp catsum : expenses) {
+				// add expense to category and total
+				double amount = catsum.getSum();
+				total += amount;
+			}
+			row.addColumn(catname);
+			row.addColumn(nf.format(total * -1));
+			// end expense loop
+		}
+
+		
+		/*
+		 * 
+		 * List<ExpenseDao> expenses = searchService.getExpenses(
 				criteria);
 		// MM TODO - change this to getExpenseTotal!!!!
 		if (expenses != null && expenses.size() > 0) {
@@ -1185,7 +1262,7 @@ public abstract class AbstractReport implements Report {
 			row.addColumn(nf.format(total * -1));
 			// end expense loop
 		}
-
+*/
 		return row;
 
 	}
@@ -1401,57 +1478,5 @@ public abstract class AbstractReport implements Report {
 			catsum.setCatName(dispcatname);
 		}
 		return displays;
-	}
-	
-	public ReportElements newCrunchNumbersCategory(ExpenseCriteria criteria,
-			CategoryLevel cat, boolean numbymonth) {
-		ExpenseCriteria catcriteria = criteria.clone();
-		int daycount = getDayCount(criteria);
-	
-		// get subcategories
-		List<CategoryLevel> catlevels = categoryService
-				.getAllSubcategories(cat.getCategory());
-		CategorySummaryDisp totalsum = new CategorySummaryDisp("TOTAL",
-				daycount);
-	
-		// do one query to grab all subcategories
-		catlevels.add(cat);
-		catcriteria.setCategoryLevelList(catlevels);
-		catcriteria.setShowSubcats(true);
-		
-		List<CategorySummaryDisp> displays = new ArrayList<CategorySummaryDisp>();
-		if (numbymonth) {
-			displays = searchService.getExpenseTotalByMonth(
-					catcriteria); 
-		} else {
-			displays = searchService.getExpenseTotalByYearAndCategory(catcriteria); 
-		}
-		
-		// go through displays, adding daycount, and summing total
-		List<CategorySummaryDisp> results = new ArrayList<CategorySummaryDisp>();
-		for (CategorySummaryDisp catsum : displays) {
-			catsum.setAverageDivisor(daycount);
-			totalsum.addExpenseAmt(new Double(catsum.getSum()));
-			results.add(catsum);
-		}
-		
-		// generate graph
-		if (totalsum.getSum() == 0) {
-			// no use going on - this category doesn't have anything
-			return null;
-		}
-		double catsum = Math.round(totalsum.getSum()*100.0)/100.0;
-		String graphurl = generateCategoryGraph(results, cat.getCategory().getName(),
-				catsum);
-	
-		// add total to results
-		results.add(totalsum);
-		
-		// populate ReportElements
-		ReportElements re = new ReportElements();
-		re.setSummaries(results);
-		re.setUrl(graphurl);
-	
-		return re;
 	}
 }

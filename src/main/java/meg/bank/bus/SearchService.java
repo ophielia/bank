@@ -12,8 +12,12 @@ public interface SearchService {
 	
 	public abstract List<ExpenseDao> getAllExpenses();
 	
+	public abstract List<CategorySummaryDisp> getExpenseTotalByMonthAndCategory(
+			ExpenseCriteria criteria);
+	
 	public abstract List<CategorySummaryDisp> getExpenseTotalByMonth(
 			ExpenseCriteria criteria);
+	
 
 	public abstract List<CategorySummaryDisp> getExpenseTotalByYear(
 			ExpenseCriteria criteria);
@@ -26,6 +30,9 @@ public interface SearchService {
 	public abstract Date getMostRecentTransDate();
 
 	public abstract List<CategorySummaryDisp> getExpenseTotalByYearAndCategory(
+			ExpenseCriteria criteria);
+
+	public abstract List<CategorySummaryDisp> getExpenseTotal(
 			ExpenseCriteria criteria);
 
 }

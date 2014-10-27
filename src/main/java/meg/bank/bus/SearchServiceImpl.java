@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Collection;
 
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -85,15 +86,15 @@ public class SearchServiceImpl implements SearchService {
 	 * @see meg.bank.bus.SearchService#getExpenseTotalByMonth(meg.bank.bus.ExpenseCriteria)
 	 */
 	@Override
-	public List<CategorySummaryDisp> getExpenseTotalByMonth(ExpenseCriteria criteria) {
+	public List<CategorySummaryDisp> getExpenseTotalByMonthAndCategory(ExpenseCriteria criteria) {
 		List<CategorySummaryDisp> displays = new ArrayList<CategorySummaryDisp>();
 		
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<CategorySummaryDisp> c = cb.createQuery(CategorySummaryDisp.class);
 		Root<ExpenseDao> exp = c.from(ExpenseDao.class);
 		Expression maxExpression = cb.sum(exp.<Number>get("catamount"));
-		c.multiselect(exp.get("monthyear"),maxExpression.alias("sum"))
-		.groupBy(exp.get("monthyear"));
+		c.multiselect(exp.get("monthyear"),exp.get("catName"),maxExpression.alias("sum"))
+		.groupBy(exp.get("monthyear"),exp.get("catName"));
 		
 		if (criteria != null) {
 
@@ -146,6 +147,38 @@ public class SearchServiceImpl implements SearchService {
  */
 	}
 	
+	
+	@Override
+	public List<CategorySummaryDisp> getExpenseTotalByMonth(ExpenseCriteria criteria) {
+		List<CategorySummaryDisp> displays = new ArrayList<CategorySummaryDisp>();
+		
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<CategorySummaryDisp> c = cb.createQuery(CategorySummaryDisp.class);
+		Root<ExpenseDao> exp = c.from(ExpenseDao.class);
+		Expression maxExpression = cb.sum(exp.<Number>get("catamount"));
+		c.multiselect(exp.get("monthyear"),maxExpression.alias("sum"))
+		.groupBy(exp.get("monthyear"));
+		
+		if (criteria != null) {
+
+			// get where clause
+			List<Predicate> whereclause = getPredicatesForCriteria(criteria,cb,exp);
+			
+			// creating the query
+			c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
+			TypedQuery<CategorySummaryDisp> q = entityManager.createQuery(c);
+			q.setFlushMode(FlushModeType.COMMIT);
+
+			// setting the parameters
+			setParametersInQuery(criteria,q);
+			
+			return q.getResultList();
+
+		}
+
+		return null;
+
+	}
 	/* (non-Javadoc)
 	 * @see meg.bank.bus.SearchService#getExpenseTotalByYear(meg.bank.bus.ExpenseCriteria)
 	 */
@@ -217,7 +250,34 @@ public class SearchServiceImpl implements SearchService {
 	 */
 	}	
 	
+	public  List<CategorySummaryDisp> getExpenseTotal(
+			ExpenseCriteria criteria) {
+		List<CategorySummaryDisp> displays = new ArrayList<CategorySummaryDisp>();
+		
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<CategorySummaryDisp> c = cb.createQuery(CategorySummaryDisp.class);
+		Root<ExpenseDao> exp = c.from(ExpenseDao.class);
+		Expression maxExpression = cb.sum(exp.<Number>get("catamount"));
+		c.multiselect(maxExpression.alias("sum"));
+		
+		if (criteria != null) {
 
+			// get where clause
+			List<Predicate> whereclause = getPredicatesForCriteria(criteria,cb,exp);
+			
+			// creating the query
+			c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
+			TypedQuery<CategorySummaryDisp> q = entityManager.createQuery(c);
+
+			// setting the parameters
+			setParametersInQuery(criteria,q);
+			
+			return q.getResultList();
+
+		}
+
+		return null;		
+	}
 	
 	public List<ExpenseDao> getExpenseListByIds(List<String> idlist) {
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();

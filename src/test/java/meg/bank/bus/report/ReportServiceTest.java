@@ -67,5 +67,14 @@ File tmpdir=null;
     	Assert.assertNotNull(results);
     }    
 
-    
+    @Test
+    public void testRunFullMonthReport() throws Exception {
+    	ReportCriteria criteria = new ReportCriteria();
+    	// set criteria - for MonthlyTargetsReport
+    	criteria.setReportType(ReportService.ReportType.FullMonth);
+    	criteria.setMonth("09-2014");
+    	criteria.setExcludeNonExpense(true);
+    	Map<String,Object> results = reportService.runReport(criteria);
+    	Assert.assertNotNull(results);
+    }    
 }

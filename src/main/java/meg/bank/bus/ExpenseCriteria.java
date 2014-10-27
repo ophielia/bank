@@ -174,6 +174,7 @@ public class ExpenseCriteria implements Serializable {
 
 	public void clearCategoryLists() {
 		this.categoryLevelList=null;
+		this.showsubcategories=false;
 
 	}
 

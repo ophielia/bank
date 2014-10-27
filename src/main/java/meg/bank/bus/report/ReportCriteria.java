@@ -46,6 +46,7 @@ public class ReportCriteria implements Serializable {
 	
 	private Long reporttype;
 	private String imageweblink;
+	private String contextpath;
 
 	public Long getBreakoutLevel() {
 		return breakoutLevel;
@@ -142,6 +143,15 @@ public class ReportCriteria implements Serializable {
 
 	public String getImageLink() {
 		return this.imageweblink;
+	}
+
+	public void setContextPath(String contextpath) {
+		this.contextpath = contextpath;
+		
+	}
+	
+	public String getContextPath() {
+		return this.contextpath;
 	}
 	
 

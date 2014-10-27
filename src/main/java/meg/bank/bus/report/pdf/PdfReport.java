@@ -1,5 +1,6 @@
 package meg.bank.bus.report.pdf;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.view.document.AbstractPdfView;
 
 import com.lowagie.text.Chunk;
@@ -12,7 +13,8 @@ import com.lowagie.text.pdf.PdfPTable;
 
 public abstract class PdfReport extends AbstractPdfView {
 	// imgbase
-	public static final String imgbase = "http://localhost:8080/bank/";
+    @Value("${document.image.weblinkbase}")
+	public String imgbase;
 	public PdfReport() {
 		super();
 	}
