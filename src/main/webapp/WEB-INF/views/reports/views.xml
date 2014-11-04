@@ -15,7 +15,13 @@
     </definition>
     <definition extends="default" name="reports/yearlytargetoutput">
         <put-attribute name="body" value="/WEB-INF/views/reports/yearlytargetoutput.jspx"/>
-    </definition>   
+    </definition>  
+         <definition extends="default" name="reports/yearlyinput">
+        <put-attribute name="body" value="/WEB-INF/views/reports/yearlyinput.jspx"/>
+    </definition>
+    <definition extends="default" name="reports/yearlyoutput">
+        <put-attribute name="body" value="/WEB-INF/views/reports/yearlyoutput.jspx"/>
+    </definition> 
          <definition extends="default" name="reports/fullmonthinput">
         <put-attribute name="body" value="/WEB-INF/views/reports/fullmonthinput.jspx"/>
     </definition>

@@ -9,6 +9,7 @@ public interface ReportService {
 		public static final Long MonthlyTarget = 1L;
 		public static final Long YearlyTargetStatus = 2L;
 		public static final Long FullMonth = 3L;
+		public static final Long Yearly = 4L;
 	}	
 	
 	

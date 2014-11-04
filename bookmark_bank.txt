@@ -14,11 +14,24 @@ make edit link in expenselist polite
 starting reports
  misc.  validation for different reports
 
+---> next up, report - new yearly report
+main elements completed - 
+now need to make input, and output pages
+go through the report - common sense check....
+after, debug how it works
+make test green
+
+
+
+pdf for monthly target, yearly target reports
 
 insert archive data
 
-data - archive data, add health reimbursement, 
+done - data - archive data
+data -  add health reimbursement, 
 	check monoprix (some to house, presents - other),cash - subtract babysitting, distribute to other, snack, lent, groceries
+general comparison with previous years - after yearly report is done.
+
 
 discomfort in category entry - 
 	all categories should be shown, regardless of display setting
@@ -44,11 +57,6 @@ think about menu.... make second level for categories, rules, targets
 	
 	
 ---- begin commit changes ----
-
-done - future - change to JPA criteria!!?? (SearchService)
-done - problem - getExpenseTotalByMonth seen in running test report service - swap to two methods in search service - one for total by month,  and one total month category
-done - next up - FullMonthReport - also in PDF
-done - work on pdf
 
 		
 ---- end commit changes ----
@@ -270,6 +278,10 @@ done - 	target development graph is off.
 done - continue entering categories - start with other subcategories
 done - graphical representation of categorylevels - to check!!
 done - aggregate puzzle
+done - future - change to JPA criteria!!?? (SearchService)
+done - problem - getExpenseTotalByMonth seen in running test report service - swap to two methods in search service - one for total by month,  and one total month category
+done - next up - FullMonthReport - also in PDF
+done - work on pdf
 
 ---- end branch changes ----
 

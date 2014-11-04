@@ -149,7 +149,7 @@ public abstract class AbstractReport implements Report {
 		return monthcount;
 	}
 
-	public List getMonthTagList(ExpenseCriteria criteria, String dateformat) {
+	public List<String> getMonthTagList(ExpenseCriteria criteria, String dateformat) {
 		// initialize formatter
 		SimpleDateFormat thisformat = new SimpleDateFormat(dateformat,
 				Locale.US);

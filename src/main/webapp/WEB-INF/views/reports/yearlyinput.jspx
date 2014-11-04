@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+   
+   <spring:message code="bank_rpt_fullmonth" htmlEscape="false" var="reporttitle"/>    
+   <spring:message code="field_invalid" arguments="${lcat}" htmlEscape="false" var="missingcat"/>    
+    <spring:message code="label_rpt_runreports" var="pagetitle"/>
+    <spring:message code="label_rpt_month" var="lmonth"/>
+    <spring:message code="label_rpt_comparetype" var="lcomparetype"/>
+    <spring:message code="label_rpt_runreport" var="lrunreport"/>
+    <spring:message code="label_rpt_runpdfreport" var="lrunpdfreport"/>
+        <spring:message code="label_rpt_exclnonexp" var="lexclnonexp"/>
+
+    <h1>${pagetitle}</h1>
+<h2>${reporttitle}</h2>
+
+<spring:url value="/reports" var="actionurl"/>
+
+<form:form action="${actionurl}" id="fullmonthreport" method="POST" modelAttribute="reportCriteria">
+
+${lmonth}: <form:select path="month">
+				<form:option value="" label="--Please Select" />
+				<form:options items="${monthselect}" />
+			</form:select> 
+			<br />
+
+${lcomparetype}:  <form:select path="comparetype">
+				<form:option value="" label="--Please Select" />
+				<form:options items="${comptype}" itemLabel="display" itemValue="value"/>
+			</form:select> 
+			<br />
+${lexclnonexp}: <form:checkbox path="excludeNonExpense"/>
+			<br />
+			<br />			
+			<br />
+<form:hidden path="reportType"></form:hidden>
+<input id="runreport" name="runreport" type="submit" value="${lrunreport}"/>
+<input id="runpdfreport" name="pdfreport" type="submit" value="${lrunpdfreport}"/>
+</form:form>
+
+</div>

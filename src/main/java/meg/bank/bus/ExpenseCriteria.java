@@ -62,7 +62,6 @@ public class ExpenseCriteria implements Serializable {
 
 	public static final String TransTypeLkup= "transtype";
 	public static final String ClientKeyLkup= "source";
-	public static final String CompareTypeLkup= "comparetype";
 	
 	private static Hashtable<Integer, Long> weekhelper;
 

@@ -77,4 +77,15 @@ File tmpdir=null;
     	Map<String,Object> results = reportService.runReport(criteria);
     	Assert.assertNotNull(results);
     }    
+    
+    @Test
+    public void testRunYearlyReport() throws Exception {
+    	ReportCriteria criteria = new ReportCriteria();
+    	// set criteria - for MonthlyTargetsReport
+    	criteria.setReportType(ReportService.ReportType.Yearly);
+    	criteria.setYear("2013");
+    	criteria.setExcludeNonExpense(true);
+    	Map<String,Object> results = reportService.runReport(criteria);
+    	Assert.assertNotNull(results);
+    }       
 }

@@ -62,6 +62,8 @@ public class ReportController {
 			view = "reports/yearlytargetinput";
 		} else if (reporttype.longValue() == ReportService.ReportType.FullMonth) {
 			view = "reports/fullmonthinput";
+		} else if (reporttype.longValue() == ReportService.ReportType.Yearly) {
+			view = "reports/yearlyinput";
 		}
 		return view;
 	}
@@ -84,6 +86,8 @@ public class ReportController {
 			view = "reports/yearlytargetoutput";
 		} else if (reporttype.longValue() == ReportService.ReportType.FullMonth) {
 			view = "reports/fullmonthoutput";
+		}else if (reporttype.longValue() == ReportService.ReportType.Yearly) {
+			view = "reports/yearlyoutput";
 		}
 		return view;
 
@@ -120,6 +124,8 @@ public class ReportController {
 		String view = "reports/monthlytargetoutput";
 		if (reporttype.longValue() == ReportService.ReportType.FullMonth) {
 			view = "pdffullmonthreport";
+		} else if (reporttype.longValue() == ReportService.ReportType.Yearly) {
+			view = "pdfyearlyreport";
 		}
 		return new ModelAndView(view, "model", uiModel);
 

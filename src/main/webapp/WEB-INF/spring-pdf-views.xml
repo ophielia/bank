@@ -8,6 +8,9 @@
    <bean id="pdffullmonthreport"
    	class="meg.bank.bus.report.pdf.FullMonthReportPDF">
    </bean>
+   <bean id="pdfyearlyreport"
+   	class="meg.bank.bus.report.pdf.YearlyReportPDF">
+   </bean>   
   <!--  <bean id="pdfsummaryreport"
    	class="meg.bank.bus.report.pdf.SummaryReportPDF">
    </bean>   
