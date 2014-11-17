@@ -211,43 +211,6 @@ public class SearchServiceImpl implements SearchService {
 		}
 
 		return null;
-		
-	/*
-	 * 
-	 * 	
-		
-		
-		
-		List<CategorySummaryDisp> displays = new ArrayList<CategorySummaryDisp>();
-		// create sql
-		String summedcol = "catamount";
-		StringBuffer sql = new StringBuffer("select year, sum(").append(
-				summedcol).append(") from expense ");
-		sql.append(getWhereClauseForCriteria(criteria, false));
-		sql.append("group by year");
-
-		// execute sql, and retrieve results
-		List results = executeAggregateQuery(sql.toString());
-
-		// populate CategorySummaryDisp objects from results
-		if (results != null) {
-			for (Iterator iter = results.iterator(); iter.hasNext();) {
-				Object[] row = (Object[]) iter.next();
-				CategorySummaryDisp catsum = new CategorySummaryDisp();
-				Integer year = (Integer) row[0];
-				Double total = (Double) row[1];
-				Calendar cal = Calendar.getInstance();
-				cal.set(year.intValue(), Calendar.JANUARY, 1);
-				catsum.setSummaryDate(cal.getTime());
-				catsum.setSum(total.doubleValue());
-				displays.add(catsum);
-			}
-		}
-
-		// return list of CategorySummaryDisp objects
-		return displays;
-		
-	 */
 	}	
 	
 	public  List<CategorySummaryDisp> getExpenseTotal(
@@ -257,7 +220,7 @@ public class SearchServiceImpl implements SearchService {
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<CategorySummaryDisp> c = cb.createQuery(CategorySummaryDisp.class);
 		Root<ExpenseDao> exp = c.from(ExpenseDao.class);
-		Expression maxExpression = cb.sum(exp.<Number>get("catamount"));
+		Expression maxExpression = cb.sum(exp.<Double>get("catamount"));
 		c.multiselect(maxExpression.alias("sum"));
 		
 		if (criteria != null) {

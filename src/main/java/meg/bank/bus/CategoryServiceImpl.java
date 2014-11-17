@@ -369,5 +369,16 @@ public class CategoryServiceImpl implements CategoryService {
 		}
 		return newmodel;
 	}
+
+	@Override
+	public CategoryDao getCategoryByName(String name) {
+		if (name!=null) {
+			List<CategoryDao> catlist = catRepository.findByName(name);
+			if (catlist!=null && catlist.size()>0) {
+				return catlist.get(0);
+			}
+		}
+		return null;
+	}
 	
 }

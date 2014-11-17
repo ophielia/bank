@@ -10,6 +10,7 @@ import meg.bank.web.model.CategoryModel;
 
 public interface CategoryService {
 
+	public static final String othercategoryname="Other";
 	
 	public abstract List<CategoryDao> getCategories(boolean showall);
 
@@ -51,5 +52,7 @@ public interface CategoryService {
 	public abstract CategoryDao updateCategory(CategoryDao category);
 
 	public abstract CategoryModel loadCategoryModel(Long id);
+
+	public abstract CategoryDao getCategoryByName(String othercategoryname2);
 
 }

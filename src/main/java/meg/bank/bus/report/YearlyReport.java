@@ -200,8 +200,9 @@ public class YearlyReport extends AbstractReport {
 		headers.addColumn("Avg Per Month");
 
 		// run numbers for Other category
+		CategoryDao othercat = categoryService.getCategoryByName(CategoryService.othercategoryname);
 		CategoryLevel catlvl = categoryService.getAsCategoryLevel(
-				new Long(57));
+				othercat.getId());
 
 		report = processDetailedMonthlySubCats(criteria, headers, monthtags,
 				monthtaglkup, catlvl, totalscolumn, monthcount, avgpermonthcol);
@@ -1069,59 +1070,45 @@ public class YearlyReport extends AbstractReport {
 			cpycriteria.clearCategoryLevelList();
 			cpycriteria.clearCategoryLists();
 			cpycriteria.setCategoryLevelList(detailcats);
-
+			cpycriteria.setShowSubcats(true);
+			
 			// initialize chartrow, rowsum
 			ChartRow row = new ChartRow();
 			String catname = subcat.getName();
 			row.addColumn(catname);
 			double rowsum = 0;
 
+			// get results by year
+			List<CategorySummaryDisp> rawresults = searchService
+					.getExpenseTotalByYear(cpycriteria);
+			
 			// loop through all years, retrieving expense results for
 			// each
 			for (String year : yeartags) {
-				// set dates in criteria
-				Date rundate = null;
-				Date startdate = null;
-				Date enddate = null;
-				try {
-					rundate = yearformat.parse(year);
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				// get matching year from results
+				long matchyear = new Long(year).longValue();
+				CategorySummaryDisp thisyear = null;
+				for (CategorySummaryDisp test:rawresults) {
+					if (test.getYear().longValue()== matchyear) {
+						thisyear=test;
+						break;
+					}
 				}
-				cal.setTime(rundate);
-				cal.set(Calendar.DAY_OF_MONTH, 1);
-				cal.set(Calendar.MONTH, Calendar.JANUARY);
-				startdate = cal.getTime();
-				cal.add(Calendar.YEAR, 1);
-				enddate = cal.getTime();
 
-				// set dates in criteria
-				cpycriteria.setDateStart(startdate);
-				cpycriteria.setDateEnd(enddate);
-
-				// retrieve yearly expense total
-				/* MM orig - List<CategorySummaryDisp> rawresults = searchService
-						.getExpenseTotal(cpycriteria,
-								catlvl.getCategory().getName());*/
-				List<CategorySummaryDisp> rawresults = searchService
-						.getExpenseTotal(cpycriteria);
-
-				if (rawresults != null && rawresults.size() > 0) {
-					CategorySummaryDisp raw = rawresults.get(0);
-					raw.setCatName(catname);
+				if (thisyear!=null) {
+					thisyear.setCatName(catname);
 					// add CategoryDisp to bargraph chart
 					List<CategorySummaryDisp> fromhash = bargraphres.get(year);
 					if (fromhash == null) {
 						fromhash = new ArrayList<CategorySummaryDisp>();
 					}
-					fromhash.add(raw);
+					fromhash.add(thisyear);
 					bargraphres.put(year, fromhash);
 					// add value to year column
 					Integer key = yeartaglkup.get(year);
-					String amount = nf.format(raw.getSum() * -1);
+					String amount = nf.format(thisyear.getSum() * -1);
 					row.addColumn(amount, key.intValue());
-					rowsum += raw.getSum() * -1;
+					rowsum += thisyear.getSum() * -1;
 				}
 			}
 			// end year loop

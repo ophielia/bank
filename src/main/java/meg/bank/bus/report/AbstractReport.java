@@ -22,6 +22,7 @@ import java.util.Set;
 import meg.bank.bus.CategoryLevel;
 import meg.bank.bus.CategoryService;
 import meg.bank.bus.ExpenseCriteria;
+import meg.bank.bus.ExpenseCriteria.CategorizedType;
 import meg.bank.bus.SearchService;
 import meg.bank.bus.TargetService;
 import meg.bank.bus.dao.CategoryDao;
@@ -260,6 +261,7 @@ public abstract class AbstractReport implements Report {
 			charttotal += (total * -1);
 		}
 		// reset cattype
+		origcattype = origcattype==null?CategorizedType.ALL:origcattype;
 		criteria.setCategorizedType(origcattype);
 	
 		// add percentage info for chart

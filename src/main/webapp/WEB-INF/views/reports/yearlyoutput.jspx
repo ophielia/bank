@@ -9,170 +9,181 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
    
-  	<spring:message code="bank_rpt_fullmonth" htmlEscape="false" var="reporttitle"/>    
+  	<spring:message code="bank_rpt_yearly" htmlEscape="false" var="reporttitle"/>    
 	<spring:message code="label_rpt_reportresults" var="pagetitle"/>
 	<spring:message code="button_back" var="bckbutton"/>
 	<spring:message code="label_rpt_from" htmlEscape="false" var="lfrom"/>
 	<spring:message code="label_rpt_to" htmlEscape="false" var="lto"/>
-	<spring:message code="label_rpt_days" htmlEscape="false" var="ldays"/>
-	<spring:message code="label_rpt_yearlysum" htmlEscape="false" var="lyearlysum"/>
-	<spring:message code="label_rpt_sofar" htmlEscape="false" var="lsofar"/>
-	<spring:message code="label_rpt_allexpenses" htmlEscape="false" var="lallexp"/>
-<spring:message code="label_rpt_formonth" var="formonth"/>
-<spring:message code="label_rpt_pctmonth" var="pctmonth"/>
+	
+
 
     <h1>${pagetitle}</h1>
 <h2>${results.title}</h2>
 
-<spring:url value="/reports?reporttype=3" var="backurl"/>
+<spring:url value="/reports?reporttype=4" var="backurl"/>
 
 
+<h3>${lfrom}: ${results.StartDate} ${lto}: ${results.EndDate}</h3>
+<p><a href="${backurl}">Back</a></p>
 
-<h3>${lfrom}: <c:out value="${results.StartDate}" />${lto}: <c:out
-	value="${results.EndDate}" /> (<c:out value="${results.DayCount}" />
-${ldays})</h3>
-<p><a href="${backurl}">${bckbutton}</a></p>
+	<table class="clear">
+		<tr>
+			<td><img src="${results.summaryimg}" /></td>
+			<td valign="top">
+				<h3>${lyearlysum}</h3>
+				<table class="lined">
+					<tr>
+						<c:set var="headers" value="${results.summary.headers}" />
+						<c:set var="rows" value="${results.summary.rows}" />
+						<c:forEach items="${headers.columns}" var="hdrname">
+							<td><b><c:out value="${hdrname}" /></b></td>
+						</c:forEach>
+					</tr>
+					<c:forEach items="${rows}" var="chrow">
+						<tr>
+							<c:forEach items="${chrow.columns}" var="colval">
 
-<table >
-	<tr>
+								<td><c:out value="${colval}" /></td>
 
-		<td><img src="${results.targets.url}" /></td>
-		<td valign="top">
-		<table class="lined">
-			<tr>
-				<c:set var="headers" value="${results.targets.chartData.headers}" />
-				<c:set var="rows" value="${results.targets.chartData.rows}" />
-				<c:forEach items="${headers.columns}" var="hdrname">
-					<td><b><c:out value="${hdrname}" /></b></td>
-				</c:forEach>
-			</tr>
-			<c:forEach items="${rows}" var="chrow">
-				<tr>
-					<c:forEach items="${chrow.columns}" var="colval">
-						<td><c:out value="${colval}" /></td>
+							</c:forEach>
+						</tr>
 					</c:forEach>
-				</tr>
-			</c:forEach>
-		</table>
-		</td>
-	</tr>
-</table>
-
-
-
-
-<br />
-<hr />
-<br />
-
-
-
-
-<hr />
-<table>
-	<tr>
-
-
-		<td><img src="${results.summaryimg}" /></td>
-		<td valign="top">
-		<h3>${lyearlysum}</h3>
-		<table class="lined">
-
-			<tr>
-				<c:set var="headers" value="${results.summary.headers}" />
-				<c:set var="rows" value="${results.summary.rows}" />
-
-				<c:forEach items="${headers.columns}" var="hdrname">
-					<td><b><c:out value="${hdrname}" /></b></td>
-				</c:forEach>
-			</tr>
-			<c:forEach items="${rows}" var="chrow">
-				<tr>
-					<c:forEach items="${chrow.columns}" var="colval">
-						<td><c:out value="${colval}" /></td>
-					</c:forEach>
-				</tr>
-			</c:forEach>
-		</table>
-		</td>
-	</tr>
-</table>
-
-<hr />
-
-<h2>${lsofar}</h2>
-<table>
-	<tr>
-		<td><img src="${results.yeartodate.url}" /></td>
-	</tr>
-	<tr>
-		<td>
-		<table class="lined">
-
-			<tr>
-				<c:set var="headers" value="${results.yeartodate.chartData.headers}" />
-				<c:set var="rows" value="${results.yeartodate.chartData.rows}" />
-
-
-				<c:forEach items="${headers.columns}" var="hdrname">
-
-					<td><b><c:out value="${hdrname}" /></b></td>
-
-				</c:forEach>
-			</tr>
-			<c:forEach items="${rows}" var="chrow">
-				<tr>
-					<c:forEach items="${chrow.columns}" var="colval">
-
-						<td><c:out value="${colval}" /></td>
-
-					</c:forEach>
-				</tr>
-			</c:forEach>
-		</table>
-		</td>
+				</table>
+			</td>
 		</tr>
+	</table>
+
+	<hr />
+
+<img src="${results.targetsummaryimg}" />
+	<table class="clear">
+		<tr>
+			<td></td>
+
+			<td v-align="top">
+				<table class="lined">
+
+					<tr>
+						<c:set var="headers" value="${results.targetsumm.headers}" />
+						<c:set var="rows" value="${results.targetsumm.rows}" />
+						<c:forEach items="${headers.columns}" var="hdrname">
+							<td><b><c:out value="${hdrname}" /></b></td>
+						</c:forEach>
+					</tr>
+					<c:forEach items="${rows}" var="chrow">
+						<tr>
+							<c:forEach items="${chrow.columns}" var="colval">
+
+								<td><c:out value="${colval}" /></td>
+
+							</c:forEach>
+						</tr>
+					</c:forEach>
+				</table>
+			</td>
+		</tr>
+	</table>
+
+	<hr />
+
+	<table class="clear">
+		<tr>
+			<td><img src="${results.targetdetsummaryimg}" /></td>
+		</tr>
+	</table>
+
+	<hr />
+
+<img src="${results.monthcompareimg}" /><br />
+
+	<table class="lined">
+		<tr>
+			<c:set var="headers" value="${results.monthcomparison.headers}" />
+			<c:set var="rows" value="${results.monthcomparison.rows}" />
+			<c:forEach items="${headers.columns}" var="hdrname">
+				<td><b><c:out value="${hdrname}" /></b></td>
+			</c:forEach>
+		</tr>
+		<c:forEach items="${rows}" var="chrow">
+			<tr>
+				<c:forEach items="${chrow.columns}" var="colval">
+					<td><c:out value="${colval}" /></td>
+				</c:forEach>
+			</tr>
+		</c:forEach>
+	</table>
+
+	<img src="${results.yearcompareimg}" /><br />
+
+<table class="lined">
+		<tr>
+			<c:set var="headers" value="${results.yearcomparison.headers}" />
+			<c:set var="rows" value="${results.yearcomparison.rows}" />
+			<c:forEach items="${headers.columns}" var="hdrname">
+				<td><b><c:out value="${hdrname}" /></b></td>
+			</c:forEach>
+		</tr>
+		<c:forEach items="${rows}" var="chrow">
+			<tr>
+				<c:forEach items="${chrow.columns}" var="colval">
+					<td><c:out value="${colval}" /></td>
+				</c:forEach>
+			</tr>
+		</c:forEach>
+	</table>
+
+
+
+	<hr />
+
+<c:set var="catreports" value="${results.categoryallyears}"/> 
+	<c:forEach items="${catreports}" var="catreport">
+<!-- images -->
+		<table>
+			<tr>
+				<c:forEach items="${catreport.urls}" var="url">
+					<td><img src="${url}" />" /></td>
+				</c:forEach>
+			</tr>
 		</table>
-		<br />
-		<hr />
-		<br />
-	<c:forEach items="${results.categories}" var="catbkout"
-		varStatus="forstatus">
-		<c:set var="idx" value="${forstatus.index}" />
-		<c:set var="detail" value="${catbkout.summaries}" />
-<table  ><tr>		
-		<td><img src="${catbkout.url}" /></td>
-		<td valign="top">
-		<h3><c:out value="${catbkout.name}" /></h3>
+
+		<!-- chart -->
 		<table class="lined">
 			<tr>
-				<td><b>${lcat}</b></td>
-				<td><b>${lamount}</b></td>
+				<c:set var="headers" value="${catreport.chartData.headers}" />
+				<c:set var="rows" value="${catreport.chartData.rows}" />
+				<c:forEach items="${headers.columns}" var="hdrname">
+					<td><b><c:out value="${hdrname}" /></b></td>
+				</c:forEach>
 			</tr>
-			<c:forEach items="${catbkout.summaries}" var="det">
+			<c:forEach items="${rows}" var="chrow">
 				<tr>
-					<td><c:out value="${det.catName}" /></td>
-					<td><fmt:formatNumber value="${det.sum}" type="number"
-						maxFractionDigits="2" /></td>
+					<c:forEach items="${chrow.columns}" var="colval">
+						<td><c:out value="${colval}" /></td>
+					</c:forEach>
 				</tr>
 			</c:forEach>
-			</table></td>
-			</tr>
-			</table>
-
-
+		</table>
 	</c:forEach>
 
-		<br />
-		<hr />
-		<br />
-		<h3>${lallexp}</h3>
+<hr />
 
-		<table class="lined">
-
+<c:set var="catreports" value="${results.categoryyear}"/> 
+				<c:forEach items="${catreports}" var="catreport">
+<!-- images -->
+		<table>
 			<tr>
-				<c:set var="headers" value="${results.allexpenses.headers}" />
-				<c:set var="rows" value="${results.allexpenses.rows}" />
+				<c:forEach items="${catreport.urls}" var="url">
+					<td><img src="${url}" /></td>
+				</c:forEach>
+			</tr>
+		</table>
+
+		<!-- chart -->
+		<table class="lined">
+			<tr>
+				<c:set var="headers" value="${catreport.chartData.headers}" />
+				<c:set var="rows" value="${catreport.chartData.rows}" />
 				<c:forEach items="${headers.columns}" var="hdrname">
 					<td><b><c:out value="${hdrname}" /></b></td>
 				</c:forEach>
@@ -180,11 +191,13 @@ ${ldays})</h3>
 			<c:forEach items="${rows}" var="chrow">
 				<tr>
 					<c:forEach items="${chrow.columns}" var="colval">
-
 						<td><c:out value="${colval}" /></td>
-
 					</c:forEach>
 				</tr>
 			</c:forEach>
 		</table>
+	</c:forEach>
+
+
+
 </div>

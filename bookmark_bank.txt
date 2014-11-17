@@ -15,22 +15,21 @@ starting reports
  misc.  validation for different reports
 
 ---> next up, report - new yearly report
-main elements completed - 
-now need to make input, and output pages
-go through the report - common sense check....
-after, debug how it works
-make test green
-
-
+----> after, debug how it works
+problems in report - 
+	results.StartDate, results.EndDate
+	targetsummaryimg, targetsumm
+	yearcomparison
+	enddate in yearlycategorysum (to include "run year"
 
 pdf for monthly target, yearly target reports
 
-insert archive data
-
-done - data - archive data
 data -  add health reimbursement, 
 	check monoprix (some to house, presents - other),cash - subtract babysitting, distribute to other, snack, lent, groceries
 general comparison with previous years - after yearly report is done.
+
+
+
 
 
 discomfort in category entry - 
@@ -57,6 +56,16 @@ think about menu.... make second level for categories, rules, targets
 	
 	
 ---- begin commit changes ----
+
+done  - insert archive data
+done - data - archive data
+done - main elements completed - 
+done - now need to make input, and output pages
+done - go through the report - common sense check....
+done - make test green
+done -  problem - somehow has hasCats to null in yearlySubcategories.
+done - also problem with not including categories
+done - also will need to change to one query to get all years rather than yearly queries
 
 		
 ---- end commit changes ----
