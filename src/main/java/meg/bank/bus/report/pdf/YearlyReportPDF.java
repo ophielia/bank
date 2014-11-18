@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 
 
 
+
+
+import meg.bank.bus.report.ReportCriteria;
 import meg.bank.bus.report.ReportElements;
 import meg.bank.bus.report.utils.ChartData;
 import meg.bank.bus.report.utils.ChartRow;
@@ -34,6 +37,9 @@ public class YearlyReportPDF extends PdfReport {
 			HttpServletResponse response) throws Exception {
 		// get model
 		Map<String, Object> mymodel = (Map<String, Object>) model.get("model");
+		ReportCriteria crit = (ReportCriteria) model.get("rCriteria");
+		String contextbase = crit.getContextPath() + "/"; 
+		
 		// page formatting
 		document.setPageSize(PageSize.A4);
 		document.setMargins(20, 20, 20, 20);
@@ -63,7 +69,7 @@ public class YearlyReportPDF extends PdfReport {
 
 		// add Summary Graph
 		String imageUrl = (String) mymodel.get("summaryimg");
-		Image summarygraph = Image.getInstance(new URL(imgbase + imageUrl));
+		Image summarygraph = Image.getInstance(new URL(contextbase + imageUrl));
 		summarytable.addCell(summarygraph);
 
 		// add Summary chart,
@@ -97,7 +103,7 @@ public class YearlyReportPDF extends PdfReport {
 
 		// add Target Graph
 		imageUrl = (String) mymodel.get("targetsummaryimg");
-		Image Targetgraph = Image.getInstance(new URL(imgbase + imageUrl));
+		Image Targetgraph = Image.getInstance(new URL(contextbase + imageUrl));
 		targettable.addCell(Targetgraph);
 
 		// add Target Summary chart,
@@ -125,7 +131,7 @@ public class YearlyReportPDF extends PdfReport {
 		// the progresss for year image
 		// add Target Graph
 		imageUrl = (String) mymodel.get("targetdetsummaryimg");
-		Image progressgraph = Image.getInstance(new URL(imgbase + imageUrl));
+		Image progressgraph = Image.getInstance(new URL(contextbase + imageUrl));
 		progressgraph.scaleAbsoluteHeight(375);
 		document.add(progressgraph);
 
@@ -134,7 +140,7 @@ public class YearlyReportPDF extends PdfReport {
 
 		// add Month Comparison Graph
 		imageUrl = (String) mymodel.get("monthcompareimg");
-		Image monthgraph = Image.getInstance(new URL(imgbase + imageUrl));
+		Image monthgraph = Image.getInstance(new URL(contextbase + imageUrl));
 		monthgraph.scaleAbsoluteHeight(375);
 		document.add(monthgraph);
 
@@ -163,7 +169,7 @@ public class YearlyReportPDF extends PdfReport {
 		document.newPage();
 		// add Year Comparison Graph
 		imageUrl = (String) mymodel.get("yearcompareimg");
-		Image yeargraph = Image.getInstance(new URL(imgbase + imageUrl));
+		Image yeargraph = Image.getInstance(new URL(contextbase + imageUrl));
 		yeargraph.scaleAbsoluteHeight(275);
 		document.add(yeargraph);
 
@@ -205,7 +211,7 @@ public class YearlyReportPDF extends PdfReport {
 					1.5f });
 			for (String imagename : images) {
 				Image graphimg = Image
-						.getInstance(new URL(imgbase + imagename));
+						.getInstance(new URL(contextbase + imagename));
 				yeargraph.scaleAbsoluteHeight(375);
 				categoryimages.addCell(graphimg);
 			}
@@ -251,7 +257,7 @@ public class YearlyReportPDF extends PdfReport {
 		for (ReportElements yearcategory : yearcategories) {
 			PdfPTable yeartable = getContainerTable(new float[] { 1f });
 			imageUrl = yearcategory.getUrl();
-			yeargraph = Image.getInstance(new URL(imgbase + imageUrl));
+			yeargraph = Image.getInstance(new URL(contextbase + imageUrl));
 			// add images to document
 			PdfPCell cell = new PdfPCell(yeargraph, true);
 			cell.setFixedHeight(300);
@@ -298,7 +304,7 @@ public class YearlyReportPDF extends PdfReport {
 				.get("detailedother");
 		PdfPTable yeartable = getContainerTable(new float[] { 1f });
 		imageUrl = yearcategory.getUrl();
-		yeargraph = Image.getInstance(new URL(imgbase + imageUrl));
+		yeargraph = Image.getInstance(new URL(contextbase + imageUrl));
 		// add images to document
 		PdfPCell cell = new PdfPCell(yeargraph, true);
 		cell.setFixedHeight(300);

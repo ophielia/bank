@@ -58,13 +58,12 @@ public class SearchServiceImpl implements SearchService {
 		
 		// check if category list has been filled, if necessary
 		if (criteria.getShowSubcats()!=null && criteria.getShowSubcats().booleanValue()) {
-			if (criteria.getCategoryLevelList()==null) {
 				// want to show subcategories, but they haven't been filled in - fix this
 				CategoryLevel catlevel = catService.getAsCategoryLevel(criteria.getCategory());
 				CategoryDao cat= catlevel.getCategory();
 				List<CategoryLevel> subcats = catService.getAllSubcategories(cat);
+				subcats.add(catlevel);
 				criteria.setCategoryLevelList(subcats);
-			} 
 		}
 		
 		if (origcattype==null || origcattype.longValue()==ExpenseCriteria.CategorizedType.ALL) {
@@ -429,7 +428,7 @@ public class SearchServiceImpl implements SearchService {
 							CategoryDao cat = catlvl.getCategory();
 							catids.add(cat.getId());
 						}
-
+						
 						Expression<Long> param = exp.<Long>get("catid");
 						whereclause.add(exp.get("catid").in(catids));
 					}	

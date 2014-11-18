@@ -17,11 +17,10 @@ starting reports
 ---> next up, report - new yearly report
 ----> after, debug how it works
 problems in report - 
-	results.StartDate, results.EndDate
-	targetsummaryimg, targetsumm
-	yearcomparison
-	enddate in yearlycategorysum (to include "run year"
-
+	done - results.StartDate, results.EndDate
+	funny numbers 2011. fix rent number - banktransid 7065 cattransid 7285   207456.00 
+	rCriteria not present in report... (pdf)
+	
 pdf for monthly target, yearly target reports
 
 data -  add health reimbursement, 

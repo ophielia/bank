@@ -23,7 +23,6 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:url value="/reports?reporttype=4" var="backurl"/>
 
 
-<h3>${lfrom}: ${results.StartDate} ${lto}: ${results.EndDate}</h3>
 <p><a href="${backurl}">Back</a></p>
 
 	<table class="clear">

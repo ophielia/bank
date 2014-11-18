@@ -38,6 +38,7 @@
 		<li><moo:menulink label="bank_rpt_monthlytarget" url="/reports?reporttype=1" /></li>
 		<li><moo:menulink label="bank_rpt_yearlytargetstatus" url="/reports?reporttype=2" /></li>
 		<li><moo:menulink label="bank_rpt_fullmonth" url="/reports?reporttype=3" /></li>
+		<li><moo:menulink label="bank_rpt_yearly" url="/reports?reporttype=4" /></li>
 	</ul>
 	</li>
 </ul>    

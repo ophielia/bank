@@ -780,6 +780,7 @@ public abstract class AbstractReport implements Report {
 				// set categories in criteria
 				subcats.add(catlvl);
 				criteria.setCategoryLevelList(subcats);
+				criteria.setShowSubcats(true);
 
 				// retrieve totals
 				List<CategorySummaryDisp> totals = getExpenseTotalByYear(criteria,

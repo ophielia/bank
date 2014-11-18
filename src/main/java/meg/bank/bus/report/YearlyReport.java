@@ -683,7 +683,7 @@ public class YearlyReport extends AbstractReport {
 		cal.set(Calendar.MONTH, Calendar.JANUARY);
 		cal.set(Calendar.DAY_OF_MONTH, 1);
 		Date startdate = cal.getTime();
-		cal.set(Calendar.YEAR, desireddate);
+		cal.set(Calendar.YEAR, desireddate + 1);
 		Date enddate = cal.getTime();
 		int yearcount = desireddate - beginyear + 1;
 
@@ -1239,7 +1239,7 @@ public class YearlyReport extends AbstractReport {
 			// set categories in criteria
 			subcats.add(catlvl);
 			criteria.setCategoryLevelList(subcats);
-
+			criteria.setShowSubcats(true);
 			// retrieve totals
 			/* MM orig - List results = searchService.getExpenseTotal(criteria,
 					catlvl.getCategory().getName());*/
@@ -1394,7 +1394,7 @@ public class YearlyReport extends AbstractReport {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "images/" + filename;
+		return getReportCriteria().getImageLink() + filename;
 	}
 
 	public String getResultView(String outputtype) {
@@ -1632,7 +1632,7 @@ public class YearlyReport extends AbstractReport {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "images/" + filename;
+		return getReportCriteria().getImageLink() + filename;
 	}
 
 	protected String generateTargetSummGraph(String graphname, List results,
@@ -1758,7 +1758,7 @@ public class YearlyReport extends AbstractReport {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return "images/" + filename;
+		return getReportCriteria().getImageLink() + filename;
 
 	}
 
