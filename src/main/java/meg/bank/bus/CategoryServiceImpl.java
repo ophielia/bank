@@ -23,30 +23,37 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Autowired
 	CategoryRepository catRepository;
-	
+
 	@Autowired
 	CatRelationshipRepository catRelationRep;
-	
+
 	@Autowired
-	CategoryRuleRepository catRuleRep;	
-	
-	/* (non-Javadoc)
+	CategoryRuleRepository catRuleRep;
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see meg.bank.bus.CategoryService#getCategories(boolean)
 	 */
 	@Override
 	public List<CategoryDao> getCategories(boolean showall) {
 		if (showall) {
-			return catRepository.findAll(new Sort( Direction.ASC,"name"));
+			return catRepository.findAll(new Sort(Direction.ASC, "name"));
 		} else {
-			return catRepository.findByDisplayinlistTrue(new Sort( Direction.ASC,"name"));
+			return catRepository.findByDisplayinlistTrue(new Sort(
+					Direction.ASC, "name"));
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see meg.bank.bus.CategoryService#addCategory(java.lang.String, java.lang.String, java.lang.Boolean)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see meg.bank.bus.CategoryService#addCategory(java.lang.String,
+	 * java.lang.String, java.lang.Boolean)
 	 */
 	@Override
-	public CategoryDao addCategory(String name, String description, Boolean nonexpcat, Boolean display) {
+	public CategoryDao addCategory(String name, String description,
+			Boolean nonexpcat, Boolean display) {
 		// default description to name if empty
 		if (description == null)
 			description = name;
@@ -63,49 +70,56 @@ public class CategoryServiceImpl implements CategoryService {
 		catrel.setParentId(new Long(0));
 		catrel.setChildId(cat.getId());
 		catRelationRep.saveAndFlush(catrel);
-		
+
 		return cat;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see meg.bank.bus.CategoryService#getCategoriesAsMap()
 	 */
 	@Override
 	public HashMap<Long, CategoryDao> getCategoriesAsMap() {
 		return getCategoriesAsMap(false);
 	}
-	
+
 	@Override
 	public HashMap<Long, CategoryDao> getCategoriesAsMap(boolean exclNonDisp) {
 		boolean showNonDisp = !exclNonDisp;
 		HashMap<Long, CategoryDao> hash = new HashMap<Long, CategoryDao>();
 		List<CategoryDao> categories = getCategories(showNonDisp);
-		for (CategoryDao cat:categories) {
+		for (CategoryDao cat : categories) {
 			hash.put(cat.getId(), cat);
 		}
 		return hash;
-	}	
-	
-	/* (non-Javadoc)
-	 * @see meg.bank.bus.CategoryService#getCategoryRel(java.lang.Long, java.lang.Long)
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see meg.bank.bus.CategoryService#getCategoryRel(java.lang.Long,
+	 * java.lang.Long)
 	 */
 	@Override
 	public CatRelationshipDao getCategoryRel(Long parentid, Long childid) {
 		return catRelationRep.findByParentAndChild(parentid, childid);
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see meg.bank.bus.CategoryService#getCategoriesUpToLevel(int)
 	 */
 	@Override
 	public List<CategoryLevel> getCategoriesUpToLevel(int level) {
 		return getSubcategoriesRecursive(new Long(0), level, 1, false);
 	}
-	
+
 	private List<CategoryLevel> getSubcategoriesRecursive(Long parentid,
 			int maxlvl, int currentlvl, boolean ignorelvl) {
 		// done
-		
+
 		List<CategoryLevel> returncats = new ArrayList<CategoryLevel>();
 
 		// get categories belonging to parentid
@@ -148,38 +162,48 @@ public class CategoryServiceImpl implements CategoryService {
 		}
 		return sublevels;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see meg.bank.bus.CategoryService#getDirectSubcategories(java.lang.Long)
 	 */
 	@Override
 	public List<CategoryDao> getDirectSubcategories(Long parentid) {
 		return catRepository.findDirectSubcategories(parentid);
 	}
-	
-	/* (non-Javadoc)
-	 * @see meg.bank.bus.CategoryService#getAllSubcategories(meg.bank.bus.dao.CategoryDao)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * meg.bank.bus.CategoryService#getAllSubcategories(meg.bank.bus.dao.CategoryDao
+	 * )
 	 */
 	@Override
 	public List<CategoryLevel> getAllSubcategories(CategoryDao cat) {
 		return getSubcategoriesRecursive(cat.getId(), 1, 1, true);
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see meg.bank.bus.CategoryService#getParentIdForCat(java.lang.Long)
 	 */
 	@Override
 	public Long getParentIdForCat(Long id) {
 		CatRelationshipDao result = catRelationRep.findByChild(id);
-		
+
 		if (result != null) {
 			return result.getParentId();
 
 		}
 		return null;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see meg.bank.bus.CategoryService#getAsCategoryLevel(java.lang.Long)
 	 */
 	@Override
@@ -190,11 +214,10 @@ public class CategoryServiceImpl implements CategoryService {
 		// get CategoryLevel number
 		int catlvl = getCategoryLevel(catd);
 		// create CategoryLevel Object and return
-		CategoryLevel lvl = new CategoryLevel(catd,catlvl);
+		CategoryLevel lvl = new CategoryLevel(catd, catlvl);
 		return lvl;
 	}
 
-	
 	private int getCategoryLevel(CategoryDao cat) {
 		Long catid = cat.getId();
 		int level = 1;
@@ -208,56 +231,66 @@ public class CategoryServiceImpl implements CategoryService {
 
 		return level;
 	}
-	
-	/* (non-Javadoc)
-	 * @see meg.bank.bus.CategoryService#changeCatMembership(java.lang.Long, java.lang.Long, java.lang.Long)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see meg.bank.bus.CategoryService#changeCatMembership(java.lang.Long,
+	 * java.lang.Long, java.lang.Long)
 	 */
 	@Override
 	public CatRelationshipDao changeCatMembership(Long catId, Long parentId) {
 		// get original category relationship
-		CatRelationshipDao catrel =catRelationRep.findByChild(catId); 
+		CatRelationshipDao catrel = catRelationRep.findByChild(catId);
 
 		// update category relationship to new
-		parentId = parentId==null?new Long(0):parentId;
+		parentId = parentId == null ? new Long(0) : parentId;
 		catrel.setParentId(parentId);
 
 		// persist changes
 		catRelationRep.save(catrel);
 		return catrel;
 	}
-	
-	/* (non-Javadoc)
-	 * @see meg.bank.bus.CategoryService#hasCircularReference(java.lang.Long, meg.bank.bus.dao.CategoryDao)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see meg.bank.bus.CategoryService#hasCircularReference(java.lang.Long,
+	 * meg.bank.bus.dao.CategoryDao)
 	 */
 	@Override
 	public boolean hasCircularReference(Long newParentId, CategoryDao category) {
 		// service of same name
 		boolean hasCircular = false;
 		List<CategoryLevel> allsubcategories = getAllSubcategories(category);
-		if (allsubcategories != null) {
-			for (CategoryLevel catlvl : allsubcategories) {
-				CategoryDao categ = catlvl.getCategory();
-				if (categ.getId().longValue() == newParentId.longValue()) {
-					hasCircular = true;
+		if (newParentId != null) {
+			if (allsubcategories != null) {
+				for (CategoryLevel catlvl : allsubcategories) {
+					CategoryDao categ = catlvl.getCategory();
+					if (categ.getId().longValue() == newParentId.longValue()) {
+						hasCircular = true;
+					}
 				}
 			}
 		}
 
 		return hasCircular;
 	}
-	
-	
-	
-	/* (non-Javadoc)
-	 * @see meg.bank.bus.CategoryService#createCategoryRule(java.lang.String, java.lang.Long)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see meg.bank.bus.CategoryService#createCategoryRule(java.lang.String,
+	 * java.lang.Long)
 	 */
 	@Override
 	public CategoryRuleDao createOrUpdCategoryRule(CategoryRuleDao newrule) {
-		if (newrule.getId()==null ) {
+		if (newrule.getId() == null) {
 			long neworder = 1;
 			// get last order
-			List<CategoryRuleDao> allcats = catRuleRep.findAll(new Sort(Sort.Direction.DESC, "lineorder"));
-			if (allcats!=null && allcats.size()>0) {
+			List<CategoryRuleDao> allcats = catRuleRep.findAll(new Sort(
+					Sort.Direction.DESC, "lineorder"));
+			if (allcats != null && allcats.size() > 0) {
 				CategoryRuleDao lastcat = allcats.get(0);
 				if (lastcat != null) {
 					neworder = lastcat.getLineorder().longValue() + 1;
@@ -270,35 +303,40 @@ public class CategoryServiceImpl implements CategoryService {
 		return newrule;
 	}
 
-	/* (non-Javadoc)
-	 * @see meg.bank.bus.CategoryService#removeCategoryRule(meg.bank.bus.dao.CategoryRuleDao)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see meg.bank.bus.CategoryService#removeCategoryRule(meg.bank.bus.dao.
+	 * CategoryRuleDao)
 	 */
 	@Override
 	public void removeCategoryRule(Long ruleid) {
 		// get CategoryRule
 		CategoryRuleDao categoryrule = catRuleRep.findOne(ruleid);
-		
-		if (categoryrule!=null) {
+
+		if (categoryrule != null) {
 			// first, save the order of the rule to be removed
 			long oldorder = categoryrule.getLineorder().longValue();
 			// remove the rule
 			catRuleRep.delete(categoryrule.getId());
 			// update the following rules, so there aren't any gaps in the order
-			List<CategoryRuleDao> rules = catRuleRep.findCategoryRulesGreaterThanOrder(oldorder);
+			List<CategoryRuleDao> rules = catRuleRep
+					.findCategoryRulesGreaterThanOrder(oldorder);
 			if (rules != null && rules.size() > 0) {
 				for (CategoryRuleDao rule : rules) {
-					rule
-							.setLineorder(new Long(
-									rule.getLineorder().longValue() - 1));
+					rule.setLineorder(new Long(
+							rule.getLineorder().longValue() - 1));
 					catRuleRep.save(rule);
 				}
 			}
 		}
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see meg.bank.bus.CategoryService#updateCategoryRule(java.lang.Long, java.lang.String, java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see meg.bank.bus.CategoryService#updateCategoryRule(java.lang.Long,
+	 * java.lang.String, java.lang.Long)
 	 */
 	@Override
 	public void updateCategoryRule(Long ruleid, String newcontains,
@@ -314,30 +352,34 @@ public class CategoryServiceImpl implements CategoryService {
 		catRuleRep.save(rule);
 	}
 
-	/* (non-Javadoc)
-	 * @see meg.bank.bus.CategoryService#swapOrder(java.lang.Long, java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see meg.bank.bus.CategoryService#swapOrder(java.lang.Long,
+	 * java.lang.Long)
 	 */
 	@Override
 	public void moveRuleUp(Long moveupid) {
 		// pull rules
 		CategoryRuleDao afterruls = catRuleRep.findOne(moveupid);
 		Long lineorder = afterruls.getLineorder();
-		
-		if (lineorder.longValue() >1) {
-			List<CategoryRuleDao> beforerules = catRuleRep.findCategoryRulesByOrder(lineorder-1);
-			if (beforerules!=null && beforerules.size()>0) {
+
+		if (lineorder.longValue() > 1) {
+			List<CategoryRuleDao> beforerules = catRuleRep
+					.findCategoryRulesByOrder(lineorder - 1);
+			if (beforerules != null && beforerules.size() > 0) {
 				// get before rule
 				CategoryRuleDao before = beforerules.get(0);
 				// assign lineorder to beforerule
 				before.setLineorder(lineorder);
 				// set afterrule to lineorder minus 1
-				afterruls.setLineorder(lineorder-1);
-				
+				afterruls.setLineorder(lineorder - 1);
+
 				// persist changes
 				createOrUpdCategoryRule(before);
 				createOrUpdCategoryRule(afterruls);
 			}
-			
+
 		}
 
 	}
@@ -345,7 +387,7 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public CategoryDao updateCategory(CategoryDao toupdate) {
 		CategoryDao cat = catRepository.findOne(toupdate.getId());
-		if (cat!=null) {
+		if (cat != null) {
 			cat.setName(toupdate.getName());
 			cat.setDescription(toupdate.getDescription());
 			cat.setNonexpense(toupdate.getNonexpense());
@@ -372,13 +414,13 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public CategoryDao getCategoryByName(String name) {
-		if (name!=null) {
+		if (name != null) {
 			List<CategoryDao> catlist = catRepository.findByName(name);
-			if (catlist!=null && catlist.size()>0) {
+			if (catlist != null && catlist.size() > 0) {
 				return catlist.get(0);
 			}
 		}
 		return null;
 	}
-	
+
 }

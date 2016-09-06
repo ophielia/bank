@@ -50,6 +50,7 @@ public class TargetServiceImpl implements TargetService {
 		sortcolumns.add("targettype");
 		sortcolumns.add("yeartag");
 		sortcolumns.add("monthtag");
+		sortcolumns.add("name");
 		List<TargetGroupDao> grouplist = targetGrpRep.findAll(new Sort(Sort.Direction.ASC, sortcolumns));
 		return grouplist;
 	}
@@ -72,18 +73,18 @@ public class TargetServiceImpl implements TargetService {
 	 * @see meg.bank.bus.TargetService#copyTargetGroup(java.lang.Long)
 	 */
 	@Override
-	public void copyTargetGroup(Long targettype) {
+	public Long copyTargetGroup(Long targettype) {
 		TargetGroupDao tg = getDefaultTargetGroup(targettype);
-		Long defaultid = tg.getId();
 
 		TargetGroupDao newtg = new TargetGroupDao();
 		newtg.setTargettype(targettype);
 		newtg.setDescription("generated " + new Date());
 		newtg.setName("new TargetGroup ");
-
+		newtg.setIsdefault(false);
 
 		// copy details
 		List<TargetDetailDao> details = tg.getTargetdetails();
+		List<TargetDetailDao> newdetails = new ArrayList<TargetDetailDao>();
 		if (details != null) {
 			for (TargetDetailDao detail : details) {
 				TargetDetailDao newdetail = new TargetDetailDao();
@@ -91,12 +92,13 @@ public class TargetServiceImpl implements TargetService {
 				newdetail.setCatid(detail.getCatid());
 				newdetail.setTargetgroup(newtg);
 
-				//targetDetRep.save(newdetail);
+				newdetails.add(newdetail);
 			}
-			newtg.setTargetdetails(details);
+			newtg.setTargetdetails(newdetails);
 		}
 		// save group and held details
-		targetGrpRep.save(newtg);
+		newtg = targetGrpRep.save(newtg);
+		return newtg.getId();
 	}
 
 	/* (non-Javadoc)
@@ -172,11 +174,15 @@ public class TargetServiceImpl implements TargetService {
 		// load TargetDetails
 		List<TargetDetailDao> details = targetDetRep.findByTargetGroup(group);
 		// fill in details display info
+		// prepare sum
+		Double sum = 0D;
 		if (details!=null) {
 			// get category hash
 			HashMap<Long, CategoryDao> allcats = catManager.getCategoriesAsMap(false);
+
 			// go through all details and fill in disp
 			for (TargetDetailDao detail:details) {
+				sum += detail.getAmount()!=null?detail.getAmount():0;
 				Long catid = detail.getCatid();
 				if (allcats.containsKey(catid)) {
 					CategoryDao category = allcats.get(catid);
@@ -188,7 +194,7 @@ public class TargetServiceImpl implements TargetService {
 
 		// add to model
 		TargetModel model = new TargetModel(group);
-
+		model.setDetailTotal(sum);
 		// fill in display info - load targettype display
 		if (group!=null) {
 			// add display info to model - month or year type

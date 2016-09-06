@@ -65,7 +65,7 @@ public class TargetModelValidator implements Validator {
 
 		
 		// check no duplicate of month tag or year tag
-		if (targetgroup.getTargettype()==TargetService.TargetType.Month) {
+		/*if (targetgroup.getTargettype()==TargetService.TargetType.Month) {
 			List<TargetGroupDao> duptags = targetGrpRepo.findTargetsByTypeAndMonthTag(TargetService.TargetType.Month, targetgroup.getMonthtag());
 			
 			if (duptags!=null&& duptags.size()>0) {
@@ -90,7 +90,7 @@ public class TargetModelValidator implements Validator {
 					}
 				}
 			}
-		}
+		}*/
 		// check not the default
 		if (targetgroup.getIsdefault().booleanValue()) {
 			TargetGroupDao defaultgrp = targetService.getDefaultTargetGroup(targetgroup.getTargettype());

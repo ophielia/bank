@@ -22,7 +22,7 @@ public interface TargetService {
 	 */
 	public abstract List<TargetGroupDao> getTargetGroupList();
 
-	public abstract void copyTargetGroup(Long targettype);
+	public abstract Long copyTargetGroup(Long targettype);
 
 	public abstract TargetGroupDao saveOrUpdateTargetGroup(TargetGroupDao targetgroup);
 

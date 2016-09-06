@@ -1,71 +1,21 @@
-Bootstrap!
-
-	old pages - transactions, edit transaction, category, edit category, 
-	target & target details, category rules, import, category rules
-	new thing - quickgroups
+Master
 
 
-check / take care of column manager - still Hib
-remove hard copy dojo scripts
-look at failed maven all tests
-make edit link in expenselist polite
+target show page for year and month to show total (copy from edit)  
+reports not working - yearly (pdf and html) monthly pdf
+ability to delete quickgroups
 
-
-starting reports
- misc.  validation for different reports
-
----> next up, report - new yearly report
-----> after, debug how it works
-problems in report - 
-	done - results.StartDate, results.EndDate
-	funny numbers 2011. fix rent number - banktransid 7065 cattransid 7285   207456.00 
-	rCriteria not present in report... (pdf)
-	
-pdf for monthly target, yearly target reports
-
-data -  add health reimbursement, 
-	check monoprix (some to house, presents - other),cash - subtract babysitting, distribute to other, snack, lent, groceries
-general comparison with previous years - after yearly report is done.
-
-
-
-
-
-discomfort in category entry - 
-	all categories should be shown, regardless of display setting
-	display should be default true.
-	list display in alphabetical order
-	list BOX in alphabetical order
-	error create with no parent id
-	select box in create and edit should be display all, not display only 
-
-
-ColumnManagerService displayonly should change sql depending upon true or false
-
-
-think about menu.... make second level for categories, rules, targets
-	<li><moo:menulink label="menu_top_menuplans" url="/" />Transactions</li>
-	<li><moo:menulink label="menu_top_menuplans" url="/" />Import</li>
-	<li><moo:menulink label="menu_top_menuplans" url="/" />Maintain Categories</li>
-	<li><moo:menulink label="menu_top_menuplans" url="/" />Monthly Targets</li>
-	<li><moo:menulink label="menu_top_menuplans" url="/" />Yearly Targets</li>
-	<li><moo:menulink label="menu_top_menuplans" url="/" />Maintain Rules</li>
-	<li><moo:menulink label="menu_top_menuplans" url="/" />Assign By Rules</li>
-	<li><moo:menulink label="menu_top_menuplans" url="/" />Reports</li>
 	
 	
 ---- begin commit changes ----
-
-done  - insert archive data
-done - data - archive data
-done - main elements completed - 
-done - now need to make input, and output pages
-done - go through the report - common sense check....
-done - make test green
-done -  problem - somehow has hasCats to null in yearlySubcategories.
-done - also problem with not including categories
-done - also will need to change to one query to get all years rather than yearly queries
-
+done - Prepare DB for new launch with my account - clear rules, and all old transactions
+done - Save old database
+done -- target entry for year impossible - buggy buggy buggy....
+moot - target detail entry right after creating a new target doesn't have categories
+moot - error when adding detail to yearly
+done - ----> way to delete targets....
+done - no error on duplicate year tag
+done - create page directly to edit   
 		
 ---- end commit changes ----
 
@@ -290,6 +240,16 @@ done - future - change to JPA criteria!!?? (SearchService)
 done - problem - getExpenseTotalByMonth seen in running test report service - swap to two methods in search service - one for total by month,  and one total month category
 done - next up - FullMonthReport - also in PDF
 done - work on pdf
+done  - insert archive data
+done - data - archive data
+done - main elements completed - 
+done - now need to make input, and output pages
+done - go through the report - common sense check....
+done - make test green
+done -  problem - somehow has hasCats to null in yearlySubcategories.
+done - also problem with not including categories
+done - also will need to change to one query to get all years rather than yearly queries
+
 
 ---- end branch changes ----
 
@@ -306,3 +266,59 @@ Later Development
 4. keyword search in expenselist
 5. bug in create target - when adding detail....
 6. copy target group
+
+
+Notes and Ideas (scratch after long long pause)
+
+	old pages - transactions, edit transaction, category, edit category, 
+	target & target details, category rules, import, category rules
+	new thing - quickgroups
+
+
+check / take care of column manager - still Hib
+remove hard copy dojo scripts
+look at failed maven all tests
+make edit link in expenselist polite
+
+
+starting reports
+ misc.  validation for different reports
+
+---> next up, report - new yearly report
+----> after, debug how it works
+problems in report - 
+	done - results.StartDate, results.EndDate
+	funny numbers 2011. fix rent number - banktransid 7065 cattransid 7285   207456.00 
+	rCriteria not present in report... (pdf)
+	
+pdf for monthly target, yearly target reports
+
+data -  add health reimbursement, 
+	check monoprix (some to house, presents - other),cash - subtract babysitting, distribute to other, snack, lent, groceries
+general comparison with previous years - after yearly report is done.
+
+
+
+
+
+discomfort in category entry - 
+	all categories should be shown, regardless of display setting
+	display should be default true.
+	list display in alphabetical order
+	list BOX in alphabetical order
+	error create with no parent id
+	select box in create and edit should be display all, not display only 
+
+
+ColumnManagerService displayonly should change sql depending upon true or false
+
+
+think about menu.... make second level for categories, rules, targets
+	<li><moo:menulink label="menu_top_menuplans" url="/" />Transactions</li>
+	<li><moo:menulink label="menu_top_menuplans" url="/" />Import</li>
+	<li><moo:menulink label="menu_top_menuplans" url="/" />Maintain Categories</li>
+	<li><moo:menulink label="menu_top_menuplans" url="/" />Monthly Targets</li>
+	<li><moo:menulink label="menu_top_menuplans" url="/" />Yearly Targets</li>
+	<li><moo:menulink label="menu_top_menuplans" url="/" />Maintain Rules</li>
+	<li><moo:menulink label="menu_top_menuplans" url="/" />Assign By Rules</li>
+	<li><moo:menulink label="menu_top_menuplans" url="/" />Reports</li>

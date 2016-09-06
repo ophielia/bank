@@ -2,6 +2,7 @@ package meg.bank.web.model;
 
 import java.util.List;
 
+import meg.bank.bus.TargetService;
 import meg.bank.bus.dao.TargetDetailDao;
 import meg.bank.bus.dao.TargetGroupDao;
 
@@ -17,6 +18,8 @@ public class TargetModel {
 	private String targettypedisp;
 
 	private Long detailid;
+
+	private Double detailTotal;
 	
 	
 
@@ -84,7 +87,7 @@ public class TargetModel {
 	public void setIsdefault(Boolean isdefault) {
 		targetgroup.setIsdefault(isdefault);
 	}
-
+	
 	public String getMonthtag() {
 		return targetgroup.getMonthtag();
 	}
@@ -156,4 +159,11 @@ public class TargetModel {
 		return this.targettypedisp;
 	}
 
+	public void setDetailTotal(Double sum) {
+		this.detailTotal=sum;
+		
+	}
+	public Double getDetailTotal() {
+		return detailTotal;
+	}
 }

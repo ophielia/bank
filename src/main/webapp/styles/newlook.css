@@ -1,0 +1,95 @@
+
+/* Design by Free CSS Templates http://www.freecsstemplates.org Released for free under a Creative Commons Attribution 2.5 License */  
+
+
+body { 	margin: 0px 0px 0px 0px; 	padding: 0; 	background: #fff  no-repeat right top; 	font-family: Tahoma, Geneva, sans-serif; 	font-size: 11px; 	color: #3C3C3C; }
+h1, h2, h3 { 	margin: 0; 	font-family: Arial, Helvetica, sans-serif; 	font-weight: normal; 	color: #065EFE; }
+
+h2 { 	font-size: 18px; }
+h3 { }
+p, ul, ol { 	margin-top: 0; 	line-height: 240%; 	text-align: justify; }
+ul, ol { }
+blockquote { }
+a { 	color: #065EFE; }
+a:hover { 	text-decoration: none; }
+a img { 	border: none; }
+img.left { 	float: left; 	margin: 7px 30px 0 0; }
+img.right { 	float: right; 	margin: 7px 0 0 30px; }
+hr { 	display: none; }
+.list1 { }
+.list1 li { 	float: left; 	line-height: normal; }
+.list1 li img { 	margin: 0 30px 30px 0; }
+.list1 li.alt img { 	margin-right: 0; }
+
+
+
+
+
+
+/* Menu */  #menu { }
+#menu ul { 	margin: 0; 	padding: 0px 0px 0px 0px; 	list-style: none; 	line-height: normal; }
+#menu li { 	display: block; 	float: left; }
+#menu a { 	display: block; 	float: left; 	height: 28px; 	padding: 8px 10px 0px 5px; 	letter-spacing: -1px; 	text-decoration: none; 	text-align: center; 	text-transform: lowercase; 	font-family: Arial, Helvetica, sans-serif; 	font-size: 16px; 	font-weight: normal; 	color: #FFFFFF; }
+
+/* Page Ids */
+
+#wrapper { background-color:white}
+#header { 	height: 170px; 	margin: 0px auto; 	background-color: #065EFE; }
+#main {overflow: hidden;display: box;margin-left:15px;margin-top:15px}
+#page { 	width: 930px; 	margin: 0px auto; 	padding: 10px 10px 10px 10px; 	background: #E1E1E1; 		min-height:300px; }
+
+
+/** LOGO */
+#logo { background-color: #065efe;	width: 950px; 	height: 120px; 	margin-left:20px; 	background: url(../images/wdtmg/img03.jpg) no-repeat left top; }
+#logo h1, #logo p { 	margin: 0px; 	line-height: normal; 	text-transform: lowercase; 	font-weight: normal; 	color: #FFFFFF; }
+#logo p { 	margin-top: -4px; 	padding: 0px 0px 0px 120px; 	text-transform: lowercase; 	font-family: Georgia, "Times New Roman", Times, serif; 	font-size: 13px; 	color: #3E81FB; }
+#logo h1 { 	padding: 30px 0px 0px 120px; 	letter-spacing: -1px; 	font-size: 48px; }
+#logo h1 a { 	text-decoration: none; 	color: #FFFFFF; }
+#logo a { 	text-decoration: none; 	color: #3E81FB; }
+
+
+/* Content */  
+#content { 	width: 930px;   }
+
+/* Post */  .post { 	background: white; 	padding: 10px; }
+.post .meta { 	margin-left: 2px; 	margin-top:2px; text-decoration:none; padding: 4px 30px 2px 0px; 	text-transform: uppercase; 	font-family: Arial, Helvetica, sans-serif; 	font-weight: bold; 	font-size: 11px; 	color: #66665E; }
+.post .title { 	height: 44px; 	margin: 0px; 	padding: 36px 0px 0px 0px; 	color: #065EFE; ; 	}
+.post .title a { 	letter-spacing: -2px; 	text-decoration: none; 	text-transform: lowercase; 	font-size: 36px; 	color: #424242; }
+.post .title a:hover { 	}
+.post .meta { 	margin-left: 2px; 	padding: 4px 30px 2px 0px; 	text-transform: uppercase; 	font-family: Arial, Helvetica, sans-serif; 	font-weight: bold; 	font-size: 11px; 	color: #66665E; }
+
+/* Footer */  #footer { 	width: 920px; 	height: 100px; 	margin: 0 auto; 	padding: 0; }
+#footer-bgcontent { }
+#footer p { 	margin: 0; 	padding: 30px 0px 0px 0px; 	text-align: center; 	line-height: normal; 	font-size: 11px; }
+#footer a { }
+
+/* Table */
+
+table {  background: #FFF;  margin: 2px 0 0 0;  border: 1px solid #BBBBBB;  border-collapse: collapse;  width: 100% }
+ table table {  margin: -5px 0;  border: 0px solid #e0e7d3;  width: 100%; }
+ table td {  padding: 2px;  border: 1px solid #FFF; }
+ tr:nth-child(even) {background: #EEE}
+  table th {  font-size: 1.15em;  text-align: left;  font-weight: bold;  color: #383838;  background: #FFF; }
+  table td form {  text-align:center;  vertical-align: middle;  margin: 0px; }
+ table.offset  th {  font-size: 1.15em;  text-align: left;  font-weight: bold;  color: #383838;  background: #8EADE4; }
+ table thead {  font-weight: bold;  font-style: italic;  background-color: #BBBBBB; }
+ table a:link {color: #303030;}
+ 
+ 
+
+table.clear { 	border-width: 0px; }
+table.clear th { 	border-width: 0px; }
+table.clear td { 	border-width: 0px; 	 }
+table.clear th {  font-size: 1.15em;  text-align: left;  font-weight: bold;  color: #383838;  background: #FFF; }
+
+table.lined { 	border-width: 1px 1px 1px 1px; 	border-spacing: 2px; 	border-style: solid solid solid solid; 	border-color: black black black black; 	border-collapse: collapse; 	background-color: white; font-size:8pt; }
+table.lined th {  background:		#8EADE4;	border-width: 1px 1px 1px 1px; 	padding: 1px 1px 1px 1px; 	border-style: inset inset inset inset; 	border-color: gray gray gray gray; 	background-color: white; 	-moz-border-radius: 0px 0px 0px 0px; 	font-size:8pt; }
+table.lined td { font-size:8pt;	border-width: 1px 1px 1px 1px; 	padding: 1px 1px 1px 1px; 	border-style: inset inset inset inset; 	border-color: gray gray gray gray; 	background-color: white; 	-moz-border-radius: 0px 0px 0px 0px; }
+
+/** errors **/
+.errors {    color: red;}
+
+/** special styles **/
+.tblhdrright {    text-align: right;
+    font-weight: bolder;
+    font-size: 13px;}

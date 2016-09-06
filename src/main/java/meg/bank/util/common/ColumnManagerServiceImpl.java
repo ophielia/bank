@@ -1,6 +1,7 @@
 package meg.bank.util.common;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -21,36 +22,51 @@ public class ColumnManagerServiceImpl implements ColumnManagerService {
 
 	@Autowired
 	private BankTransactionService transMan;
-	
-	@Override
-	public Hashtable getColumnHash(String lookup) {
-		return getColumnHash(lookup, true);
-	}
 
 	@Override
-	public Hashtable getColumnHash(String lookup, boolean displayonly) {
-		Hashtable hash = new Hashtable();
+	public HashMap<Long, String> getColumnDisplayByNumberHash(String lookup,
+			boolean displayonly) {
 		// retrieve all displays for lookup
-		List displays = cvmd.getColumnValuesForKey(lookup, displayonly);
+		if (displayonly) {
+			List<ColumnValueDao> displays = cvmd.getActiveColumnValuesForKey(lookup,
+					displayonly);
+
+			return fillHashMap(displays);
+		} else {
+			List<ColumnValueDao> displays = cvmd.getColumnValuesForKey(lookup);
+			return fillHashMap(displays);
+		}
+		
+	}
+
+	private HashMap<Long, String> fillHashMap(List<ColumnValueDao> displays ) {
+		HashMap<Long, String> hash = new HashMap<Long, String>();
 		if (displays != null) {
-			for (Iterator iter = displays.iterator(); iter.hasNext();) {
+			for (Iterator<ColumnValueDao> iter = displays.iterator(); iter
+					.hasNext();) {
 				ColumnValueDao cv = (ColumnValueDao) iter.next();
-				hash.put(cv.getValue(), cv.getDisplay());
+				Long key = new Long(cv.getValue());
+				hash.put(key, cv.getDisplay());
 			}
 
 		}
 		return hash;
 	}
-
 	@Override
 	public List<ColumnValueDao> getColumnValueList(String lookup) {
 		return getColumnValueList(lookup, true);
 	}
 
 	@Override
-	public List<ColumnValueDao> getColumnValueList(String lookup, boolean displayonly) {
+	public List<ColumnValueDao> getColumnValueList(String lookup,
+			boolean displayonly) {
 		// retrieve all displays for lookup
-		return cvmd.getColumnValuesForKey( lookup,displayonly);
+		if ( displayonly ) {
+			return cvmd.getActiveColumnValuesForKey(lookup, displayonly);
+		}else {
+			return cvmd.getColumnValuesForKey(lookup);
+		}
+		
 	}
 
 	@Override
@@ -58,8 +74,5 @@ public class ColumnManagerServiceImpl implements ColumnManagerService {
 		ColumnValueDao cv = cvmd.getColumnValuesForKeyAndValue(lookup, value);
 		return cv.getDisplay();
 	}
-
-
-	
 
 }

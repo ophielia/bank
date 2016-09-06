@@ -116,15 +116,15 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <form:form action="${actionurl}" id="expenselist" method="PUT" modelAttribute="expenseListModel">
 
-<table>
+<table class="clear">
 <THEAD>
 <tr>
-<td>${ldate}</td>
-<td>${lcattype}</td>
-<td>${lcat}</td>
-<td>${lsource}</td>
-<td>${ltype}</td>
-<td>${lsubcats}</td>
+<th>${ldate}</th>
+<th>${lcattype}</th>
+<th>${lcat}</th>
+<th>${lsource}</th>
+<th>${ltype}</th>
+<th>${lsubcats}</th>
 </tr>
 </THEAD>
 <tbody>
@@ -175,11 +175,11 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 					</c:forEach>
 				</form:select>
 				<input id="batchQuickGroup" name="batchQuickGroup" type="submit" value="${lupdqc}"/>   </span>
-<TABLE>
-		<thead>
+<TABLE class="offset" >
+		<thead >
 				<tr >
 			<th></th>
-			<th id="aSortDate">${ldate}</th>
+			<th  id="aSortDate">${ldate}</th>
 			<th id="aSortCat">${lcat}</th>
 			<th id="aSortDetail">${ldetail}</th>
 			<th id="aSortAmount">${lamount}</th>
