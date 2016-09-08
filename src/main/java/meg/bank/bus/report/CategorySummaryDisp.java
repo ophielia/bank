@@ -62,9 +62,9 @@ public class CategorySummaryDisp {
 		this.sum = sum;
 	}	
 	
-	public CategorySummaryDisp(String monthyear, String catname,double sum) {
+	public CategorySummaryDisp(String monthyear, String catName,double sum) {
 		setYear(year);
-		this.catName=catname;
+		this.catName=catName;
 		this.sum = sum;
 	}		
 	

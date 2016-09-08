@@ -19,6 +19,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_quickgroup_cat" htmlEscape="false" var="lcat"/>
 <spring:message code="label_quickgroup_percent" htmlEscape="false" var="lpct"/>
 <spring:message code="button_edit" htmlEscape="false" var="button_edit"/>    
+<spring:message code="button_delete" htmlEscape="false" var="button_delete"/>    
 <spring:message code="button_save" htmlEscape="false" var="button_save"/>    
 <spring:message code="entity_info" htmlEscape="false" var="button_info"/>    
 
@@ -91,9 +92,12 @@ require(["dojo/ready", "dojo/query","dijit/TooltipDialog", "dijit/popup", "dojo/
 			<c:forEach var="quickgroup" items="${quickgrouplist}"
 				varStatus="status">
 				<spring:url value="/quickgroup/edit/${quickgroup.id}" var="editurl" />
+				<spring:url value="/quickgroup/delete/${quickgroup.id}" var="deleteurl" />
 				<tr>
 					<td>${quickgroup.name}</td>
-					<td><a href="${editurl}">${button_edit}</a>    <a id="viewinfo${quickgroup.id}" style="margin-left:15px" href="#">${button_info}</a>
+					<td><a href="${editurl}">${button_edit}</a>    
+					<a style="margin-left:15px" href="${deleteurl}">${button_delete}</a>
+					<a id="viewinfo${quickgroup.id}" style="margin-left:15px" href="#">${button_info}</a>
 					</td>
 				</tr>
 			</c:forEach>

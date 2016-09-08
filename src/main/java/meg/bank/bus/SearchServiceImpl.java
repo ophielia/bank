@@ -93,7 +93,8 @@ public class SearchServiceImpl implements SearchService {
 		Root<ExpenseDao> exp = c.from(ExpenseDao.class);
 		Expression maxExpression = cb.sum(exp.<Number>get("catamount"));
 		c.multiselect(exp.get("monthyear"),exp.get("catName"),maxExpression.alias("sum"))
-		.groupBy(exp.get("monthyear"),exp.get("catName"));
+		.groupBy(exp.get("monthyear"),exp.get("catName"))
+		.having(cb.isNotNull(maxExpression));
 		
 		if (criteria != null) {
 

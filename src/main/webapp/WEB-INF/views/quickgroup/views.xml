@@ -9,5 +9,8 @@
     </definition>
     <definition extends="barebones" name="quickgroup/preview">
         <put-attribute name="body" value="/WEB-INF/views/quickgroup/preview.jspx"/>
-    </definition>    
+    </definition>  
+          <definition extends="default" name="quickgroup/delete">
+        <put-attribute name="body" value="/WEB-INF/views/quickgroup/delete.jspx"/>
+    </definition>
 </tiles-definitions>

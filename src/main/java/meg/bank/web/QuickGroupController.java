@@ -60,17 +60,15 @@ public class QuickGroupController {
 		return list;
 	}
 	
-	@ModelAttribute("quickgrouplist")
-	protected List<QuickGroup> referenceQuickGroups(HttpServletRequest request, Object command,
-			Errors errors) throws Exception {
+	private void fillQuickGroupList(Model uiModel) {
 		List<QuickGroup> list = quickGroupService.getAllQuickGroups();
+		uiModel.addAttribute("quickgrouplist",list);
 
-		// return model
-		return list;
 	}	
 
     @RequestMapping( method = RequestMethod.GET, produces = "text/html")
     public String showList(  Model uiModel,HttpServletRequest httpServletRequest) {
+    	fillQuickGroupList(uiModel);
     	return "quickgroup/list";
     }    
     
@@ -107,6 +105,28 @@ public class QuickGroupController {
     	}
     	 return "quickgroup/edit";
     }
+    
+    @RequestMapping(value="/delete/{id}", method = RequestMethod.GET, produces = "text/html")
+    public String showDelete(@PathVariable("id") Long id,  Model uiModel,HttpServletRequest httpServletRequest) {
+    	HashMap<Long, CategoryDao> categoryref = categoryService.getCategoriesAsMap();
+    	if (id!=null) {
+    		QuickGroupModel model = quickGroupService.loadQuickGroupModelForId(id);
+    		uiModel.addAttribute("quickGroupModel", model); 
+    	} else {
+        	QuickGroupModel model = new QuickGroupModel(new QuickGroup(),new ArrayList<QuickGroupDetail>(),categoryref);
+        	// set model in uiModel
+        	uiModel.addAttribute("quickGroupModel", model);   	
+    	}
+    	 return "quickgroup/delete";
+    }    
+    
+    @RequestMapping(value="/delete/{id}", method = RequestMethod.POST, produces = "text/html")
+    public String deleteQuickGroup(@PathVariable("id") Long id,QuickGroupModel model,Model uiModel,HttpServletRequest httpServletRequest) {
+    	// delete QuickGroup with service
+    	quickGroupService.deleteQuickGroup(id);
+    	// return to list
+    	return showList(uiModel,httpServletRequest);
+    }      
     
     @RequestMapping(value="/edit", method = RequestMethod.PUT, params = "addcategory",produces = "text/html")
     public String addTargetDetail(QuickGroupModel model,Model uiModel,HttpServletRequest httpServletRequest) {

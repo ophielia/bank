@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    
+<spring:message code="label_expenselist_amount" htmlEscape="false" var="lamount"/>
+
+<spring:message code="label_quickgroup_name" htmlEscape="false" var="lname"/>
+<spring:message code="label_quickgroup" var="quickgroup"/>
+ <spring:message code="button_delete_param" arguments="${quickgroup}" var="quickgrouptitle"/>
+<spring:message code="label_quickgroup_cat" htmlEscape="false" var="lcat"/>  
+<spring:message code="label_quickgroup_percent" htmlEscape="false" var="lpct"/>  
+<spring:message code="button_addparam" arguments="${lcat}" htmlEscape="false" var="addcat"/>  
+<spring:message code="button_save" htmlEscape="false" var="button_save"/>   
+<spring:message code="button_remove" htmlEscape="false" var="button_remove"/>   
+<spring:message code="button_edit" htmlEscape="false" var="button_edit"/>    
+<spring:message code="button_clear" htmlEscape="false" var="button_clear"/>    
+<spring:message code="button_reset" htmlEscape="false" var="resetchanges"/>   
+<spring:message code="button_cancel" htmlEscape="false" var="cancel"/>   
+
+
+
+
+<spring:url value="/quickgroup/delete/${quickGroupModel.groupId}" var="actionurl"/>
+<h1>${quickgrouptitle}</h1>
+<form:form action="${actionurl}" id="expenseedit" method="POST" modelAttribute="quickGroupModel">
+
+ ${lname}:${quickGroupModel.name}
+      <br />
+      <br />
+<hr />
+<input id="delete" name="delete" type="submit" value="${quickgrouptitle}"/><br />
+      <table>
+      <THEAD>
+      <tr>
+      <td>${lcat}</td>
+      <td>${lpct}</td>
+      </tr>
+      </THEAD>
+      <tbody>
+      <c:forEach var="expcat" items="${quickGroupModel.entrycats}" varStatus="status">
+
+
+			<tr>
+			<td><!--  choose select box or not -->
+			<span id="displayhandle${status.index}">${quickGroupModel.entrycatdisplays[status.index]}</span>
+			<form:input path="entrycats[${status.index}]" type="hidden"></form:input> 
+			</td>
+			<td>
+			<span id="displayamthandle${status.index}">${quickGroupModel.entrypercents[status.index]}</span> 
+			<form:input path="entrypercents[${status.index}]" type="hidden"></form:input>
+			</td>
+			
+			</tr>
+
+
+      
+      
+      
+      </c:forEach>
+      </tbody>
+      </table>
+
+	
+	<br />
+      
+</form:form>
+
+</div>

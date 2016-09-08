@@ -10,6 +10,8 @@ import meg.bank.web.model.QuickGroupModel;
 public interface QuickGroupService {
 
 	QuickGroupModel createQuickGroupFromExpense(Long transid);
+	
+	void deleteQuickGroup(Long qgid);
 
 	QuickGroupModel loadQuickGroupModelForId(Long id);
 

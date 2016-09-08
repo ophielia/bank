@@ -254,4 +254,25 @@ public class QuickGroupServiceImpl implements QuickGroupService {
 		return qcRepo.findOne(quickgroupid);
 	}
 
+	@Override
+	public void deleteQuickGroup(Long qgid) {
+		// get quick group
+		QuickGroup todelete = getQuickGroup(qgid);
+
+		if (todelete != null) {
+
+			// get quick group details
+			List<QuickGroupDetail> details = getDetailsForQuickGroup(todelete);
+			// delete them
+			qcDetRepo.delete(details);
+
+			// delete quick group
+			qcRepo.delete(todelete);
+
+		}
+
+		return;
+
+	}
+
 }

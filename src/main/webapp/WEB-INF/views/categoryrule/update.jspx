@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_meg_bank_bus_dao_CategoryRuleDao" modelAttribute="categoryRuleDao" path="/categoryrule" versionField="Version" z="xSowuChSKYkqfGkVJhCayffehoE=">
+        <field:input field="lineorder" id="c_meg_bank_bus_dao_CategoryRuleDao_lineorder" validationMessageCode="field_invalid_integer" z="KeXB2cvclXhTHxpAKAfjx6okT2U="/>
+        <field:input field="containing" id="c_meg_bank_bus_dao_CategoryRuleDao_containing" required="true" z="8EZAmeKQa++S3D/n3TEsuYPxe1E="/>
+        <field:input field="categoryId" id="c_meg_bank_bus_dao_CategoryRuleDao_categoryId" required="true" validationMessageCode="field_invalid_integer" z="eQy5awifsNiUlvtx8pADgv4tTwI="/>
+        <field:input field="catDisplay" id="c_meg_bank_bus_dao_CategoryRuleDao_catDisplay" z="5sy1s9D8u6wZ0O/3486lXyuBlcE="/>
+    </form:update>
+</div>
