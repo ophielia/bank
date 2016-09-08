@@ -4,6 +4,7 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
 
+import javax.persistence.Column;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
@@ -20,9 +21,11 @@ import org.springframework.roo.addon.tostring.RooToString;
 public class CatRelationshipDao {
 
 	@NotNull
+	@Column(name="parent_id")
 	private Long parentId;
 
 	@NotNull
+	@Column(name="child_id")
 	private Long childId;
 
 }
