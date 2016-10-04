@@ -15,12 +15,11 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <spring:message code="label_rpt_month" var="lmonth"/>
     <spring:message code="label_rpt_exclnonexp" var="lexclnonexp"/>
     <spring:message code="label_rpt_runreport" var="lrunreport"/>
-
+<spring:message code="label_rpt_runpdfreport" var="lrunpdfreport"/>
     <h1>${pagetitle}</h1>
 <h2>${reporttitle}</h2>
 
 <spring:url value="/reports" var="actionurl"/>
-<spring:url value="/quickgroup/preview" var="previewurl"/>
 
 <form:form action="${actionurl}" id="monthlytargetreport" method="POST" modelAttribute="reportCriteria">
 
@@ -35,6 +34,7 @@ ${lexclnonexp}: <form:checkbox path="excludeNonExpense"/>
 			<br />
 <form:hidden path="reportType"></form:hidden>
 <input id="runreport" name="runreport" type="submit" value="${lrunreport}"/>
+<input id="runpdfreport" name="pdfreport" type="submit" value="${lrunpdfreport}" formtarget="_blank"/>
 </form:form>
 
 </div>

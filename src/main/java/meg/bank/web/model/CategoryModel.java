@@ -104,7 +104,9 @@ public class CategoryModel {
 	}
 	
 	
-	
+	public boolean hasParent() {
+		return this.parentcatid!=null && this.parentcatid > 0;
+	}
 	
 }
 

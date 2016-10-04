@@ -4,12 +4,14 @@ import java.util.List;
 import meg.bank.bus.dao.CategoryDao;
 
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.roo.addon.layers.repository.jpa.RooJpaRepository;
+import org.springframework.stereotype.Repository;
 
-@RooJpaRepository(domainType = CategoryDao.class)
-public interface CategoryRepository {
+@Repository
+public interface CategoryRepository extends JpaRepository<CategoryDao, Long>, JpaSpecificationExecutor<CategoryDao> {
 	
 	List<CategoryDao> findByName(String name);
 	

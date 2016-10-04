@@ -114,7 +114,7 @@ public class CategoryController {
         uiModel.asMap().clear();
         CategoryDao cat=categoryService.addCategory( model.getName(),  model.getDescription(), model.getNonexpense(), model.getDisplayinlist());
 
-        if (!model.getParentcatid().equals("0")) {
+        if (model.hasParent()) {
             // now, update relationship
             CatRelationshipDao rel = categoryService.changeCatMembership(cat.getId(),  model.getParentcatid());
         }

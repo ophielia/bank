@@ -12,9 +12,6 @@ import javax.persistence.FetchType;
 import javax.persistence.FieldResult;
 import javax.persistence.Table;
 
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
-import org.springframework.roo.addon.tostring.RooToString;
 
 @Entity
 @Table(name = "expense")

@@ -47,6 +47,9 @@ public class ReportCriteria implements Serializable {
 	private Long reporttype;
 	private String imageweblink;
 	private String contextpath;
+	private String fullimageweblink;
+	
+	private boolean usefulllink=false;
 
 	public Long getBreakoutLevel() {
 		return breakoutLevel;
@@ -137,14 +140,27 @@ public class ReportCriteria implements Serializable {
 		return this.reporttype;
 	}
 
+	public void setUseFullImageLink(boolean usefulllink) {
+		this.usefulllink=usefulllink;
+	}
+	
 	public void setImageLink(String imageweblink) {
 		this.imageweblink = imageweblink;
 	}
 
 	public String getImageLink() {
+		if (!this.usefulllink)
 		return this.imageweblink;
+		return this.fullimageweblink;
 	}
 
+	public void setFullImageLink(String fullimageweblink) {
+		this.fullimageweblink=fullimageweblink;
+	}
+	
+	public String getFullImageLink() {
+		return this.fullimageweblink;
+	}
 	public void setContextPath(String contextpath) {
 		this.contextpath = contextpath;
 		
@@ -153,6 +169,8 @@ public class ReportCriteria implements Serializable {
 	public String getContextPath() {
 		return this.contextpath;
 	}
+
+
 	
 
 	

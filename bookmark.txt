@@ -1,0 +1,42 @@
+next migration - 
+
+done - MediaUploadDao
+done - QuickGroup
+done - QuickGroupDetail
+done - TargetDetailDao
+done - TargetGroupDao
+done - and then - services
+done - and then - import files
+done - first controller and page up and going.
+done - add other controllers and fill out application 
+
+enable full maven build
+GIT !!!
+
+Reports - FullMonthReport, MonthlyTarget , YearlyTargetsReport
+done - Category Breakouts
+done - problem in public List<CategorySummaryDisp> getExpenseTotalByMonthAndCategory(ExpenseCriteria criteria) {
+done -	make test for bug
+done - make test green
+done - test xml with nested list of elements	 
+done - integrate into web server
+done - onto next reports
+
+-----> Last Report - yearlyreport
+done - debug current report
+done - finish "un-yellowing" YearlyReport
+done - construct jsp
+little bug - fix name of graphs in yearly comparison reports
+yearly status report - use BRD method for TargetProgress
+yearlyreport - other - get detail right - not full details in first display, special report afterwards
+
+
+
+
+
+
+feature - abbreviate category names in monthly comparisons....
+feature - xsl ability to handle unknown category names
+
+
+

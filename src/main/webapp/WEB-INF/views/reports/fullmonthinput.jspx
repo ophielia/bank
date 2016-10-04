@@ -42,7 +42,7 @@ ${lexclnonexp}: <form:checkbox path="excludeNonExpense"/>
 			<br />
 <form:hidden path="reportType"></form:hidden>
 <input id="runreport" name="runreport" type="submit" value="${lrunreport}"/>
-<input id="runpdfreport" name="pdfreport" type="submit" value="${lrunpdfreport}"/>
+<input id="runpdfreport" name="pdfreport" type="submit" value="${lrunpdfreport}" formtarget="_blank"/>
 </form:form>
 
 </div>

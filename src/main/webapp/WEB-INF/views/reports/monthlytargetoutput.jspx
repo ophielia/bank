@@ -1,106 +1,71 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <div xmlns:jsp="http://java.sun.com/JSP/Page" 
-xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
 xmlns:c="http://java.sun.com/jsp/jstl/core" 
-xmlns:spring="http://www.springframework.org/tags" 
-xmlns:form="http://www.springframework.org/tags/form" 
-xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
-xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-   
-  	<spring:message code="bank_rpt_monthlytarget" htmlEscape="false" var="reporttitle"/>    
-	<spring:message code="label_rpt_category" var="lcat"/>
-	<spring:message code="label_rpt_spent" var="lspent"/>
-	<spring:message code="label_rpt_targeted" var="ltargeted"/>
-	<spring:message code="label_rpt_status" var="lstatus"/>
-	<spring:message code="label_rpt_total" var="ltotal"/>
-	<spring:message code="label_rpt_expdetail" var="lexpdetail"/>
-	<spring:message code="label_rpt_date" var="ldate"/>
-	<spring:message code="label_rpt_subcat" var="lsubcat"/>
-	<spring:message code="label_rpt_detail" var="ldetail"/>
-	<spring:message code="label_rpt_amount" var="lamount"/>
-	<spring:message code="label_rpt_formonth" var="formonth"/>
-	<spring:message code="label_rpt_pctinmonth" var="pctinmonth"/>
+ 
 	<spring:message code="label_rpt_reportresults" var="pagetitle"/>
-	<spring:message code="button_back" var="bckbutton"/>
 
-    <h1>${pagetitle}</h1>
-<h2>${reporttitle}</h2>
+    <h1>${pagetitle} - ${results.lbltitle}</h1><span style="float:right"><a href="${backurl}">${bckbutton}</a></span>
 
-<spring:url value="/reports?reporttype=1" var="backurl"/>
+<spring:url value="/reports?reporttype=3" var="backurl"/>
 
 
-<h3>${formonth}:  <c:out value="${results.month}"/></h3>
-<h3>${pctinmonth}:<c:out value="${results.percentageofmonth}"/></h3>
 
-<p><a href="${backurl}">${bckbutton}</a></p>
+<h3>${results.lblrange}</h3>
+<br />
+<br />
 
-
-	<table  class="clear"><tr><td><img src="${results.graphpath}"/>
-	</td>
-	</tr><tr>
-	<td>	<table class="lined">
-		<tr>
-			<td>${lcat}</td>
-			<td>${lspent}</td>
-			<td>${ltargeted}</td>
-			<td>${lstatus}</td>
-		</tr>
-<fmt:setLocale value="fr_FR"/>
-		<c:forEach items="${results.totallist}" var="summary">
-
-			<tr>
-				<td><c:out value="${summary.catName}" /></td>
-				<td><fmt:formatNumber value="${summary.amountSpent}"
-    type="number" maxFractionDigits="2"/></td>
-				<td>
-				<fmt:formatNumber value="${summary.amountTargeted}"
-    type="number" maxFractionDigits="2"/></td>
-				<td>
-				<c:out value="${summary.statusMessage}" /></td>
-			</tr>
-		</c:forEach>
+<h3>${results.lbltarget}</h3>
+<table >
 	<tr>
-				<td><b>${ltotal}</b></td>
-				<td><b><fmt:formatNumber value="${results.totalspent}"
-    type="number" maxFractionDigits="2"/></b></td>
-				<td><b>
-				<fmt:formatNumber value="${results.totaltargeted}"
-    type="number" maxFractionDigits="2"/></b></td>
-				<td><b><c:out value="${results.summary}"/></b></td>
+
+		<td><c:forEach items="${results.targets.urls}" var="url">
+					<img src="${url}" />
+				</c:forEach>
+		</td>
+		<td valign="top">
+		<table class="lined">
+			<tr>
+				<c:set var="headers" value="${results.targets.chart.headers}" />
+				<c:set var="rows" value="${results.targets.chart.rows}" />
+				<c:forEach items="${headers.columns}" var="hdrname">
+					<td><b><c:out value="${hdrname}" /></b></td>
+				</c:forEach>
 			</tr>
+			<c:forEach items="${rows}" var="chrow">
+				<tr>
+					<c:forEach items="${chrow.columns}" var="colval">
+						<td><c:out value="${colval}" /></td>
+					</c:forEach>
+				</tr>
+			</c:forEach>
+		</table>
+		</td>
+	</tr>
+</table>
 
-	</table>
-	</td>
-	</tr></table>
 
-
-	<hr />
-	<h3>${lexpdetail}</h3>
-	<table >
-		<tr>
-			<td>${ldate}</td>
-			<td>${lcat}</td>
-			<td>${lsubcat }</td>
-			<td>${ldetail}</td>
-			<td>${lamount}</td>
-		</tr>
-
-		<c:forEach items="${results.expenses}" var="exp">
+<br />
+<br />
+<h3>${results.lblallexpenses}</h3>
+		<table class="lined">
 
 			<tr>
-				<td><c:out value="${exp.transdate}" /></td>
-				<td><c:out value="${exp.dispCat}" /></td>
-				<td><c:out value="${exp.catName}" /></td>
-				<td><c:out value="${exp.detail}" /></td>
-				<td>
-				<c:choose><c:when test="${exp.hascat}"><c:out value="${exp.catamount}" /></c:when><c:otherwise><c:out value="${exp.transtotal}" /></c:otherwise></c:choose>
-				
-				</td>
+				<c:set var="headers" value="${results.allexpenses.chart.headers}" />
+				<c:set var="rows" value="${results.allexpenses.chart.rows}" />
+				<c:forEach items="${headers.columns}" var="hdrname">
+					<td><b><c:out value="${hdrname}" /></b></td>
+				</c:forEach>
 			</tr>
-		</c:forEach>
+			<c:forEach items="${rows}" var="chrow">
+				<tr>
+					<c:forEach items="${chrow.columns}" var="colval">
 
+						<td><c:out value="${colval}" /></td>
 
-	</table>
-</div>
+					</c:forEach>
+				</tr>
+			</c:forEach>
+		</table></div>

@@ -24,13 +24,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TargetServiceImpl implements TargetService {
 
-
 	@Autowired
 	TargetGroupRepository targetGrpRep;
 
 	@Autowired
 	TargetDetailRepository targetDetRep;
-
 
 	@Autowired
 	ColumnManagerService cvManager;
@@ -38,27 +36,28 @@ public class TargetServiceImpl implements TargetService {
 	@Autowired
 	CategoryService catManager;
 
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see meg.bank.bus.TargetService#getTargetGroupList(java.lang.Long)
 	 */
 	@Override
 	public List<TargetGroupDao> getTargetGroupList() {
 		// call to repository
-		//return list sorted by targettype, yeartag and monthtag
+		// return list sorted by targettype, yeartag and monthtag
 		List<String> sortcolumns = new ArrayList<String>();
 		sortcolumns.add("targettype");
 		sortcolumns.add("yeartag");
 		sortcolumns.add("monthtag");
 		sortcolumns.add("name");
-		List<TargetGroupDao> grouplist = targetGrpRep.findAll(new Sort(Sort.Direction.ASC, sortcolumns));
+		List<TargetGroupDao> grouplist = targetGrpRep.findAll(new Sort(
+				Sort.Direction.ASC, sortcolumns));
 		return grouplist;
 	}
 
-
 	public TargetGroupDao saveOrUpdateTargetGroup(TargetGroupDao targetgroup) {
 		// check for null
-		if (targetgroup!=null) {
+		if (targetgroup != null) {
 			// save TargetGroupDao
 			targetgroup = targetGrpRep.save(targetgroup);
 			// return TargetGroupDao
@@ -67,9 +66,9 @@ public class TargetServiceImpl implements TargetService {
 		return null;
 	}
 
-
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see meg.bank.bus.TargetService#copyTargetGroup(java.lang.Long)
 	 */
 	@Override
@@ -81,27 +80,31 @@ public class TargetServiceImpl implements TargetService {
 		newtg.setDescription("generated " + new Date());
 		newtg.setName("new TargetGroup ");
 		newtg.setIsdefault(false);
+		if (tg != null) {
+			// copy details
+			List<TargetDetailDao> details = targetDetRep.findByTargetGroup(tg);
+			List<TargetDetailDao> newdetails = new ArrayList<TargetDetailDao>();
+			if (details != null) {
+				for (TargetDetailDao detail : details) {
+					TargetDetailDao newdetail = new TargetDetailDao();
+					newdetail.setAmount(detail.getAmount());
+					newdetail.setCatid(detail.getCatid());
+					newdetail.setTargetgroup(newtg);
 
-		// copy details
-		List<TargetDetailDao> details = tg.getTargetdetails();
-		List<TargetDetailDao> newdetails = new ArrayList<TargetDetailDao>();
-		if (details != null) {
-			for (TargetDetailDao detail : details) {
-				TargetDetailDao newdetail = new TargetDetailDao();
-				newdetail.setAmount(detail.getAmount());
-				newdetail.setCatid(detail.getCatid());
-				newdetail.setTargetgroup(newtg);
-
-				newdetails.add(newdetail);
+					newdetails.add(newdetail);
+				}
+				newtg.setTargetdetails(newdetails);
 			}
-			newtg.setTargetdetails(newdetails);
 		}
 		// save group and held details
 		newtg = targetGrpRep.save(newtg);
 		return newtg.getId();
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see meg.bank.bus.TargetService#deleteTargetGroup(java.lang.Long)
 	 */
 	@Override
@@ -109,42 +112,51 @@ public class TargetServiceImpl implements TargetService {
 		// delete details
 		TargetGroupDao targetgrp = targetGrpRep.findOne(editid);
 		if (targetgrp != null) {
-			List<TargetDetailDao> details = targetgrp.getTargetdetails();
-			for (TargetDetailDao detail : details) {
-				targetDetRep.delete(detail.getId());
-			}
+			List<TargetDetailDao> details = targetDetRep
+					.findByTargetGroup(targetgrp);
+			targetgrp.setTargetdetails(details);
+			/*
+			 * for (TargetDetailDao detail : details) {
+			 * targetDetRep.delete(detail.getId()); }
+			 */
+			// delete Target Group
+			targetGrpRep.delete(editid);
 		}
-		// delete Target Group
-		targetGrpRep.delete(editid);
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see meg.bank.bus.TargetService#getTargetGroup(java.lang.Long)
 	 */
 	@Override
 	public TargetGroupDao getTargetGroup(Long editid) {
-		if (editid!=null) {
+		if (editid != null) {
 			return targetGrpRep.findOne(editid);
 		}
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see meg.bank.bus.TargetService#updateDefaultTargetGroup(java.lang.Long, java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see meg.bank.bus.TargetService#updateDefaultTargetGroup(java.lang.Long,
+	 * java.lang.Long)
 	 */
 	@Override
 	public void updateDefaultTargetGroup(Long editid) {
 		// get group to be made default
 		TargetGroupDao newdefault = getTargetGroup(editid);
-		
-		if (newdefault!=null) {
+
+		if (newdefault != null) {
 			// get previous default
-			TargetGroupDao defaulttg = getDefaultTargetGroup(newdefault.getTargettype());
+			TargetGroupDao defaulttg = getDefaultTargetGroup(newdefault
+					.getTargettype());
 
 			// update previous default
 			defaulttg.setIsdefault(new Boolean(false));
 			targetGrpRep.save(defaulttg);
-
 
 			// update new default
 			newdefault.setIsdefault(new Boolean(true));
@@ -152,7 +164,9 @@ public class TargetServiceImpl implements TargetService {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see meg.bank.bus.TargetService#loadTarget(java.lang.Long)
 	 */
 	@Override
@@ -176,13 +190,14 @@ public class TargetServiceImpl implements TargetService {
 		// fill in details display info
 		// prepare sum
 		Double sum = 0D;
-		if (details!=null) {
+		if (details != null) {
 			// get category hash
-			HashMap<Long, CategoryDao> allcats = catManager.getCategoriesAsMap(false);
+			HashMap<Long, CategoryDao> allcats = catManager
+					.getCategoriesAsMap(false);
 
 			// go through all details and fill in disp
-			for (TargetDetailDao detail:details) {
-				sum += detail.getAmount()!=null?detail.getAmount():0;
+			for (TargetDetailDao detail : details) {
+				sum += detail.getAmount() != null ? detail.getAmount() : 0;
 				Long catid = detail.getCatid();
 				if (allcats.containsKey(catid)) {
 					CategoryDao category = allcats.get(catid);
@@ -196,9 +211,11 @@ public class TargetServiceImpl implements TargetService {
 		TargetModel model = new TargetModel(group);
 		model.setDetailTotal(sum);
 		// fill in display info - load targettype display
-		if (group!=null) {
+		if (group != null) {
 			// add display info to model - month or year type
-			String ttypedisp = cvManager.getDisplayForValue(TargetService.TargetTypeLkup, group.getTargettype().toString());
+			String ttypedisp = cvManager.getDisplayForValue(
+					TargetService.TargetTypeLkup, group.getTargettype()
+							.toString());
 			model.setTargettypeDisplay(ttypedisp);
 			// will also need to add display to details
 		}
@@ -207,51 +224,56 @@ public class TargetServiceImpl implements TargetService {
 		return model;
 	}
 
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see meg.bank.bus.TargetService#loadTargetForMonth(java.lang.String)
 	 */
 	@Override
 	public TargetGroupDao loadTargetForMonth(String month) {
 		TargetGroupDao tg = null;
-		
+
 		// look for target by month
-		List<TargetGroupDao> list = targetGrpRep.findTargetsByTypeAndMonthTag(TargetService.TargetType.Month,month);
-		if (list!=null&& list.size()>0) {
+		List<TargetGroupDao> list = targetGrpRep.findTargetsByTypeAndMonthTag(
+				TargetService.TargetType.Month, month);
+		if (list != null && list.size() > 0) {
 			tg = list.get(0);
 		}
-		if (tg==null) {
+		if (tg == null) {
 			// if no target is available for the month, load the default
 			tg = getDefaultTargetGroup(TargetService.TargetType.Month);
 		}
-		
+
 		// load details for target
-		if (tg!=null) {
+		if (tg != null) {
 			List<TargetDetailDao> details = targetDetRep.findByTargetGroup(tg);
 			tg.setTargetdetails(details);
 		}
 		return tg;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see meg.bank.bus.TargetService#loadTargetForYear(java.lang.String)
 	 */
 	@Override
 	public TargetGroupDao loadTargetForYear(String year) {
 		TargetGroupDao tg = null;
-		
+
 		// look for target by month
-		List<TargetGroupDao> list = targetGrpRep.findTargetsByTypeAndYearTag(TargetService.TargetType.Year,year);
-		if (list!=null&& list.size()>0) {
+		List<TargetGroupDao> list = targetGrpRep.findTargetsByTypeAndYearTag(
+				TargetService.TargetType.Year, year);
+		if (list != null && list.size() > 0) {
 			tg = list.get(0);
 		}
-		if (tg==null) {
+		if (tg == null) {
 			// if no target is available for the month, load the default
 			tg = getDefaultTargetGroup(TargetService.TargetType.Year);
 		}
-		
+
 		// load details for target
-		if (tg!=null) {
+		if (tg != null) {
 			List<TargetDetailDao> details = targetDetRep.findByTargetGroup(tg);
 			tg.setTargetdetails(details);
 		}
@@ -259,7 +281,9 @@ public class TargetServiceImpl implements TargetService {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see meg.bank.bus.TargetService#deleteTargetDetails(java.util.List)
 	 */
 	@Override
@@ -271,11 +295,14 @@ public class TargetServiceImpl implements TargetService {
 
 	@Override
 	public void deleteTargetDetail(Long deleteid) {
-			targetDetRep.delete(deleteid);
-	}	
-	
-	/* (non-Javadoc)
-	 * @see meg.bank.bus.TargetService#saveTarget(meg.bank.bus.dao.TargetGroupDao)
+		targetDetRep.delete(deleteid);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * meg.bank.bus.TargetService#saveTarget(meg.bank.bus.dao.TargetGroupDao)
 	 */
 	@Override
 	public void saveTarget(TargetGroupDao target) {
@@ -283,25 +310,30 @@ public class TargetServiceImpl implements TargetService {
 		if (target.getTargettype().longValue() == TargetService.TargetType.Month
 				.longValue()) {
 			// check if any other groups have the same month tag
-			List<TargetGroupDao> results = targetGrpRep.findTargetsByTypeAndMonthTag(TargetService.TargetType.Month,target.getMonthtag());
-			if (results!=null && results.size()>0) {
+			List<TargetGroupDao> results = targetGrpRep
+					.findTargetsByTypeAndMonthTag(
+							TargetService.TargetType.Month,
+							target.getMonthtag());
+			if (results != null && results.size() > 0) {
 				TargetGroupDao previoustag = results.get(0);
 				// if so, remove month tag from other group
-					previoustag.setMonthtag(null);
-					targetGrpRep.save(previoustag);
+				previoustag.setMonthtag(null);
+				targetGrpRep.save(previoustag);
 
 			}
 		} else {
 			// for year types
 			// check if any other groups have the same year tag
-						List<TargetGroupDao> results = targetGrpRep.findTargetsByTypeAndMonthTag(TargetService.TargetType.Year,target.getYeartag());
-						if (results!=null && results.size()>0) {
-							TargetGroupDao previoustag = results.get(0);
-							// if so, remove month tag from other group
-								previoustag.setYeartag(null);
-								targetGrpRep.save(previoustag);
+			List<TargetGroupDao> results = targetGrpRep
+					.findTargetsByTypeAndMonthTag(
+							TargetService.TargetType.Year, target.getYeartag());
+			if (results != null && results.size() > 0) {
+				TargetGroupDao previoustag = results.get(0);
+				// if so, remove month tag from other group
+				previoustag.setYeartag(null);
+				targetGrpRep.save(previoustag);
 
-						}
+			}
 
 		}
 		targetGrpRep.save(target);
@@ -339,21 +371,22 @@ public class TargetServiceImpl implements TargetService {
 		targetGrpRep.save(target);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see meg.bank.bus.TargetService#getDefaultTargetGroup(java.lang.Long)
 	 */
 	@Override
 	public TargetGroupDao getDefaultTargetGroup(Long targettype) {
-		TargetGroupDao targetgroup = targetGrpRep.findDefaultGroupByType(targettype);
+		TargetGroupDao targetgroup = targetGrpRep
+				.findDefaultGroupByType(targettype);
 
 		return targetgroup;
 	}
 
-
 	public TargetDetailDao addTargetDetailToGroup(TargetDetailDao detail,
 			TargetGroupDao group) {
 		if (detail != null && group != null) {
-
 
 			// if the detail hasn't been saved before, fill in the group
 			if (detail.getId() == null) {
@@ -364,9 +397,7 @@ public class TargetServiceImpl implements TargetService {
 		}
 		return detail;
 
-
 	}
-
 
 	@Override
 	public void mergeTargetDetail(Long detailid, TargetDetailDao editdetail) {
@@ -378,6 +409,5 @@ public class TargetServiceImpl implements TargetService {
 		// save change
 		targetDetRep.save(fromdb);
 	}
-
 
 }

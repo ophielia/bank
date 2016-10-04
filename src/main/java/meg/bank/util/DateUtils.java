@@ -33,6 +33,14 @@ public class DateUtils {
 		return months;
 	}
 
+	public static Date getEndOfCalendarYear(Date start) {
+		Calendar end = Calendar.getInstance();
+		end.setTime(start);
+		end.set(Calendar.DAY_OF_MONTH, Calendar.DECEMBER);
+		end.set(Calendar.DAY_OF_MONTH, 31);
+		return end.getTime();
+		
+	}
 	public static List<String> getYearsForSelect(Date oldest, Date newest) {
 		List<String> years = new ArrayList<String>();
 

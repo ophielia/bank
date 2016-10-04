@@ -22,16 +22,18 @@ import meg.bank.util.imp.Placeholder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component
+@PropertySource("classpath:spring/directory.properties")
 public class ImportManager {
 
 	public static final String ClientKeyLkup = "clientkey";
 
-	private FileConfigManager fcman = new FileConfigManager();
+	private FileConfigManager fcman = new FileConfigManagerImpl();
 
-	private MapConfigManager mcman = new MapConfigManager();
+	private MapConfigManager mcman = new MapConfigManagerImpl();
 	//private TransactionManager transman ;
 	
 	@Autowired

@@ -1,46 +1,45 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <div xmlns:jsp="http://java.sun.com/JSP/Page" 
-  xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu" 
-  xmlns:moo="urn:jsptagdir:/WEB-INF/tags/moo"   
+  xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"   
   xmlns:sec="http://www.springframework.org/security/tags" id="hmenu" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     
 <ul id="nav">
-	<li><moo:menulink label="bank_transactions" url="/expense/list" />
+	<li><menu:menulink label="bank_transactions" url="/expense/list" />
 			<ul>
-			<li><moo:menulink label="bank_quickgroups" url="/quickgroup" /></li>
+			<li><menu:menulink label="bank_quickgroups" url="/quickgroup" /></li>
 		</ul>
 	</li>
-	<li><moo:menulink label="bank_import" url="/import?form" /></li>
-	<li><moo:menulink label="bank_categories" url="/categories" />
+	<li><menu:menulink label="bank_import" url="/import?form" /></li>
+	<li><menu:menulink label="bank_categories" url="/categories" />
 		<ul>
-			<li><moo:menulink label="bank_categories" url="/categories" /></li>
-			<li><moo:menulink label="bank_categories_new" url="/categories?form" /></li>
+			<li><menu:menulink label="bank_categories" url="/categories" /></li>
+			<li><menu:menulink label="bank_categories_new" url="/categories?form" /></li>
 			
 		</ul>
 	</li>
-	<li><moo:menulink label="bank_targets" url="/target" />
+	<li><menu:menulink label="bank_targets" url="/target" />
 		<ul>
-			<li><moo:menulink label="bank_targets" url="/target" /></li>
-			<li><moo:menulink label="bank_new_target" url="/target?form" /></li>
+			<li><menu:menulink label="bank_targets" url="/target" /></li>
+			<li><menu:menulink label="bank_new_target" url="/target?form" /></li>
 		</ul>	
 	</li>
-	<li><moo:menulink label="bank_rules" url="/" />
+	<li><menu:menulink label="bank_rules" url="/" />
 	<ul>
-		<li><moo:menulink label="bank_assign_rules" url="/ruleassignment" /></li>
-		<li><moo:menulink label="bank_all_rules" url="/categoryrule" /></li>
-		<li><moo:menulink label="bank_new_rule" url="/categoryrule?form" /></li>
+		<li><menu:menulink label="bank_assign_rules" url="/ruleassignment" /></li>
+		<li><menu:menulink label="bank_all_rules" url="/categoryrule" /></li>
+		<li><menu:menulink label="bank_new_rule" url="/categoryrule?form" /></li>
 	</ul>
 	</li>
-	<li><moo:menulink label="bank_reports" url="/reports" />
+	<li><menu:menulink label="bank_reports" url="/reports" />
 	<ul>
-		<li><moo:menulink label="bank_rpt_monthlytarget" url="/reports?reporttype=1" /></li>
-		<li><moo:menulink label="bank_rpt_yearlytargetstatus" url="/reports?reporttype=2" /></li>
-		<li><moo:menulink label="bank_rpt_fullmonth" url="/reports?reporttype=3" /></li>
-		<li><moo:menulink label="bank_rpt_yearly" url="/reports?reporttype=4" /></li>
+		<li><menu:menulink label="bank_rpt_monthlytarget" url="/reports?reporttype=1" /></li>
+		<li><menu:menulink label="bank_rpt_yearlytargetstatus" url="/reports?reporttype=2" /></li>
+		<li><menu:menulink label="bank_rpt_fullmonth" url="/reports?reporttype=3" /></li>
+		<li><menu:menulink label="bank_rpt_yearly" url="/reports?reporttype=4" /></li>
 	</ul>
-	</li>
+	</li>	
 </ul>    
    
 </div>

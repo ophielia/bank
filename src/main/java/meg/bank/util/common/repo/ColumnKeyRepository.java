@@ -1,8 +1,12 @@
 package meg.bank.util.common.repo;
+
 import meg.bank.util.common.db.ColumnKeyDao;
 
-import org.springframework.roo.addon.layers.repository.jpa.RooJpaRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Repository;
 
-@RooJpaRepository(domainType = ColumnKeyDao.class)
-public interface ColumnKeyRepository {
+@Repository
+public interface ColumnKeyRepository extends JpaRepository<ColumnKeyDao, Long>,
+		JpaSpecificationExecutor<ColumnKeyDao> {
 }

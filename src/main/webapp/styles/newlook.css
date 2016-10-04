@@ -6,7 +6,9 @@ body { 	margin: 0px 0px 0px 0px; 	padding: 0; 	background: #fff  no-repeat right
 h1, h2, h3 { 	margin: 0; 	font-family: Arial, Helvetica, sans-serif; 	font-weight: normal; 	color: #065EFE; }
 
 h2 { 	font-size: 18px; }
-h3 { }
+h3 {    margin-bottom: 10px;
+    color: black;
+    font-weight: bold; }
 p, ul, ol { 	margin-top: 0; 	line-height: 240%; 	text-align: justify; }
 ul, ol { }
 blockquote { }
@@ -15,7 +17,8 @@ a:hover { 	text-decoration: none; }
 a img { 	border: none; }
 img.left { 	float: left; 	margin: 7px 30px 0 0; }
 img.right { 	float: right; 	margin: 7px 0 0 30px; }
-hr { 	display: none; }
+hr { 	border-style: outset;
+    border-color: black; }
 .list1 { }
 .list1 li { 	float: left; 	line-height: normal; }
 .list1 li img { 	margin: 0 30px 30px 0; }
@@ -81,6 +84,7 @@ table.clear { 	border-width: 0px; }
 table.clear th { 	border-width: 0px; }
 table.clear td { 	border-width: 0px; 	 }
 table.clear th {  font-size: 1.15em;  text-align: left;  font-weight: bold;  color: #383838;  background: #FFF; }
+tr.clear:nth-child(even) {background: #FFF}
 
 table.lined { 	border-width: 1px 1px 1px 1px; 	border-spacing: 2px; 	border-style: solid solid solid solid; 	border-color: black black black black; 	border-collapse: collapse; 	background-color: white; font-size:8pt; }
 table.lined th {  background:		#8EADE4;	border-width: 1px 1px 1px 1px; 	padding: 1px 1px 1px 1px; 	border-style: inset inset inset inset; 	border-color: gray gray gray gray; 	background-color: white; 	-moz-border-radius: 0px 0px 0px 0px; 	font-size:8pt; }

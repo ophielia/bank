@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import meg.bank.util.StringUtils;
-import meg.bank.util.imp.FieldFormat.Type;
 
 public class DelimitedImporter extends AbstractImporter {
 

@@ -10,140 +10,99 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:output omit-xml-declaration="yes"/>
    
    
-   <spring:message code="bank_rpt_yearlytargetstatus" htmlEscape="false" var="reporttitle"/>
-   <spring:message code="label_rpt_reportresults" var="pagetitle"/>    
    
-<spring:message code="label_rpt_category" var="lcat"/>
-<spring:message code="label_rpt_spent" var="lspent"/>
-<spring:message code="label_rpt_targeted" var="ltargeted"/>
-<spring:message code="label_rpt_status" var="lstatus"/>
-<spring:message code="label_rpt_total" var="ltotal"/>
-<spring:message code="label_rpt_foryear" var="lforyear"/>
-<spring:message code="label_rpt_pctyear" var="lpctyear"/>
+   <spring:message code="label_rpt_reportresults" var="pagetitle"/>    
 
 	
-	<spring:message code="button_back" var="bckbutton"/>
-
-    <h1>${pagetitle}</h1>
-<h2>${reporttitle}</h2>
+    <h1>${pagetitle}  - ${results.lbltitle}</h1>
+<h2>${results.lblpctthryear}</h2>
 
 <spring:url value="/reports?reporttype=1" var="backurl"/>
 
-<h3>${lforyear}:  <c:out value="${results.year}"/></h3>
-<h3>${lpctyear}:<c:out value="${results.percentageofyear}"/></h3>
 
-	<table  ><tr><td><img src="${results.graphpointpath}"/>
-	</td>
-	</tr></table>
-		<table class="lined">
-		<tr>
-			<th>${lcat}</th>
-			<th>${lspent}</th>
-			<th>${ltargeted}</th>
-			<th>${lstatus}</th>
-		</tr>
-<fmt:setLocale value="fr_FR"/>
-		<c:forEach items="${results.pointlist}" var="summary">
-
-			<tr>
-				<td>${summary.catName}</td>
-				<td><fmt:formatNumber value="${summary.amountSpent}"
-    type="number" maxFractionDigits="2"/></td>
-				<td>
-				<fmt:formatNumber value="${summary.amountTargeted}"
-    type="number" maxFractionDigits="2"/></td>
-				<td>
-				${summary.statusMessage}</td>
-			</tr>
-		</c:forEach>
+<table >
 	<tr>
 
-				<td><b>${ltotal}</b></td>
-				<td><b><fmt:formatNumber value="${results.totalspent}"
-    type="number" maxFractionDigits="2"/></b></td>
-				<td><b>
-				<fmt:formatNumber value="${results.pointtargeted}"
-    type="number" maxFractionDigits="2"/></b></td>
-				<td><b>${results.summarypoint}</b></td>
-			</tr>
-
-	</table>
-	
-
-	<hr />
-	
-	<table ><tr><td><img src="${results.graphprogressurl}"/>
-	</td>
-
-	</tr></table>
-	<hr />
-	
-	<table ><tr><td><img src="${results.graphpath}"/>
-	</td>
-	
-	<td v-align="top">		<table class="lined">
-		<tr>
-			<td>${lcat}</td>
-			<td>${lspent}</td>
-			<td>${ltargeted}</td>
-			<td>${lstatus}</td>
-		</tr>
-<fmt:setLocale value="fr_FR"/>
-		<c:forEach items="${results.totallist}" var="summary">
-
-			<tr>
-				<td><c:out value="${summary.catName}" /></td>
-				<td><fmt:formatNumber value="${summary.amountSpent}"
-    type="number" maxFractionDigits="2"/></td>
-				<td>
-				<fmt:formatNumber value="${summary.amountTargeted}"
-    type="number" maxFractionDigits="2"/></td>
-				<td>
-				<c:out value="${summary.statusMessage}" /></td>
-			</tr>
-		</c:forEach>
-	<tr>
-				<td><b>${ltotal}</b></td>
-				<td><b><fmt:formatNumber value="${results.totalspent}"
-    type="number" maxFractionDigits="2"/></b></td>
-				<td><b>
-				<fmt:formatNumber value="${results.totaltargeted}"
-    type="number" maxFractionDigits="2"/></b></td>
-				<td><b><c:out value="${results.summary}"/></b></td>
-			</tr>
-
-	</table>
-	</td>
-	</tr></table>
-	
-	<hr />
-	
-
-	<c:set var="idx" value="0" />
-	<c:forEach items="${results.categories}" var="catbkout"
-		varStatus="forstatus">
-		<c:set var="idx" value="${forstatus.index}" />
-		<c:set var="detail" value="${catbkout.summaries}" />
-<table  ><tr>		
-		<td><img src="${catbkout.url}" /></td>
-		<td valign="top">
-		<h3><c:out value="${catbkout.name}" /></h3>
+		<td><c:forEach items="${results.targetpoint.urls}" var="url">
+					<img src="${url}" />
+				</c:forEach>
+		</td>
+		<td valign="center">
 		<table class="lined">
 			<tr>
-				<td><b>${lcat}</b></td>
-				<td><b>${lamount}</b></td>
+				<c:set var="headers" value="${results.targetpoint.chart.headers}" />
+				<c:set var="rows" value="${results.targetpoint.chart.rows}" />
+				<c:forEach items="${headers.columns}" var="hdrname">
+					<td><b><c:out value="${hdrname}" /></b></td>
+				</c:forEach>
 			</tr>
-			<c:forEach items="${catbkout.summaries}" var="det">
+			<c:forEach items="${rows}" var="chrow">
 				<tr>
-					<td><c:out value="${det.catName}" /></td>
-					<td><fmt:formatNumber value="${det.sum}" type="number"
-						maxFractionDigits="2" /></td>
+					<c:forEach items="${chrow.columns}" var="colval">
+						<td><c:out value="${colval}" /></td>
+					</c:forEach>
 				</tr>
 			</c:forEach>
-			</table></td>
-			</tr>
-			</table>
+		</table>
+		</td>
+	</tr>
+</table>
 
+<br />
+<br />
+<table >
+	<tr>
+
+		<td><c:forEach items="${results.targetprogress.urls}" var="url">
+					<img src="${url}" />
+				</c:forEach>
+		</td>
+		
+	</tr>
+</table>	
+
+	<hr />
+	
+
+	<hr />
+	
+
+	<hr />
+	
+<br />
+<br />
+	<c:forEach items="${results.allcategories.members}" var="catbkout"
+		varStatus="forstatus">
+		<hr style="    display: block;
+    border-style: outset;"/>
+<table  ><tr>		
+		<td style="text-align: center;width: 400px;">
+		<c:forEach items="${catbkout.urls}" var="url">
+					<img src="${url}" />
+				</c:forEach></td>
+		<td valign="top">
+		<h3 style="width: 60%;margin-left: auto;
+    margin-right: auto;"><c:out value="${catbkout.display}" /></h3>
+		<table class="lined" style="width: 60%;margin-left: auto;
+    margin-right: auto;">
+			<tr>
+				<c:set var="headers" value="${catbkout.chart.headers}" />
+				<c:set var="rows" value="${catbkout.chart.rows}" />
+				<c:forEach items="${headers.columns}" var="hdrname">
+					<td><b><c:out value="${hdrname}" /></b></td>
+				</c:forEach>
+			</tr>
+			<c:forEach items="${rows}" var="chrow">
+				<tr>
+					<c:forEach items="${chrow.columns}" var="colval">
+						<td><c:out value="${colval}" /></td>
+					</c:forEach>
+				</tr>
+			</c:forEach>
+		</table>
+</td>
+</tr>
+</table>
 
 	</c:forEach>
 

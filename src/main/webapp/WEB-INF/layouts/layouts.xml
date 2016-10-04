@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE tiles-definitions PUBLIC
-       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
-       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
 
 <tiles-definitions>
 
@@ -9,12 +9,6 @@
     <put-attribute name="header" value="/WEB-INF/views/header.jspx" />
     <put-attribute name="hmenu" value="/WEB-INF/views/hmenu.jspx" />
     <put-attribute name="footer" value="/WEB-INF/views/footer.jspx" />
-  </definition>
-
-  <definition name="newdefault" template="/WEB-INF/layouts/newdefault.jspx">
-    <put-attribute name="header" value="/WEB-INF/views/newheader.jspx" />
-    <put-attribute name="hmenu" value="/WEB-INF/views/hmenu.jspx" />
-    <put-attribute name="footer" value="/WEB-INF/views/newfooter.jspx" />
   </definition>
 
   <definition name="public" template="/WEB-INF/layouts/default.jspx">

@@ -1,39 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:jsp="http://java.sun.com/JSP/Page" 
-xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
-xmlns:c="http://java.sun.com/jsp/jstl/core" 
-xmlns:spring="http://www.springframework.org/tags" 
-xmlns:form="http://www.springframework.org/tags/form" 
-xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
-xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
-    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
-    <jsp:output omit-xml-declaration="yes"/>
-   
-  	<spring:message code="bank_rpt_yearly" htmlEscape="false" var="reporttitle"/>    
-	<spring:message code="label_rpt_reportresults" var="pagetitle"/>
-	<spring:message code="button_back" var="bckbutton"/>
-	<spring:message code="label_rpt_from" htmlEscape="false" var="lfrom"/>
-	<spring:message code="label_rpt_to" htmlEscape="false" var="lto"/>
-	
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
 
 
-    <h1>${pagetitle}</h1>
-<h2>${results.title}</h2>
 
-<spring:url value="/reports?reporttype=4" var="backurl"/>
+	<spring:message code="label_rpt_reportresults" var="pagetitle" />
 
 
-<p><a href="${backurl}">Back</a></p>
+	<h1>${pagetitle}- ${results.lbltitle}</h1>
 
-	<table class="clear">
+	<spring:url value="/reports?reporttype=4" var="backurl" />
+
+	<br /> <br />
+	<!-- summary pie graph -->
+	<table>
 		<tr>
-			<td><img src="${results.summaryimg}" /></td>
-			<td valign="top">
-				<h3>${lyearlysum}</h3>
+
+			<td><c:forEach items="${results.summary.urls}" var="url">
+					<img src="${url}" />
+				</c:forEach></td>
+			<td valign="center">
 				<table class="lined">
 					<tr>
-						<c:set var="headers" value="${results.summary.headers}" />
-						<c:set var="rows" value="${results.summary.rows}" />
+						<c:set var="headers" value="${results.summary.chart.headers}" />
+						<c:set var="rows" value="${results.summary.chart.rows}" />
 						<c:forEach items="${headers.columns}" var="hdrname">
 							<td><b><c:out value="${hdrname}" /></b></td>
 						</c:forEach>
@@ -41,9 +38,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 					<c:forEach items="${rows}" var="chrow">
 						<tr>
 							<c:forEach items="${chrow.columns}" var="colval">
-
 								<td><c:out value="${colval}" /></td>
-
 							</c:forEach>
 						</tr>
 					</c:forEach>
@@ -52,19 +47,21 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		</tr>
 	</table>
 
-	<hr />
-
-<img src="${results.targetsummaryimg}" />
-	<table class="clear">
+	<br /> <br />
+	<!-- target summary for year -->
+	<table>
 		<tr>
-			<td></td>
 
-			<td v-align="top">
+			<td><c:forEach items="${results.targetsumm.urls}" var="url">
+					<img src="${url}" />
+				</c:forEach></td>
+		</tr>
+		<tr>
+			<td valign="center">
 				<table class="lined">
-
 					<tr>
-						<c:set var="headers" value="${results.targetsumm.headers}" />
-						<c:set var="rows" value="${results.targetsumm.rows}" />
+						<c:set var="headers" value="${results.targetsumm.chart.headers}" />
+						<c:set var="rows" value="${results.targetsumm.chart.rows}" />
 						<c:forEach items="${headers.columns}" var="hdrname">
 							<td><b><c:out value="${hdrname}" /></b></td>
 						</c:forEach>
@@ -72,9 +69,56 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 					<c:forEach items="${rows}" var="chrow">
 						<tr>
 							<c:forEach items="${chrow.columns}" var="colval">
-
 								<td><c:out value="${colval}" /></td>
+							</c:forEach>
+						</tr>
+					</c:forEach>
+				</table>
+			</td>
 
+		</tr>
+	</table>
+
+
+	<hr />
+	<br /> <br />
+	<!--Target Progress Data -->
+	<table>
+		<tr>
+
+			<td><c:forEach items="${results.targetprogress.urls}" var="url">
+					<img src="${url}" />
+				</c:forEach></td>
+		</tr>
+	</table>
+
+
+
+	<hr />
+	<br /> <br />
+	<!-- Monthly Comparison Data -->
+	<table>
+		<tr>
+
+			<td><c:forEach items="${results.monthcomparison.urls}" var="url">
+					<img src="${url}" />
+				</c:forEach></td>
+		</tr>
+		<tr>
+			<td valign="center">
+				<table class="lined">
+					<tr>
+						<c:set var="headers"
+							value="${results.monthcomparison.chart.headers}" />
+						<c:set var="rows" value="${results.monthcomparison.chart.rows}" />
+						<c:forEach items="${headers.columns}" var="hdrname">
+							<td><b><c:out value="${hdrname}" /></b></td>
+						</c:forEach>
+					</tr>
+					<c:forEach items="${rows}" var="chrow">
+						<tr>
+							<c:forEach items="${chrow.columns}" var="colval">
+								<td><c:out value="${colval}" /></td>
 							</c:forEach>
 						</tr>
 					</c:forEach>
@@ -83,120 +127,120 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		</tr>
 	</table>
 
+
+	<!-- Yearly Comparison Data -->
 	<hr />
-
-	<table class="clear">
+	<br /> <br />
+	<table>
 		<tr>
-			<td><img src="${results.targetdetsummaryimg}" /></td>
+
+			<td><c:forEach items="${results.yearcomparison.urls}" var="url">
+					<img src="${url}" />
+				</c:forEach></td>
 		</tr>
-	</table>
-
-	<hr />
-
-<img src="${results.monthcompareimg}" /><br />
-
-	<table class="lined">
 		<tr>
-			<c:set var="headers" value="${results.monthcomparison.headers}" />
-			<c:set var="rows" value="${results.monthcomparison.rows}" />
-			<c:forEach items="${headers.columns}" var="hdrname">
-				<td><b><c:out value="${hdrname}" /></b></td>
-			</c:forEach>
-		</tr>
-		<c:forEach items="${rows}" var="chrow">
-			<tr>
-				<c:forEach items="${chrow.columns}" var="colval">
-					<td><c:out value="${colval}" /></td>
-				</c:forEach>
-			</tr>
-		</c:forEach>
-	</table>
-
-	<img src="${results.yearcompareimg}" /><br />
-
-<table class="lined">
-		<tr>
-			<c:set var="headers" value="${results.yearcomparison.headers}" />
-			<c:set var="rows" value="${results.yearcomparison.rows}" />
-			<c:forEach items="${headers.columns}" var="hdrname">
-				<td><b><c:out value="${hdrname}" /></b></td>
-			</c:forEach>
-		</tr>
-		<c:forEach items="${rows}" var="chrow">
-			<tr>
-				<c:forEach items="${chrow.columns}" var="colval">
-					<td><c:out value="${colval}" /></td>
-				</c:forEach>
-			</tr>
-		</c:forEach>
-	</table>
-
-
-
-	<hr />
-
-<c:set var="catreports" value="${results.categoryallyears}"/> 
-	<c:forEach items="${catreports}" var="catreport">
-<!-- images -->
-		<table>
-			<tr>
-				<c:forEach items="${catreport.urls}" var="url">
-					<td><img src="${url}" />" /></td>
-				</c:forEach>
-			</tr>
-		</table>
-
-		<!-- chart -->
-		<table class="lined">
-			<tr>
-				<c:set var="headers" value="${catreport.chartData.headers}" />
-				<c:set var="rows" value="${catreport.chartData.rows}" />
-				<c:forEach items="${headers.columns}" var="hdrname">
-					<td><b><c:out value="${hdrname}" /></b></td>
-				</c:forEach>
-			</tr>
-			<c:forEach items="${rows}" var="chrow">
-				<tr>
-					<c:forEach items="${chrow.columns}" var="colval">
-						<td><c:out value="${colval}" /></td>
+			<td valign="center">
+				<table class="lined">
+					<tr>
+						<c:set var="headers"
+							value="${results.yearcomparison.chart.headers}" />
+						<c:set var="rows" value="${results.yearcomparison.chart.rows}" />
+						<c:forEach items="${headers.columns}" var="hdrname">
+							<td><b><c:out value="${hdrname}" /></b></td>
+						</c:forEach>
+					</tr>
+					<c:forEach items="${rows}" var="chrow">
+						<tr>
+							<c:forEach items="${chrow.columns}" var="colval">
+								<td><c:out value="${colval}" /></td>
+							</c:forEach>
+						</tr>
 					</c:forEach>
-				</tr>
-			</c:forEach>
+				</table>
+			</td>
+		</tr>
+	</table>
+
+	<!-- Category - Monthly Comparison with bar graph, pie chart, and table of data -->
+	<hr />
+	<br /> <br />
+	<c:forEach items="${results.categoryyear.members}" var="catbkout"
+		varStatus="forstatus">
+		<table class="clear">
+			<tr>
+		
+				<c:forEach items="${catbkout.urls}" var="url">
+						<td >
+						<img src="${url}" />
+						</td>
+					</c:forEach>
+			</tr>
+			<tr style="background: white;">
+				<td valign="center" colspan="2">
+					<table class="lined"
+						style="width: 90%; margin-left: auto; margin-right: auto;">
+						<tr>
+							<c:set var="headers" value="${catbkout.chart.headers}" />
+							<c:set var="rows" value="${catbkout.chart.rows}" />
+							<c:forEach items="${headers.columns}" var="hdrname">
+								<td><b><c:out value="${hdrname}" /></b></td>
+							</c:forEach>
+						</tr>
+						<c:forEach items="${rows}" var="chrow">
+							<tr>
+								<c:forEach items="${chrow.columns}" var="colval">
+									<td><c:out value="${colval}" /></td>
+								</c:forEach>
+							</tr>
+						</c:forEach>
+					</table>
+				</td>
+			</tr>
 		</table>
+		<hr />
 	</c:forEach>
 
-<hr />
-
-<c:set var="catreports" value="${results.categoryyear}"/> 
-				<c:forEach items="${catreports}" var="catreport">
-<!-- images -->
+	<!-- Category - Yearly Comparison with Subcategories -->
+	<hr />
+	<br /> <br />
+	<c:forEach items="${results.categoryallyears.members}" var="catbkout"
+		varStatus="forstatus">
 		<table>
 			<tr>
-				<c:forEach items="${catreport.urls}" var="url">
-					<td><img src="${url}" /></td>
-				</c:forEach>
+				<td style="text-align: center; width: 400px;"><c:forEach
+						items="${catbkout.urls}" var="url">
+						<img src="${url}" />
+					</c:forEach></td>
+				<td valign="center">
+					<h3 style="width: 60%; margin-left: auto; margin-right: auto;">
+						<c:out value="${catbkout.display}" />
+					</h3>
+					<table class="lined"
+						style="width: 60%; margin-left: auto; margin-right: auto;">
+						<tr>
+							<c:set var="headers" value="${catbkout.chart.headers}" />
+							<c:set var="rows" value="${catbkout.chart.rows}" />
+							<c:forEach items="${headers.columns}" var="hdrname">
+								<td><b><c:out value="${hdrname}" /></b></td>
+							</c:forEach>
+						</tr>
+						<c:forEach items="${rows}" var="chrow">
+							<tr>
+								<c:forEach items="${chrow.columns}" var="colval">
+									<td><c:out value="${colval}" /></td>
+								</c:forEach>
+							</tr>
+						</c:forEach>
+					</table>
+				</td>
 			</tr>
 		</table>
-
-		<!-- chart -->
-		<table class="lined">
-			<tr>
-				<c:set var="headers" value="${catreport.chartData.headers}" />
-				<c:set var="rows" value="${catreport.chartData.rows}" />
-				<c:forEach items="${headers.columns}" var="hdrname">
-					<td><b><c:out value="${hdrname}" /></b></td>
-				</c:forEach>
-			</tr>
-			<c:forEach items="${rows}" var="chrow">
-				<tr>
-					<c:forEach items="${chrow.columns}" var="colval">
-						<td><c:out value="${colval}" /></td>
-					</c:forEach>
-				</tr>
-			</c:forEach>
-		</table>
+		<hr />
 	</c:forEach>
 
 
 
+
+
+	<!-- not yet working - detailed info about other category -->
 </div>

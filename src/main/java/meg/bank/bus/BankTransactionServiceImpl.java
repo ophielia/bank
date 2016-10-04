@@ -1,7 +1,6 @@
 package meg.bank.bus;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -9,7 +8,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
-import meg.bank.bus.ExpenseCriteria.SortDirection;
 import meg.bank.bus.dao.BankTADao;
 import meg.bank.bus.dao.CategoryDao;
 import meg.bank.bus.dao.CategoryRuleDao;
@@ -20,7 +18,7 @@ import meg.bank.bus.repo.BankTARepository;
 import meg.bank.bus.repo.CategoryRepository;
 import meg.bank.bus.repo.CategoryRuleRepository;
 import meg.bank.bus.repo.CategoryTARepository;
-import meg.bank.bus.report.CategorySummaryDisp;
+import meg.bank.bus.report.elements.CategorySummaryDisp;
 import meg.bank.web.model.ExpenseEditModel;
 
 import org.springframework.beans.factory.annotation.Autowired;

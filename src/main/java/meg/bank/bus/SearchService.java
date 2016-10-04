@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import meg.bank.bus.dao.ExpenseDao;
-import meg.bank.bus.report.CategorySummaryDisp;
+import meg.bank.bus.report.elements.CategorySummaryDisp;
 
 public interface SearchService {
 

@@ -1,12 +1,11 @@
 package meg.bank.bus;
 
-import java.util.Date;
 import java.util.List;
 
 import meg.bank.bus.dao.BankTADao;
 import meg.bank.bus.dao.CategoryTADao;
 import meg.bank.bus.dao.ExpenseDao;
-import meg.bank.bus.report.CategorySummaryDisp;
+import meg.bank.bus.report.elements.CategorySummaryDisp;
 import meg.bank.web.model.ExpenseEditModel;
 
 public interface BankTransactionService {

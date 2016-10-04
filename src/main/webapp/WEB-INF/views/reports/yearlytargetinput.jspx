@@ -14,6 +14,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <spring:message code="label_rpt_runreports" var="pagetitle"/>
     <spring:message code="label_rpt_year" var="lyear"/>
     <spring:message code="label_rpt_runreport" var="lrunreport"/>
+<spring:message code="label_rpt_runpdfreport" var="lrunpdfreport"/>
 
     <h1>${pagetitle}</h1>
 <h2>${reporttitle}</h2>
@@ -32,6 +33,7 @@ ${lyear}: <form:select path="year">
 			<br />
 <form:hidden path="reportType"></form:hidden>
 <input id="runreport" name="runreport" type="submit" value="${lrunreport}"/>
+<input id="runpdfreport" name="pdfreport" type="submit" value="${lrunpdfreport}" formtarget="_blank"/>
 </form:form>
 
 </div>
